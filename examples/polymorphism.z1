@@ -1,0 +1,4 @@
+
+Println(TypeOf(1));
+Println(TypeOf("s"));
+

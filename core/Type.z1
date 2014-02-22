@@ -1,0 +1,22 @@
+
+TypeAlias(Integer) => Integer64; 
+TypeAlias(Real) => Real64;
+
+SizeOf(_::Integer) :: Integer => 16;
+SizeOf(_::Real) :: Integer => 16;
+SizeOf(s::String) :: Integer => StringLength(s);
+
+deftype Complex <: Number
+	real::Real64
+	imag::Real64
+end
+
+TypeAttributes(Number) => { :Immutable };
+
+Attributes(Plus) => { :Listable };
+
+Plus[T <: Number](x :: T, y :: T) => PlusNumber(CastTo(T, x), CastTo(T, y));
+Plus(x :: String , y :: _ ) => StringJoin(x, ToString(y));
+Plus(x :: _ , y :: String ) => StringJoin(ToString(x), y);
+Plus(x :: _ , y :: _ ) => Exception(:TypeError);
+

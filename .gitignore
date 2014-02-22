@@ -1,4 +1,23 @@
-.DS_Store
-packages
-.project
-pubspec.lock
+// Don’t commit the following files and directories created by pub and dart2js
+packages/
+*.js_
+*.js.deps
+*.js.map
+
+
+// Avoid committing generated JavaScript files
+*.dart.js
+
+.project      // Eclipse
+*.iml         // IntelliJ
+*.ipr         // IntelliJ
+*.iws         // IntelliJ
+.idea/        // IntelliJ
+.DS_Store     // Mac
+.buildlog
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+*~

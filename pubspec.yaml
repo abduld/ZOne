@@ -1,0 +1,8 @@
+name: zone
+description: A sample command-line application
+dependencies:
+  collection: any
+  grinder: any
+  log4dart: any
+  parsers: any
+  unittest: any

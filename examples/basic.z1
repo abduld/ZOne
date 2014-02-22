@@ -1,0 +1,7 @@
+
+var x :: Int64 = 3;
+var g :: Int64 = 6;
+
+Println(x + g);
+Println(Plus(x, g));
+Println(+(x, g));
