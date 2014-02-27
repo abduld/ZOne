@@ -81,9 +81,7 @@ class _Lower implements ASTNodeVisitor {
     IdentifierValue lhs = new IdentifierValue(genSym("lambda"));
     _Lower vst = new _Lower();
 
-    List<Value> args = fundecl.args.map(
-        (arg) => new IdentifierValue(arg.id.value, new TypeValue.fromTypeNode(arg.type))
-    ).toList();
+    List<Value> args = fundecl.args.map((arg) => arg.accept(this)).toList();
     fundecl.visitChildren(vst);
     body = vst.instructions;
     body.add(new ReturnInstruction(body.last.target));;
@@ -96,9 +94,7 @@ class _Lower implements ASTNodeVisitor {
   }
 
   Object visitParameterNode(ParameterNode param) {
-    print("TODO :: " + param.toString());
-    return null;
-    // TODO: implement visitParameterNode
+    return new IdentifierValue(param.id.value, new TypeValue.fromTypeNode(param.type));
   }
 
   Object visitProgramNode(ProgramNode prog) {
