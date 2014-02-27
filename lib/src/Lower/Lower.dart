@@ -103,9 +103,7 @@ class _Lower implements ASTNodeVisitor {
   }
 
   Object visitTypeNode(TypeNode typ) {
-    print("TODO :: " + typ.toString());
-    return null;
-    // TODO: implement visitTypeNode
+    return new TypeValue.fromTypeNode(typ);
   }
 
   Object visitVariableDeclarationNode(VariableDeclarationNode decl) {
