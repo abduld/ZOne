@@ -26,15 +26,33 @@ class _Lower implements ASTNodeVisitor {
   List<Instruction> get instructions => insts;
   
   Object visitAssignmentNode(AssignmentNode ass) {
-    print(ass);
+    print("TODO :: " + ass.toString());
     return null;
     // TODO: implement visitAssignmentNode
   }
 
   Object visitAtomNode(AtomNode atm) {
-    print(atm);
-    return null;
-    // TODO: implement visitAtomNode
+    if (atm is IntegerNode) {
+      return new IntegerValue(atm.value);
+    } else if (atm is RealNode) {
+      return new RealValue(atm.value);
+    } else if (atm is TrueNode) {
+      return new TrueValue();
+    } else if (atm is FalseNode) {
+      return new FalseValue();
+    } else if (atm is SymbolNode) {
+      return new SymbolValue(atm.value);
+    } else if (atm is StringNode) {
+      return new StringValue(atm.value);
+    } else if (atm is IdentifierNode) {
+      return new StringValue(atm.value);
+    } else if (atm is ListNode) {
+      List<Value> lst = atm.value.map(
+          (elem) => elem.accept(this)
+      ).toList();
+      return new ListValue(lst);
+    }
+    return new UnknownValue(atm.toString());
   }
 
   Object visitCallNode(CallNode call) {
@@ -43,49 +61,61 @@ class _Lower implements ASTNodeVisitor {
     IdentifierValue f = new IdentifierValue(name);
     IdentifierValue lhs = new IdentifierValue(genSym(name));
     
-    List<Value> args;
-    call.args.forEach((arg) => args.add(arg.accept(this)));
-    inst = new CallInstruction(f, args);
+    List<Value> args = call.args.map((arg) => arg.accept(this)).toList();
+    inst = new CallInstruction(lhs, f, args);
+    
+    emit(inst);
+
+    return lhs;
+  }
+
+  Object visitDocumentationNode(DocumentationNode doc) {
+    print("TODO :: " + doc.toString());
+    return null;
+    // TODO: implement visitDocumentationNode
+  }
+
+  Object visitFunctionDeclarationNode(FunctionDeclarationNode fundecl) {
+    Instruction inst;
+    List<Instruction> body;
+    IdentifierValue lhs = new IdentifierValue(genSym("lambda"));
+    _Lower vst = new _Lower();
+
+    List<Value> args = fundecl.args.map(
+        (arg) => new IdentifierValue(arg.id.value, new TypeValue.fromTypeNode(arg.type))
+    ).toList();
+    fundecl.visitChildren(vst);
+    body = vst.instructions;
+    body.add(new ReturnInstruction(body.last.target));;
+    
+    inst = new LambdaInstruction(lhs, args, body);
     
     emit(inst);
     
     return lhs;
   }
 
-  Object visitDocumentationNode(DocumentationNode doc) {
-    print(doc);
-    return null;
-    // TODO: implement visitDocumentationNode
-  }
-
-  Object visitFunctionDeclarationNode(FunctionDeclarationNode fundecl) {
-    print(fundecl);
-    return null;
-    // TODO: implement visitFunctionDeclarationNode
-  }
-
   Object visitParameterNode(ParameterNode param) {
-    print(param);
+    print("TODO :: " + param.toString());
     return null;
     // TODO: implement visitParameterNode
   }
 
   Object visitProgramNode(ProgramNode prog) {
-    print(prog);
     prog.visitChildren(this);
     return null;
-    // TODO: implement visitProgramNode
   }
 
   Object visitTypeNode(TypeNode typ) {
-    print(typ);
+    print("TODO :: " + typ.toString());
     return null;
     // TODO: implement visitTypeNode
   }
 
   Object visitVariableDeclarationNode(VariableDeclarationNode decl) {
     Instruction inst;
-    IdentifierValue lhs = new IdentifierValue(decl.lhs.value, new TypeValue.fromTypeNode(decl.type));
+    IdentifierValue lhs = new IdentifierValue(decl.lhs.value,
+        new TypeValue.fromTypeNode(decl.type));
     
     if (decl.hasRHS) {
       Object rhs = decl.rhs.accept(this);
@@ -105,5 +135,6 @@ class _Lower implements ASTNodeVisitor {
 List<Instruction> Lower(ASTNode nd) {
   _Lower vst = new _Lower();
   nd.accept(vst);
+  print(vst.instructions.join('\n'));
   return vst.instructions;
 }

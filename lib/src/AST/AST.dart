@@ -23,6 +23,6 @@ TestAST() {
       Let k :: Integer = (x :: Integer) :: Integer => x + 1;
       ((x :: Integer) :: Integer => x + 1) :@ [1,2,3,4];
     """;
-    print(Parse(testCode));
+    //print(Parse(testCode));
   });
 }

@@ -15,6 +15,8 @@ abstract class InstructionVisitor {
   Object visitUnaryInstruction(UnaryInstruction inst);
   Object visitBinaryInstruction(BinaryInstruction inst);
   Object visitCallInstruction(CallInstruction inst);
+  Object visitLambdaInstruction(LambdaInstruction inst);
+  Object visitReturnInstruction(ReturnInstruction inst);
   Object visitBranchInstruction(BranchInstruction inst);
   Object visitMapInstruction(MapInstruction inst);
   Object visitReduceInstruction(ReduceInstruction inst);
@@ -44,12 +46,10 @@ abstract class Instruction {
 
   Object accept(InstructionVisitor visitor);
   List<Object> visitChildren(InstructionVisitor visitor) {
-    
-    op.visit(visitor);
     if (target != null) {
-      target.visit(visitor);
+      target.accept(visitor);
     }
-    args.map((arg) => arg.visit(visitor));
+    return args.map((arg) => arg.accept(visitor));
   }
 }
 
@@ -85,24 +85,45 @@ class BranchInstruction extends Instruction {
 }
 
 class CallInstruction extends Instruction {
-  CallInstruction(Value name, List<Value> args) :
-    super(CallOp, null, args..insert(0, name));
+  CallInstruction(Value lhs, Value name, List<Value> args) :
+    super(CallOp, lhs, args..insert(0, name));
 
   Object accept(InstructionVisitor visitor) =>
       visitor.visitCallInstruction(this);
 }
 
+class LambdaInstruction extends Instruction {
+  List<Instruction> body = [];
+  
+  LambdaInstruction(Value lhs, List<Value> args, this.body) :
+    super(LambdaOp, lhs, args);
+
+  Object accept(InstructionVisitor visitor) =>
+      visitor.visitLambdaInstruction(this);
+
+  String toString() =>
+    '$target = lambda(${args.join(", ")}) => ($body)';
+}
+
+class ReturnInstruction extends Instruction {
+  ReturnInstruction(Value arg) :
+    super(ReturnOp, null, [arg]);
+
+  Object accept(InstructionVisitor visitor) =>
+      visitor.visitReturnInstruction(this);
+}
+
 class MapInstruction extends CallInstruction {
-  MapInstruction(List<Value> args) :
-    super(MapSymbol, args);
+  MapInstruction(Value lhs, List<Value> args) :
+    super(MapSymbol, lhs, args);
 
   Object accept(InstructionVisitor visitor) =>
       visitor.visitMapInstruction(this);
 }
 
 class ReduceInstruction extends CallInstruction {
-  ReduceInstruction(List<Value> args) :
-    super(ReduceSymbol, args);
+  ReduceInstruction(Value lhs, List<Value> args) :
+    super(ReduceSymbol, lhs, args);
 
   Object accept(InstructionVisitor visitor) =>
       visitor.visitReduceInstruction(this);

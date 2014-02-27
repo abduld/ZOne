@@ -16,22 +16,28 @@ abstract class ASTNodeVisitor {
 abstract class ASTNode {
   String nodeType;
   ASTNode(this.nodeType);
-  
+
   Object accept(ASTNodeVisitor visitor);
   List<Object> visitChildren(ASTNodeVisitor visitor);
-  
+
   String toString() => "ASTNode($nodeType)";
 }
 
 class ProgramNode extends ASTNode {
   List<ASTNode> body;
-  
-  ProgramNode(this.body) : super("Program");
+
+  ProgramNode(body0) : super("Program") {
+    if (body0 is List) {
+      body = body0;
+    } else {
+      body = [body0];
+    }
+  }
 
   String toString() => body.join('\n');
-  
+
   Object accept(ASTNodeVisitor visitor) {
-    return visitor.visitProgramNode(this);    
+    return visitor.visitProgramNode(this);
   }
 
   List<Object> visitChildren(ASTNodeVisitor visitor) {
@@ -43,15 +49,15 @@ class ProgramNode extends ASTNode {
 
 class DocumentationNode extends ASTNode {
   List<String> doc;
-  
+
   DocumentationNode(this.doc) : super("Documentation");
 
   Object accept(ASTNodeVisitor visitor) {
-    visitor.visitDocumentationNode(this);    
+    return visitor.visitDocumentationNode(this);
   }
 
   List<Object> visitChildren(ASTNodeVisitor visitor) => [];
-  
+
   String toString() => "$nodeType[$doc]";
 }
 
@@ -64,11 +70,11 @@ abstract class ExprNode extends ASTNode {
 
 class AtomNode<T> extends ExprNode {
   T value;
-  AtomNode(String name, this.value) : super("Atom");  
+  AtomNode(String name, this.value) : super("Atom");
   String toString() => "$value";
 
   Object accept(ASTNodeVisitor visitor) {
-    return visitor.visitAtomNode(this);    
+    return visitor.visitAtomNode(this);
   }
 
   List<Object> visitChildren(ASTNodeVisitor visitor) => [];
@@ -112,18 +118,18 @@ class IdentifierNode extends AtomNode<String> {
 
 class SubTypeNode extends ASTNode {
   String type;
-  SubTypeNode(this.type) : super("Type");  
+  SubTypeNode(this.type) : super("Type");
   String toString() => "<: $type";
 
   Object accept(ASTNodeVisitor visitor) {
-    return visitor.visitTypeNode(this);    
+    return visitor.visitTypeNode(this);
   }
 
   List<Object> visitChildren(ASTNodeVisitor visitor) => [];
 }
 
 class TypeNode extends SubTypeNode {
-  TypeNode(String type) : super(type);  
+  TypeNode(String type) : super(type);
   String toString() => ":: $type";
   TypeValue toTypeValue() => new TypeValue(type);
 }
@@ -132,34 +138,34 @@ class VariableDeclarationNode extends ASTNode {
   IdentifierNode id;
   TypeNode type;
   ASTNode e;
-  
+
   VariableDeclarationNode(this.type, String name, [this.e]) : super("VariableDeclaration") {
     id = new IdentifierNode(name);
   }
-  
-  String toString() { 
-      if (hasRHS) {
-        return "Let $id $type"; 
-      } else {
-        return "Let $id $type = $e";
-      }
+
+  String toString() {
+    if (hasRHS) {
+      return "Let $id $type";
+    } else {
+      return "Let $id $type = $e";
+    }
   }
 
   IdentifierNode get lhs => id;
   ASTNode get rhs => e;
-  
+
   bool get hasRHS => e != null;
 
   Object accept(ASTNodeVisitor visitor) {
-    return visitor.visitVariableDeclarationNode(this);    
+    return visitor.visitVariableDeclarationNode(this);
   }
 
   List<Object> visitChildren(ASTNodeVisitor visitor) {
     List<Object> lst = new List<Object>();
-    
+
     lst.add(id.accept(visitor));
     lst.add(type.accept(visitor));
-    
+
     if (hasRHS) {
       lst.add(e.accept(visitor));
     }
@@ -170,27 +176,27 @@ class VariableDeclarationNode extends ASTNode {
 class AssignmentNode extends ASTNode {
   IdentifierNode id;
   ASTNode rhs;
-  
+
   AssignmentNode(String name, this.rhs) : super("AssignmentNode") {
     id = new IdentifierNode(name);
   }
-  
+
   String toString() => "$id = $rhs";
 
   Object accept(ASTNodeVisitor visitor) {
-    return visitor.visitAssignmentNode(this);    
+    return visitor.visitAssignmentNode(this);
   }
 
   List<Object> visitChildren(ASTNodeVisitor visitor) {
     return [id.accept(visitor),
-            rhs.accept(visitor)];
+    rhs.accept(visitor)];
   }
 }
 
 class CallNode extends ExprNode {
   IdentifierNode f;
   List<ExprNode> args;
-  
+
   CallNode(fname, this.args) : super("Call") {
     if (fname is IdentifierNode) {
       f = fname;
@@ -198,16 +204,16 @@ class CallNode extends ExprNode {
       f = new IdentifierNode(fname);
     }
   }
-  
+
   String get name => f.value;
-  
+
   String toString() {
     String s = args.join(', ');
     return "$f($s)";
   }
 
   Object accept(ASTNodeVisitor visitor) {
-    return visitor.visitCallNode(this);    
+    return visitor.visitCallNode(this);
   }
 
   List<Object> visitChildren(ASTNodeVisitor visitor) {
@@ -231,35 +237,31 @@ class FunctionDeclarationNode extends ExprNode {
   }
 
   Object accept(ASTNodeVisitor visitor) {
-    return visitor.visitFunctionDeclarationNode(this);    
+    return visitor.visitFunctionDeclarationNode(this);
   }
 
   List<Object> visitChildren(ASTNodeVisitor visitor) {
-    List<Object> lst = [id.accept(visitor)];
-    args.map((arg) => lst.add(arg.accept(visitor)));
-    lst.add(returnType.accept(visitor));
-    lst.add(body.accept(visitor));
-    return lst;
+    return body.accept(visitor);
   }
 }
 
 class ParameterNode extends ASTNode {
   IdentifierNode id;
   TypeNode type;
-  
+
   ParameterNode(name, this.type) : super("Parameter") {
     id = new IdentifierNode(name);
   }
-  
+
   String toString() => "$id $type";
 
   Object accept(ASTNodeVisitor visitor) {
-    return visitor.visitParameterNode(this);    
+    return visitor.visitParameterNode(this);
   }
 
   List<Object> visitChildren(ASTNodeVisitor visitor) {
     return [id.accept(visitor),
-            type.accept(visitor)];
+    type.accept(visitor)];
   }
 }
 

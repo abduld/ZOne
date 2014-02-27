@@ -7,15 +7,16 @@ class OpCode {
 
   OpCode(this.opName, this.nArgs);
 
-  get name => opName;
-  get unaryQ => nArgs == 1;
-  get binaryQ => nArgs == 2;
+  String get name => opName;
+  bool get unaryQ => nArgs == 1;
+  bool get binaryQ => nArgs == 2;
+  bool get varArgsQ => nArgs == -1;
   
-  void visit(InstructionVisitor visitor) =>
+  Object accept(InstructionVisitor visitor) =>
       visitor.visitOpCode(this);
 
-  int get hashcode => name.hashcode;
-  bool sameQ(other) => hashcode == other.hashcode;
+  int get hashcode => HashCode([name, nArgs]);
+  bool sameQ(other) => hashcode == other.hashCode;
   
   String toString() => opName;
 }
@@ -36,6 +37,8 @@ class BinaryOpCode extends OpCode {
   get binaryQ => true;
 }
 
+final OpCode FunctionDefinitionOp = new OpCode("FunctionDefinition", -1);
+
 final OpCode IdentityOp = new UnaryOpCode("Identity");
 final OpCode LoadOp = new UnaryOpCode("Load");
 final OpCode StoreOp = new UnaryOpCode("Store");
@@ -55,5 +58,7 @@ final OpCode DivideByOp = new UnaryOpCode("DivideBy");
 final OpCode TimesByOp = new UnaryOpCode("TimesBy");
 
 final OpCode CallOp = new OpCode("Call", -1);
+final OpCode LambdaOp = new OpCode("Lambda", -1);
+final OpCode ReturnOp = new OpCode("Return", -1);
 final OpCode BranchOp = new OpCode("Branch", 3);
 

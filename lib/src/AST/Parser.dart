@@ -122,7 +122,7 @@ class ZoneParser extends LanguageParsers {
 
   lambda() => _params() + typeIdentifier + symbol("=>") + rec(expr)
               ^ (parameters, ret, _, body) =>
-                  new FunctionDeclarationNode("lambda", ret, parameters, body);
+                  new FunctionDeclarationNode("lambda", ret, parameters, new ProgramNode(body));
 
   _param() => identifier + typeIdentifier ^ (id, type) => new ParameterNode(id, type);  
   _params() => parens(_param().sepBy(comma));
