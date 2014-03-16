@@ -5,71 +5,89 @@ class JavascriptInstructionVisitor implements InstructionVisitor {
   @override
   String visitBinaryInstruction(BinaryInstruction inst) {
     // TODO: implement visitBinaryInstruction
-    return "todo";
+    return '${inst.op.accept(this)}(${inst.args.map((arg) => arg.accept(this)).join(", ")})';
   }
 
   @override
   String visitBranchInstruction(BranchInstruction inst) {
-    // TODO: implement visitBranchInstruction
-    return "todo";
+    return '${inst.op.accept(this)}(${inst.args.map((arg) => arg.accept(this)).join(", ")})';
   }
 
+  final Map<String, String> infixFunctions = {
+    "Plus" : "+"
+  };
+  
+  String infixSymbol(SymbolValue s) =>
+      infixFunctions[s.value];
+  
+  bool infixFunctionQ(SymbolValue s) =>
+      infixFunctions.containsKey(s.value);
+  
   @override
   String visitCallInstruction(CallInstruction inst) {
-    // TODO: implement visitCallInstruction
-    return "todo";
+    if (SystemSymbolQ(inst.function) && infixFunctionQ(inst.function)) {
+      return '${inst.fargs.map((arg) => arg.accept(this)).join(infixSymbol(inst.function))}';
+    }
+    return '${inst.function.accept(this)}(${inst.fargs.map((arg) => arg.accept(this)).join(", ")})';
   }
 
   @override
   String visitEmptyInstruction(EmptyInstruction inst) {
     // TODO: implement visitEmptyInstruction
-    return "todo";
+    return "todoEmpty";
   }
 
   @override
   String visitLambdaInstruction(LambdaInstruction inst) {
     // TODO: implement visitLambdaInstruction
-    return "todo";
+    return "todoLambda";
   }
 
   @override
   String visitMapInstruction(MapInstruction inst) {
     // TODO: implement visitMapInstruction
-    return "todo";
+    return "todoMap";
   }
 
   @override
   String visitOpCode(OpCode op) {
-    // TODO: implement visitOpCode
-    return "todo";
+    return op.name;
   }
 
   @override
   String visitReduceInstruction(ReduceInstruction inst) {
     // TODO: implement visitReduceInstruction
-    return "todo";
+    return "todoReduce";
   }
 
   @override
   String visitReturnInstruction(ReturnInstruction inst) {
     // TODO: implement visitReturnInstruction
-    return "todo";
+    return "todoReturn";
   }
 
   @override
   String visitUnaryInstruction(UnaryInstruction inst) {
     // TODO: implement visitUnaryInstruction
-    return "todo";
+    return "todoUnary";
   }
 
   @override
   String visitValue(Value val) {
-    // TODO: implement visitValue
-    return "todo";
+    if (val is SymbolValue) {
+       if (SystemSymbolQ(val)) {
+         return val.toString() + "Symbo";
+       }
+    } else if (val is IntegerValue || val is RealValue) {
+      return val.toString();
+    }
+    return "todoValue";
   }
 }
 
-String ToJavaScript(List<Instruction> insts) {
-  return "todo";
+String ToJavaScriptCode(List<Instruction> insts) {
+  JavascriptInstructionVisitor visitor = new JavascriptInstructionVisitor();
+  String res = insts.map((inst) => inst.accept(visitor)).join("\n");
+  return res;
 }
 

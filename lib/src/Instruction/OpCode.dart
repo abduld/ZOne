@@ -47,16 +47,6 @@ final OpCode AllocaOp = new UnaryOpCode("Alloca");
 final OpCode SetOp = new BinaryOpCode("Set");
 final OpCode GetOp = new UnaryOpCode("Get");
 
-final OpCode AddOp = new BinaryOpCode("Add");
-final OpCode SubtractOp = new BinaryOpCode("Subtract");
-final OpCode DivideOp = new BinaryOpCode("Divide");
-final OpCode TimesOp = new BinaryOpCode("Times");
-
-final OpCode AddToOp = new UnaryOpCode("AddTo");
-final OpCode SubtractFromOp = new UnaryOpCode("SubtractFrom");
-final OpCode DivideByOp = new UnaryOpCode("DivideBy");
-final OpCode TimesByOp = new UnaryOpCode("TimesBy");
-
 final OpCode CallOp = new OpCode("Call", -1);
 final OpCode LambdaOp = new OpCode("Lambda", -1);
 final OpCode ReturnOp = new OpCode("Return", -1);

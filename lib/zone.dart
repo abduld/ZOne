@@ -4,6 +4,7 @@ library zone;
 import "src/AST/AST.dart";
 import "src/Instruction/Instruction.dart";
 import "src/Lower/Lower.dart";
+import "src/Backend/Backend.dart";
 
 void RunTests() {
   TestAST();
@@ -15,5 +16,6 @@ void RunTests() {
       //((x :: Integer) :: Integer => x + 1) :@ [1,2,3,4];
     """;
   ProgramNode prog = Parse(testCode);
-  Lower(prog);
+  List<Instruction> insts = Lower(prog);
+  print(ToJavaScriptCode(insts));
 }

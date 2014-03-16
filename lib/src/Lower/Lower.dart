@@ -58,7 +58,14 @@ class _Lower implements ASTNodeVisitor {
   Object visitCallNode(CallNode call) {
     Instruction inst;
     String name = call.name;
-    IdentifierValue f = new IdentifierValue(name);
+    SymbolValue f;
+    
+    if (SystemSymbolQ(name)) {
+      SystemSymbol g = new SystemSymbol(name);
+      f = g.value;
+    } else {
+      f = new SymbolValue(name);
+    }
     IdentifierValue lhs = new IdentifierValue(genSym(name));
     
     List<Value> args = call.args.map((arg) => arg.accept(this)).toList();
@@ -68,7 +75,7 @@ class _Lower implements ASTNodeVisitor {
 
     return lhs;
   }
-
+  
   Object visitDocumentationNode(DocumentationNode doc) {
     print("TODO :: " + doc.toString());
     return null;
@@ -129,6 +136,5 @@ class _Lower implements ASTNodeVisitor {
 List<Instruction> Lower(ASTNode nd) {
   _Lower vst = new _Lower();
   nd.accept(vst);
-  print(vst.instructions.join('\n'));
   return vst.instructions;
 }

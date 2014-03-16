@@ -16,10 +16,9 @@ int HashValues(List elems) {
     return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
   
-  elems.map((elem) => hash = combine(hash, elem));
+  elems.forEach((elem) => elem != null ? hash = combine(hash, elem) : null);
   return finish(hash);
 }
 
-int HashCode(List elems) {
-  return HashCode(elems.map((elem) => elem.hashCode));
-}
+int HashCode(List elems) =>
+  HashValues(elems.map((elem) => elem.hashCode).toList(growable: false));

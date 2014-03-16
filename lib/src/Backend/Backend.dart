@@ -6,4 +6,5 @@ import '../Instruction/Instruction.dart';
 
 part "./Dart.dart";
 part "./Javascript.dart";
+part "./C.dart";
 

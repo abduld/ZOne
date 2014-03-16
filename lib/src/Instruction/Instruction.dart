@@ -88,6 +88,8 @@ class CallInstruction extends Instruction {
   CallInstruction(Value lhs, Value name, List<Value> args) :
     super(CallOp, lhs, args..insert(0, name));
 
+  Value get function => args[0];
+  List<Value> get fargs => args.skip(1).toList(growable: false);
   Object accept(InstructionVisitor visitor) =>
       visitor.visitCallInstruction(this);
 }
@@ -115,7 +117,7 @@ class ReturnInstruction extends Instruction {
 
 class MapInstruction extends CallInstruction {
   MapInstruction(Value lhs, List<Value> args) :
-    super(MapSymbol, lhs, args);
+    super(MapSymbol.value, lhs, args);
 
   Object accept(InstructionVisitor visitor) =>
       visitor.visitMapInstruction(this);
@@ -123,7 +125,7 @@ class MapInstruction extends CallInstruction {
 
 class ReduceInstruction extends CallInstruction {
   ReduceInstruction(Value lhs, List<Value> args) :
-    super(ReduceSymbol, lhs, args);
+    super(ReduceSymbol.value, lhs, args);
 
   Object accept(InstructionVisitor visitor) =>
       visitor.visitReduceInstruction(this);
