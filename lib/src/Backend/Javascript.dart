@@ -26,9 +26,9 @@ class JavascriptInstructionVisitor implements InstructionVisitor {
   @override
   String visitCallInstruction(CallInstruction inst) {
     if (SystemSymbolQ(inst.function) && infixFunctionQ(inst.function)) {
-      return '${inst.fargs.map((arg) => arg.accept(this)).join(infixSymbol(inst.function))}';
+      return '${inst.target} = ${inst.fargs.map((arg) => arg.accept(this)).join(infixSymbol(inst.function))}';
     }
-    return '${inst.function.accept(this)}(${inst.fargs.map((arg) => arg.accept(this)).join(", ")})';
+    return '${inst.target} = ${inst.function.accept(this)}(${inst.fargs.map((arg) => arg.accept(this)).join(", ")})';
   }
 
   @override
@@ -69,7 +69,10 @@ class JavascriptInstructionVisitor implements InstructionVisitor {
   @override
   String visitUnaryInstruction(UnaryInstruction inst) {
     // TODO: implement visitUnaryInstruction
-    return "todoUnary";
+    if (inst.op == LoadOp) {
+      return "${inst.target} = ${inst.args[0]}";
+    }
+    return "todoUnary  :: " + inst.toString();
   }
 
   @override
@@ -87,7 +90,7 @@ class JavascriptInstructionVisitor implements InstructionVisitor {
 
 String ToJavaScriptCode(List<Instruction> insts) {
   JavascriptInstructionVisitor visitor = new JavascriptInstructionVisitor();
-  String res = insts.map((inst) => inst.accept(visitor)).join("\n");
+  String res = insts.map((inst) => inst.accept(visitor)).join(";\n") + ";";
   return res;
 }
 

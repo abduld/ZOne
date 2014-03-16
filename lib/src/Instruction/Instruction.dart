@@ -117,7 +117,7 @@ class ReturnInstruction extends Instruction {
 
 class MapInstruction extends CallInstruction {
   MapInstruction(Value lhs, List<Value> args) :
-    super(MapSymbol.value, lhs, args);
+    super((new SystemSymbol("MapSymbol")).value, lhs, args);
 
   Object accept(InstructionVisitor visitor) =>
       visitor.visitMapInstruction(this);
@@ -125,7 +125,7 @@ class MapInstruction extends CallInstruction {
 
 class ReduceInstruction extends CallInstruction {
   ReduceInstruction(Value lhs, List<Value> args) :
-    super(ReduceSymbol.value, lhs, args);
+    super((new SystemSymbol("ReduceSymbol")).value, lhs, args);
 
   Object accept(InstructionVisitor visitor) =>
       visitor.visitReduceInstruction(this);

@@ -10,7 +10,6 @@ void RunTests() {
   TestAST();
   
   String testCode = """
-      Context :foo;
       Let k :: Integer = 2 + 32;
       Let k :: Integer = (x :: Integer) :: Integer => x + 1;
       //((x :: Integer) :: Integer => x + 1) :@ [1,2,3,4];

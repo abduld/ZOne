@@ -5,7 +5,8 @@ abstract class Value<T> {
   
   Value(this.value);
 
-  TypeValue get type => UnknownType.value;
+  TypeValue get type => 
+      (new SystemType("UnknownType")).value;
 
   int get hashCode => HashCode([value]);
   bool sameQ(other) => hashCode == other.hashCode;
