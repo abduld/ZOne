@@ -9,6 +9,7 @@ part './OpCode.dart';
 part './Value.dart';
 
 part './LiftFunction.dart';
+part './PeepholeOptimize.dart';
 
 
 class InstructionVisitor {

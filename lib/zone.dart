@@ -11,8 +11,12 @@ void RunTests() {
   
   String testCode = """
       Let k :: Integer = 2 + 32;
-      Let k :: Integer = (x :: Integer) :: Integer => Return(x + 1);
-      ((x :: Integer) :: Integer => Return(x + 1)) :@ [1,2,3,4];
+      Let g :: Integer = 2 + k;
+      Let m :: Integer = 2 + g;
+      Let i :: Integer = 2 + m;
+      //Let k :: Integer = (x :: Integer) :: Integer => Return(x + 1);
+      Map((x :: Integer) :: Integer => Return(x + 1), [1,2,3,4]);
+      //((x :: Integer) :: Integer => Return(x + 1)) :@ [1,2,3,4];
     """;
   
   String histogram = """
@@ -21,6 +25,6 @@ void RunTests() {
     """;
   ProgramNode prog = Parse(testCode);
   List<Instruction> insts = Lower(prog);
-  List<Instruction> minsts = LiftFunctionPass(insts);
+  List<Instruction> minsts = PeepholeOptimize(LiftFunctionPass(insts));
   print(ToJavaScriptCode(minsts));
 }

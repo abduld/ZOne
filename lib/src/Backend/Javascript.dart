@@ -85,7 +85,7 @@ class JavascriptInstructionVisitor extends InstructionVisitor {
   String visitUnaryInstruction(UnaryInstruction inst) {
     // TODO: implement visitUnaryInstruction
     if (inst.op == LoadOp) {
-      return "${inst.target} = ${inst.args[0]}";
+      return "var ${inst.target} = ${inst.args[0]}";
     }
     return "todoUnary  :: " + inst.toString();
   }
@@ -102,6 +102,9 @@ class JavascriptInstructionVisitor extends InstructionVisitor {
          return val.toString() + "Symbo";
        }
     } else if (val is IntegerValue || val is RealValue) {
+      return val.toString();
+    } else if (val is ListValue) {
+      print("XXX List " + val.toString());
       return val.toString();
     }
     print("XXX " + val.toString());
