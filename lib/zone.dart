@@ -11,8 +11,8 @@ void RunTests() {
   
   String testCode = """
       Let k :: Integer = 2 + 32;
-      Let k :: Integer = (x :: Integer) :: Integer => return(x + 1);
-      //((x :: Integer) :: Integer => x + 1) :@ [1,2,3,4];
+      Let k :: Integer = (x :: Integer) :: Integer => Return(x + 1);
+      ((x :: Integer) :: Integer => Return(x + 1)) :@ [1,2,3,4];
     """;
   ProgramNode prog = Parse(testCode);
   List<Instruction> insts = Lower(prog);

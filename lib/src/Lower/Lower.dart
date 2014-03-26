@@ -69,7 +69,12 @@ class _Lower implements ASTNodeVisitor {
     IdentifierValue lhs = new IdentifierValue(genSym(name));
     
     List<Value> args = call.args.map((arg) => arg.accept(this)).toList();
-    inst = new CallInstruction(lhs, f, args);
+
+    if (isReturn(f)) {
+      inst = new CallInstruction(null, f, args);
+    } else {
+      inst = new CallInstruction(lhs, f, args);
+    }
     
     emit(inst);
 
@@ -91,7 +96,8 @@ class _Lower implements ASTNodeVisitor {
     List<Value> args = fundecl.args.map((arg) => arg.accept(this)).toList();
     fundecl.visitChildren(vst);
     body = vst.instructions;
-    body.add(new ReturnInstruction(body.last.target));;
+    // we are not going to figure out the return value for now
+    // body.add(new ReturnInstruction(body.last.target));;
     
     inst = new LambdaInstruction(lhs, args, body);
     

@@ -165,8 +165,10 @@ bool SystemSymbolQ(val) {
 
 
 final List<String> _SystemSymbols = [
-  "Context", "Plus", "Minus", "Map", "Reduce"                                    
+  "Context", "Plus", "Minus", "Map", "Reduce", "Return"                                    
 ];
+
+bool isReturn(Value val) => val is SymbolValue && val.value == "Return";
 
 final List<String> _SystemTypes = [
   "UnknownType", "IntegerType", "RealType", "BooleanType", "StringType",

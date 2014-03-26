@@ -5,7 +5,10 @@ class JavascriptFunctionInstructionVisitor implements InstructionVisitor {
   @override
   String visitLambdaInstruction(LambdaInstruction inst) {
     // TODO: implement visitLambdaInstruction
-    return "${inst.target} = function(${inst.args.map((arg) => arg.toString()).join(", ")}) {\n ${ToJavaScriptCode(inst.body)} \n}\n";
+    String res = "${inst.target} = function(${inst.args.map((arg) => arg.toString()).join(", ")}) {\n" +
+        "${ToJavaScriptCode(inst.body)}" +
+        "\n}\n";
+     return res;
   }
 
   @override
@@ -84,9 +87,11 @@ class JavascriptInstructionVisitor implements InstructionVisitor {
   @override
   String visitCallInstruction(CallInstruction inst) {
     if (SystemSymbolQ(inst.function) && infixFunctionQ(inst.function)) {
-      return '${inst.target} = ${inst.fargs.map((arg) => arg.accept(this)).join(infixSymbol(inst.function))}';
+      return 'var ${inst.target} = ${inst.fargs.map((arg) => arg.accept(this)).join(infixSymbol(inst.function))}';
+    } else if (SystemSymbolQ(inst.function) && isReturn(inst.function)){
+      return "return(${inst.fargs.map((arg) => arg.accept(this)).join(", ")})";
     }
-    return '${inst.target} = ${inst.function.accept(this)}(${inst.fargs.map((arg) => arg.accept(this)).join(", ")})';
+    return 'var ${inst.target} = ${inst.function.accept(this)}(${inst.fargs.map((arg) => arg.accept(this)).join(", ")})';
   }
 
   @override
@@ -97,8 +102,7 @@ class JavascriptInstructionVisitor implements InstructionVisitor {
 
   @override
   String visitLambdaInstruction(LambdaInstruction inst) {
-    // TODO: implement visitLambdaInstruction
-    return "todoLambda";
+    return "";
   }
 
   @override
@@ -135,13 +139,19 @@ class JavascriptInstructionVisitor implements InstructionVisitor {
 
   @override
   String visitValue(Value val) {
-    if (val is SymbolValue) {
+    if (val is IdentifierValue) {
+      return val.toString();
+    } if (val is SymbolValue) {
        if (SystemSymbolQ(val)) {
+         if (val.value == "Return") {
+           return "return";
+         }
          return val.toString() + "Symbo";
        }
     } else if (val is IntegerValue || val is RealValue) {
       return val.toString();
     }
+    print("XXX " + val.toString());
     return "todoValue";
   }
 }
@@ -150,7 +160,7 @@ String ToJavaScriptCode(List<Instruction> insts) {
   JavascriptFunctionInstructionVisitor funcVisitor = new JavascriptFunctionInstructionVisitor();
   JavascriptInstructionVisitor visitor = new JavascriptInstructionVisitor();
   String res = insts.map((inst) => inst.accept(funcVisitor)).join("") +
-      insts.map((inst) => inst.accept(visitor)).join(";\n") + ";";
+      insts.map((inst) => inst.accept(visitor)).where((String line) => line.trim() != "").join(";\n") + ";";
   return res;
 }
 
