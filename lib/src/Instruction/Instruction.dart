@@ -4,8 +4,11 @@ library zone.instruction;
 import '../Utilities/Utilities.dart';
 import '../AST/AST.dart';
 
+
 part './OpCode.dart';
 part './Value.dart';
+
+part './LiftFunction.dart';
 
 
 abstract class InstructionVisitor {
@@ -40,7 +43,6 @@ abstract class Instruction {
   }
   
   int get nargs => args == null ? 0 : args.length;
-
   int get hashcode => HashCode([op, target, args]);
   bool sameQ(other) => hashcode == other.hashcode;
 
@@ -130,3 +132,5 @@ class ReduceInstruction extends CallInstruction {
   Object accept(InstructionVisitor visitor) =>
       visitor.visitReduceInstruction(this);
 }
+
+

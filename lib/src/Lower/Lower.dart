@@ -40,11 +40,11 @@ class _Lower implements ASTNodeVisitor {
       return new TrueValue();
     } else if (atm is FalseNode) {
       return new FalseValue();
+    } else if (atm is IdentifierNode) {
+      return new IdentifierValue(atm.value);
     } else if (atm is SymbolNode) {
       return new SymbolValue(atm.value);
     } else if (atm is StringNode) {
-      return new StringValue(atm.value);
-    } else if (atm is IdentifierNode) {
       return new StringValue(atm.value);
     } else if (atm is ListNode) {
       List<Value> lst = atm.value.map(

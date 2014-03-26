@@ -1,6 +1,64 @@
 
 part of zone.backend;
 
+class JavascriptFunctionInstructionVisitor implements InstructionVisitor {
+  @override
+  String visitLambdaInstruction(LambdaInstruction inst) {
+    // TODO: implement visitLambdaInstruction
+    return "${inst.target} = function(${inst.args.map((arg) => arg.toString()).join(", ")}) {\n ${ToJavaScriptCode(inst.body)} \n}\n";
+  }
+
+  @override
+  String visitBinaryInstruction(BinaryInstruction inst) {
+    return "";
+  }
+
+  @override
+  Object visitBranchInstruction(BranchInstruction inst) {
+    return "";
+  }
+
+  @override
+  Object visitCallInstruction(CallInstruction inst) {
+    return "";
+  }
+
+  @override
+  Object visitEmptyInstruction(EmptyInstruction inst) {
+    return "";
+  }
+
+  @override
+  Object visitMapInstruction(MapInstruction inst) {
+    return "";
+  }
+
+  @override
+  Object visitOpCode(OpCode op) {
+    return "";
+  }
+
+  @override
+  Object visitReduceInstruction(ReduceInstruction inst) {
+    return "";
+  }
+
+  @override
+  Object visitReturnInstruction(ReturnInstruction inst) {
+    return "";
+  }
+
+  @override
+  Object visitUnaryInstruction(UnaryInstruction inst) {
+    return "";
+  }
+
+  @override
+  Object visitValue(Value val) {
+    return "";
+  }
+}
+
 class JavascriptInstructionVisitor implements InstructionVisitor {
   @override
   String visitBinaryInstruction(BinaryInstruction inst) {
@@ -89,8 +147,10 @@ class JavascriptInstructionVisitor implements InstructionVisitor {
 }
 
 String ToJavaScriptCode(List<Instruction> insts) {
+  JavascriptFunctionInstructionVisitor funcVisitor = new JavascriptFunctionInstructionVisitor();
   JavascriptInstructionVisitor visitor = new JavascriptInstructionVisitor();
-  String res = insts.map((inst) => inst.accept(visitor)).join(";\n") + ";";
+  String res = insts.map((inst) => inst.accept(funcVisitor)).join("") +
+      insts.map((inst) => inst.accept(visitor)).join(";\n") + ";";
   return res;
 }
 

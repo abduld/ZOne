@@ -11,10 +11,11 @@ void RunTests() {
   
   String testCode = """
       Let k :: Integer = 2 + 32;
-      Let k :: Integer = (x :: Integer) :: Integer => x + 1;
+      Let k :: Integer = (x :: Integer) :: Integer => return(x + 1);
       //((x :: Integer) :: Integer => x + 1) :@ [1,2,3,4];
     """;
   ProgramNode prog = Parse(testCode);
   List<Instruction> insts = Lower(prog);
-  print(ToJavaScriptCode(insts));
+  List<Instruction> minsts = LiftFunctionPass(insts);
+  print(ToJavaScriptCode(minsts));
 }
