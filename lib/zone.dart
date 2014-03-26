@@ -14,7 +14,12 @@ void RunTests() {
       Let k :: Integer = (x :: Integer) :: Integer => Return(x + 1);
       ((x :: Integer) :: Integer => Return(x + 1)) :@ [1,2,3,4];
     """;
-  ProgramNode prog = Parse(testCode);
+  
+  String histogram = """
+      Let hist :: []Integer = 0;
+      Map(((x :: Integer) :: Void => x), img);
+    """;
+  ProgramNode prog = Parse(histogram);
   List<Instruction> insts = Lower(prog);
   List<Instruction> minsts = LiftFunctionPass(insts);
   print(ToJavaScriptCode(minsts));

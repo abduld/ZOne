@@ -117,9 +117,26 @@ class IdentifierNode extends AtomNode<String> {
 }
 
 class SubTypeNode extends ASTNode {
-  String type;
+  List<Object> type;
   SubTypeNode(this.type) : super("Type");
-  String toString() => "<: $type";
+  String get typeQual {
+    var k = new List<Object>.from(type, growable: true);
+    String res = " ";
+    k = k[0];
+    while (k is List) {
+      res += "[]";
+      k = k[0];
+    }
+    return res;
+  }
+  String get typeName {
+    var k = new List<Object>.from(type, growable: true);
+    do {
+      k = k[0];
+    } while(k is List);
+    return k;
+  }
+  String toString() => "<:$typeQual$typeName";
 
   Object accept(ASTNodeVisitor visitor) {
     return visitor.visitTypeNode(this);
@@ -128,11 +145,13 @@ class SubTypeNode extends ASTNode {
   List<Object> visitChildren(ASTNodeVisitor visitor) => [];
 }
 
+
 class TypeNode extends SubTypeNode {
-  TypeNode(String type) : super(type);
-  String toString() => ":: $type";
+  TypeNode(List<Object> type) : super(type);
+  String toString() => "::$typeQual$typeName";
   TypeValue toTypeValue() => new TypeValue(type);
 }
+
 
 class VariableDeclarationNode extends ASTNode {
   IdentifierNode id;

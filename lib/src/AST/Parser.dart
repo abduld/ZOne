@@ -45,9 +45,13 @@ class ZoneParser extends LanguageParsers {
        ^ (_, SymbolNode sym) => new CallNode("Context", [sym]);
   
   Parser<ASTNode> get typeIdentifier =>
-       symbol('::') + identifier ^ ((_, t) => new TypeNode(t))
-     | symbol('<:') + identifier ^ ((_, t) => new SubTypeNode(t));
+       symbol('::') + type() ^ ((_, t) => new TypeNode(t))
+     | symbol('<:') + type() ^ ((_, t) => new SubTypeNode(t));
 
+  type() =>
+        (char("[") + char("]") + rec(type) ^ ((_, __, t) => [t]))
+      | (identifier ^ ((t) => [t]));
+  
   Parser<ASTNode> get returnExp =>
       (
           reserved["Return"]

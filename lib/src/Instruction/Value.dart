@@ -17,15 +17,15 @@ abstract class Value<T> {
   String toString() => value.toString();
 }
 
-class SubTypeValue extends Value<List<String>> {
-  SubTypeValue(String typ) : super([typ]);
+class SubTypeValue extends Value<List<Object>> {
+  SubTypeValue(List<Object> typ) : super(typ);
   String toString() => value.join(' :: ');
   SubTypeValue.fromSubTypeNode(SubTypeNode nd) :
     super([nd.type]);
 }
 
 class TypeValue extends SubTypeValue {
-  TypeValue(type) : super(type);
+  TypeValue(List<Object> type) : super(type);
   TypeValue.fromTypeNode(TypeNode nd) :
     super(nd.type);
 }
@@ -110,7 +110,7 @@ class SystemType {
   static Map<String, TypeValue> SystemTypes = {};
   
   factory SystemType(String sym) {
-    TypeValue s = new TypeValue(sym);
+    TypeValue s = new TypeValue([sym]);
     ValueFactory vf = new ValueFactory(s);
     final v = new SystemType._internal(vf.value);
     SystemTypes[sym] = v;
@@ -172,5 +172,5 @@ bool isReturn(Value val) => val is SymbolValue && val.value == "Return";
 
 final List<String> _SystemTypes = [
   "UnknownType", "IntegerType", "RealType", "BooleanType", "StringType",
-  "ListType", "SymbolType"
+  "SymbolType"
 ];
