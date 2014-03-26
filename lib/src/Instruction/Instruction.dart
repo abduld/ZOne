@@ -11,18 +11,19 @@ part './Value.dart';
 part './LiftFunction.dart';
 
 
-abstract class InstructionVisitor {
-  Object visitOpCode(OpCode op);
-  Object visitValue(Value val);
-  Object visitEmptyInstruction(EmptyInstruction inst);
-  Object visitUnaryInstruction(UnaryInstruction inst);
-  Object visitBinaryInstruction(BinaryInstruction inst);
-  Object visitCallInstruction(CallInstruction inst);
-  Object visitLambdaInstruction(LambdaInstruction inst);
-  Object visitReturnInstruction(ReturnInstruction inst);
-  Object visitBranchInstruction(BranchInstruction inst);
-  Object visitMapInstruction(MapInstruction inst);
-  Object visitReduceInstruction(ReduceInstruction inst);
+class InstructionVisitor {
+  Object visitOpCode(OpCode op) => visitDefault(op);
+  Object visitValue(Value val) => visitDefault(val);
+  Object visitEmptyInstruction(EmptyInstruction inst) => visitDefault(inst);
+  Object visitUnaryInstruction(UnaryInstruction inst) => visitDefault(inst);
+  Object visitBinaryInstruction(BinaryInstruction inst) => visitDefault(inst);
+  Object visitCallInstruction(CallInstruction inst) => visitDefault(inst);
+  Object visitLambdaInstruction(LambdaInstruction inst) => visitDefault(inst);
+  Object visitReturnInstruction(ReturnInstruction inst) => visitDefault(inst);
+  Object visitBranchInstruction(BranchInstruction inst) => visitDefault(inst);
+  Object visitMapInstruction(MapInstruction inst) => visitDefault(inst);
+  Object visitReduceInstruction(ReduceInstruction inst) => visitDefault(inst);
+  Object visitDefault(Object obj) => obj;
 }
 
 

@@ -1,7 +1,7 @@
 
 part of zone.backend;
 
-class JavascriptFunctionInstructionVisitor implements InstructionVisitor {
+class JavascriptFunctionInstructionVisitor extends InstructionVisitor {
   @override
   String visitLambdaInstruction(LambdaInstruction inst) {
     // TODO: implement visitLambdaInstruction
@@ -12,57 +12,10 @@ class JavascriptFunctionInstructionVisitor implements InstructionVisitor {
   }
 
   @override
-  String visitBinaryInstruction(BinaryInstruction inst) {
-    return "";
-  }
-
-  @override
-  Object visitBranchInstruction(BranchInstruction inst) {
-    return "";
-  }
-
-  @override
-  Object visitCallInstruction(CallInstruction inst) {
-    return "";
-  }
-
-  @override
-  Object visitEmptyInstruction(EmptyInstruction inst) {
-    return "";
-  }
-
-  @override
-  Object visitMapInstruction(MapInstruction inst) {
-    return "";
-  }
-
-  @override
-  Object visitOpCode(OpCode op) {
-    return "";
-  }
-
-  @override
-  Object visitReduceInstruction(ReduceInstruction inst) {
-    return "";
-  }
-
-  @override
-  Object visitReturnInstruction(ReturnInstruction inst) {
-    return "";
-  }
-
-  @override
-  Object visitUnaryInstruction(UnaryInstruction inst) {
-    return "";
-  }
-
-  @override
-  Object visitValue(Value val) {
-    return "";
-  }
+  String visitDefault(Object obj) => "";
 }
 
-class JavascriptInstructionVisitor implements InstructionVisitor {
+class JavascriptInstructionVisitor extends InstructionVisitor {
   @override
   String visitBinaryInstruction(BinaryInstruction inst) {
     // TODO: implement visitBinaryInstruction

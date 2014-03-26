@@ -19,7 +19,7 @@ void RunTests() {
       Let hist :: []Integer = 0;
       Map(((x :: Integer) :: Void => x), img);
     """;
-  ProgramNode prog = Parse(histogram);
+  ProgramNode prog = Parse(testCode);
   List<Instruction> insts = Lower(prog);
   List<Instruction> minsts = LiftFunctionPass(insts);
   print(ToJavaScriptCode(minsts));

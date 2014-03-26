@@ -1,7 +1,7 @@
 
 part of zone.backend;
 
-class CInstructionVisitor implements InstructionVisitor {
+class CInstructionVisitor extends InstructionVisitor {
   @override
   String visitBinaryInstruction(BinaryInstruction inst) {
     // TODO: implement visitBinaryInstruction

@@ -1,7 +1,7 @@
 part of zone.instruction;
 
 
-class LiftFunctionVisitor implements InstructionVisitor {
+class LiftFunctionVisitor extends InstructionVisitor {
   Map<Value, List<Value>> extaArgs = {};
 
   @override
@@ -34,33 +34,9 @@ class LiftFunctionVisitor implements InstructionVisitor {
     return inst; 
   }
   
-  
   @override
-  Instruction visitBinaryInstruction(BinaryInstruction inst) => inst;
+  Object visitDefault(Object obj) => obj;
 
-  @override
-  Instruction visitBranchInstruction(BranchInstruction inst) => inst;
-
-  @override
-  Instruction visitEmptyInstruction(EmptyInstruction inst) => inst;
-
-  @override
-  Instruction visitMapInstruction(MapInstruction inst) => inst;
-
-  @override
-  OpCode visitOpCode(OpCode op) => op;
-
-  @override
-  Instruction visitReduceInstruction(ReduceInstruction inst) => inst;
-
-  @override
-  Instruction visitReturnInstruction(ReturnInstruction inst) => inst;
-
-  @override
-  Instruction visitUnaryInstruction(UnaryInstruction inst) => inst;
-
-  @override
-  Value visitValue(Value val) => val;
 }
 
 
