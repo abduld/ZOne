@@ -49,9 +49,10 @@ class PeepholeOptimizeVisitor extends InstructionVisitor {
   }
 }
 
-
-List<Instruction> PeepholeOptimize(List<Instruction> insts) {
-  PeepholeOptimizeVisitor vst = new PeepholeOptimizeVisitor();
-  List<Instruction> res = insts.map((nd) => nd.accept(vst)).where((e) => e != null).toList(growable: false);
-  return res;
+class PeepholeOptimizePass implements InstructionPass {
+  List<Instruction> run(List<Instruction> insts) {
+    PeepholeOptimizeVisitor vst = new PeepholeOptimizeVisitor();
+    List<Instruction> res = insts.map((nd) => nd.accept(vst)).where((e) => e != null).toList(growable: false);
+    return res;
+  }
 }

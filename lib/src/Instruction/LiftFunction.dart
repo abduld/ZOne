@@ -40,8 +40,10 @@ class LiftFunctionVisitor extends InstructionVisitor {
 }
 
 
-List<Instruction> LiftFunctionPass(List<Instruction> insts) {
-  LiftFunctionVisitor vst = new LiftFunctionVisitor();
-  List<Instruction> res = insts.map((nd) => nd.accept(vst)).toList(growable: false);
-  return res;
+class LiftFunctionPass implements InstructionPass {
+  List<Instruction> run(List<Instruction> insts) {
+    LiftFunctionVisitor vst = new LiftFunctionVisitor();
+    List<Instruction> res = insts.map((nd) => nd.accept(vst)).toList(growable: false);
+    return res;
+  }
 }

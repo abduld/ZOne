@@ -135,4 +135,6 @@ class ReduceInstruction extends CallInstruction {
       visitor.visitReduceInstruction(this);
 }
 
-
+abstract class InstructionPass {
+  List<Instruction> run(List<Instruction> insts);
+}

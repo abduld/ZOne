@@ -25,6 +25,7 @@ void RunTests() {
     """;
   ProgramNode prog = Parse(testCode);
   List<Instruction> insts = Lower(prog);
-  List<Instruction> minsts = PeepholeOptimize(LiftFunctionPass(insts));
+  List<InstructionPass> passes = [new LiftFunctionPass(), new PeepholeOptimizePass()];
+  List<Instruction> minsts = passes.fold(insts, (List<Instruction> prev, InstructionPass pass) => pass.run(prev));
   print(ToJavaScriptCode(minsts));
 }
