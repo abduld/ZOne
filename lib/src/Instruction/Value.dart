@@ -43,42 +43,42 @@ class IdentifierValue extends Value<String> {
 
 class SymbolValue extends Value<String> {
   SymbolValue(String name) : super(name);
-  TypeValue get type => (new SystemType("SymbolType")).value;
+  TypeValue get type => (new SystemType("Symbol")).value;
 }
 
 class StringValue extends Value<String> {
   StringValue(String name) : super(name);
-  TypeValue get type => (new SystemType("StringType")).value;
+  TypeValue get type => (new SystemType("String")).value;
 }
 
 class ListValue extends Value<List<Value>> {
   ListValue(List<Value> lst) : super(lst);
-  TypeValue get type => (new SystemType("ListType")).value;
+  TypeValue get type => (new SystemType("List")).value;
 }
 
 class IntegerValue extends Value<int> {
   IntegerValue(int ii) : super(ii);
-  TypeValue get type => (new SystemType("IntegerType")).value;
+  TypeValue get type => (new SystemType("Integer")).value;
 }
 
 class RealValue extends Value<double> {
   RealValue(double dd) : super(dd);
-  TypeValue get type => (new SystemType("RealType")).value;
+  TypeValue get type => (new SystemType("Real")).value;
 }
 
 class TrueValue extends Value<bool> {
   TrueValue() : super(true);
-  TypeValue get type => (new SystemType("BooleanType")).value;
+  TypeValue get type => (new SystemType("Boolean")).value;
 }
 
 class FalseValue extends Value<bool> {
   FalseValue() : super(false);
-  TypeValue get type => (new SystemType("BooleanType")).value;
+  TypeValue get type => (new SystemType("Boolean")).value;
 }
 
 class UnknownValue extends Value<String> {
   UnknownValue(String s) : super(s);
-  TypeValue get type => (new SystemType("UnknownType")).value;
+  TypeValue get type => (new SystemType("Unknown")).value;
 }
 
 
@@ -173,6 +173,6 @@ bool isMap(Value val) => val is SymbolValue && val.value == "Map";
 bool isReduce(Value val) => val is SymbolValue && val.value == "Reduce";
 
 final List<String> _SystemTypes = [
-  "UnknownType", "IntegerType", "RealType", "BooleanType", "StringType",
-  "SymbolType"
+  "Unknown", "Integer", "Real", "Boolean", "String",
+  "Symbol"
 ];

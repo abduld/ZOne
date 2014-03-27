@@ -4,7 +4,6 @@ part of zone.backend;
 class JavascriptFunctionInstructionVisitor extends InstructionVisitor {
   @override
   String visitLambdaInstruction(LambdaInstruction inst) {
-    // TODO: implement visitLambdaInstruction
     String res = "var ${inst.target} = function(${inst.args.map((arg) => arg.toString()).join(", ")}) {\n" +
         "${iToJavaScriptCode(inst.body)}" +
         "\n}\n";

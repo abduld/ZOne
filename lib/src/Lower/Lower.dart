@@ -55,6 +55,18 @@ class _Lower implements ASTNodeVisitor {
     return new UnknownValue(atm.toString());
   }
 
+  TypeValue upType(List<Value> args) {
+    TypeValue ret = new TypeValue(["Void"]);
+    args.forEach((arg) {
+      if (arg.type.value[0] == "Real") {
+        return new TypeValue(["Real"]);
+      } else if (arg.type.value[0] == "Integer") {
+        ret = new TypeValue(["Integer"]);
+      }
+    });
+    return ret;
+  }
+  
   Object visitCallNode(CallNode call) {
     Instruction inst;
     String name = call.name;
@@ -66,9 +78,10 @@ class _Lower implements ASTNodeVisitor {
     } else {
       f = new SymbolValue(name);
     }
-    IdentifierValue lhs = new IdentifierValue(genSym(name));
     
     List<Value> args = call.args.map((arg) => arg.accept(this)).toList();
+    TypeValue lhsType = upType(args); // TODO: this is wrong, but a good heuristic for now
+    IdentifierValue lhs = new IdentifierValue(genSym(name), lhsType);
 
     if (isReturn(f)) {
       inst = new CallInstruction(null, f, args);
@@ -90,9 +103,9 @@ class _Lower implements ASTNodeVisitor {
   Object visitFunctionDeclarationNode(FunctionDeclarationNode fundecl) {
     Instruction inst;
     List<Instruction> body;
-    IdentifierValue lhs = new IdentifierValue(genSym("lambda"));
+    IdentifierValue lhs = new IdentifierValue(genSym("lambda"), new TypeValue.fromTypeNode(fundecl.returnType));
     _Lower vst = new _Lower();
-
+    
     List<Value> args = fundecl.args.map((arg) => arg.accept(this)).toList();
     fundecl.visitChildren(vst);
     body = vst.instructions;
