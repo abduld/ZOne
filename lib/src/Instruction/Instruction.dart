@@ -20,10 +20,7 @@ class InstructionVisitor {
   Object visitBinaryInstruction(BinaryInstruction inst) => visitDefault(inst);
   Object visitCallInstruction(CallInstruction inst) => visitDefault(inst);
   Object visitLambdaInstruction(LambdaInstruction inst) => visitDefault(inst);
-  Object visitReturnInstruction(ReturnInstruction inst) => visitDefault(inst);
   Object visitBranchInstruction(BranchInstruction inst) => visitDefault(inst);
-  Object visitMapInstruction(MapInstruction inst) => visitDefault(inst);
-  Object visitReduceInstruction(ReduceInstruction inst) => visitDefault(inst);
   Object visitDefault(Object obj) => obj;
 }
 
@@ -109,30 +106,6 @@ class LambdaInstruction extends Instruction {
 
   String toString() =>
     '$target = lambda(${args.join(", ")}) => ($body)';
-}
-
-class ReturnInstruction extends Instruction {
-  ReturnInstruction(Value arg) :
-    super(ReturnOp, null, [arg]);
-
-  Object accept(InstructionVisitor visitor) =>
-      visitor.visitReturnInstruction(this);
-}
-
-class MapInstruction extends CallInstruction {
-  MapInstruction(Value lhs, List<Value> args) :
-    super((new SystemSymbol("MapSymbol")).value, lhs, args);
-
-  Object accept(InstructionVisitor visitor) =>
-      visitor.visitMapInstruction(this);
-}
-
-class ReduceInstruction extends CallInstruction {
-  ReduceInstruction(Value lhs, List<Value> args) :
-    super((new SystemSymbol("ReduceSymbol")).value, lhs, args);
-
-  Object accept(InstructionVisitor visitor) =>
-      visitor.visitReduceInstruction(this);
 }
 
 abstract class InstructionPass {

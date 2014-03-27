@@ -33,26 +33,8 @@ class CInstructionVisitor extends InstructionVisitor {
   }
 
   @override
-  String visitMapInstruction(MapInstruction inst) {
-    // TODO: implement visitMapInstruction
-    return "todo";
-  }
-
-  @override
   String visitOpCode(OpCode op) {
     // TODO: implement visitOpCode
-    return "todo";
-  }
-
-  @override
-  String visitReduceInstruction(ReduceInstruction inst) {
-    // TODO: implement visitReduceInstruction
-    return "todo";
-  }
-
-  @override
-  String visitReturnInstruction(ReturnInstruction inst) {
-    // TODO: implement visitReturnInstruction
     return "todo";
   }
 

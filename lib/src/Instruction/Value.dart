@@ -169,6 +169,8 @@ final List<String> _SystemSymbols = [
 ];
 
 bool isReturn(Value val) => val is SymbolValue && val.value == "Return";
+bool isMap(Value val) => val is SymbolValue && val.value == "Map";
+bool isReduce(Value val) => val is SymbolValue && val.value == "Reduce";
 
 final List<String> _SystemTypes = [
   "UnknownType", "IntegerType", "RealType", "BooleanType", "StringType",
