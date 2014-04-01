@@ -8,6 +8,7 @@
 
 #define Z_CONFIG_DEBUG True
 #define Z_CONFIG_EAGER_COPY True
+#define Z_CONFIG_MAX_CHUNKS 4
 
 typedef bool zBool_t;
 typedef int zInteger_t;

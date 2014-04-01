@@ -65,7 +65,11 @@ void zFile_open(zFile_t file) {
  
     return ;
 }
- 
+
+size_t zFile_readChunk(zFile_t file, void * chunk, size_t sz, uv_fs_cb cb) {
+    // XXX TODO
+}
+
 void zFile_close(zFile_t file) {
     zState_t ctx;
     uv_loop_t * loop;
@@ -113,7 +117,7 @@ void zFile_write(zFile_t file, const char * text) {
  
     textLength = strlen(text);
  
-    uv_fs_write(uv_default_loop(), &zFile_getWriteRequest(file), zFile_getFileHandle(file), (char *) text, textLength, zFile_getOffset(file), NULL);
+    uv_fs_write(loop, &zFile_getWriteRequest(file), zFile_getFileHandle(file), (char *) text, textLength, zFile_getOffset(file), NULL);
      
     zState_mutexed(ctx, {
         zLog(zState_getLogger(ctx), ERROR, "Writing to file.");

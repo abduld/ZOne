@@ -7,17 +7,20 @@ struct st_zMemory_t {
   zMemoryType_t typ;
   void * hostMemory;
   void * deviceMemory;
+  zMemoryGroup_t * group;
 };
 
 #define zMemory_getSize(mem) ((mem)->sz)
 #define zMemory_getType(mem) ((mem)->typ)
 #define zMemory_getHostMemory(mem) ((mem)->hostMemory)
 #define zMemory_getDeviceMemory(mem) ((mem)->deviceMemory)
+#define zMemory_getMemoryGroup(mem) ((mem)->group)
 
 #define zMemory_setSize(mem, val) (zMemory_getSize(mem) = val)
 #define zMemory_setType(mem, val) (zMemory_getType(mem) = val)
 #define zMemory_setHostMemory(mem, val) (zMemory_getHostMemory(mem) = val)
 #define zMemory_setDeviceMemory(mem, val) (zMemory_getDeviceMemory(mem) = val)
+#define zMemory_setMemoryGroup(mem, val) (zMemory_getMemoryGroup(mem) = val)
 
 zMemory_t zMemory_new(zState_t st, size_t sz);
 zMemory_t zMemory_new(zState_t st, void * data, size_t sz);
