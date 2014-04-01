@@ -13,6 +13,9 @@
 #define zExit()  do { zAssert(0); exit(1); } while(0)
 #define zPrint(msg) do { std::cout << msg << std::endl; } while (0)
 
+#define zMemoryAddress(mem) (mem - sizeof(size_t)
+#define zMemorySize(mem) ((size_t) zMemoryAddress(mem)))[0]
+
 #ifdef Z_CONFIG_DEBUG
 #define zAssert(cond) assert(cond)
 #define zAssertMessage(msg, cond)                                             \
@@ -44,7 +47,7 @@ static inline void *xMalloc(size_t sz) {
 
 static inline void xFree(void *mem) {
   if (mem != NULL) {
-    free(mem - sizeof(size_t));
+    free(zMemoryAddress(mem));
   }
   return;
 }
@@ -80,7 +83,8 @@ static inline void *xcuMalloc(size_t sz) {
 
 static inline void xcuFree(void *mem) {
   if (mem != NULL) {
-    free(mem - sizeof(size_t));
+    cudaError_t err = cudaFreeHost(zMemoryAddress(mem));
+    checkSuccess(err);
   }
   return;
 }
@@ -95,7 +99,7 @@ static inline void *xcuRealloc(void *mem, size_t sz) {
     void *res = xcuMalloc(sz);
     zAssert(res != NULL);
     if (res != NULL) {
-      cudaError_t err = cudaMemcpy(res, mem, cudaMemcpyHostToHost);
+      cudaError_t err = cudaMemcpy(res, mem, zMemorySize(mem), cudaMemcpyHostToHost);
       checkSuccess(err);
     }
     xcuFree(mem);
