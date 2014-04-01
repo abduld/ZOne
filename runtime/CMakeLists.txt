@@ -47,7 +47,7 @@ file( GLOB  zsrc *.cpp *.c *.cu)
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CUDA_INCLUDE_DIRS})
 
-cuda_add_library((${name} ${zhdr} ${zsrc})
+cuda_add_library(${name} ${zhdr} ${zsrc})
 target_link_libraries(${name} uv)
 
 if(UNIX)

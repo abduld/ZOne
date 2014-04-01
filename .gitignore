@@ -1,5 +1,6 @@
 // Don’t commit the following files and directories created by pub and dart2js
 packages/
+bin/packages
 *.js_
 *.js.deps
 *.js.map
@@ -21,3 +22,10 @@ Thumbs.db
 ehthumbs.db
 
 *~
+
+# CMake
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+install_manifest.txt
