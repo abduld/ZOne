@@ -2,6 +2,9 @@
 #ifndef __ZCUDA_H__
 #define __ZCUDA_H__
 
+#include <cuda.h>
+#include <cuda_runtime.h>
+
 #define zCUDACheck(stmt) do {                              \
         cudaError_t err = stmt;                            \
         if (err != cudaSuccess) {                          \
