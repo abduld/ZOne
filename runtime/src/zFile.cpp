@@ -1,127 +1,127 @@
-#include    <wb.h>
+#include    <z.h>
  
-wbFile_t wbFile_new(const char * path, int flags) {
-    wbFile_t file;
+zFile_t zFile_new(const char * path, int flags) {
+    zFile_t file;
      
     if (path == NULL) {
         return NULL;
     }
  
-    file = wbNew(struct st_wbFile_t);
+    file = zNew(struct st_zFile_t);
  
-    wbFile_setPath(file, wbString_duplicate(path));
-    wbFile_setContext(file, NULL);
-    wbFile_setFileHandle(file, -1);
-    wbFile_setFlags(file, flags);
-    wbFile_setOpenedQ(file, wbFalse);
+    zFile_setPath(file, zString_duplicate(path));
+    zFile_setState(file, NULL);
+    zFile_setFileHandle(file, -1);
+    zFile_setFlags(file, flags);
+    zFile_setOpenedQ(file, zFalse);
  
-    wbFile_setOffset(file, 0);
+    zFile_setOffset(file, 0);
  
     return file;
 }
  
-void wbFile_delete(wbFile_t file) {
+void zFile_delete(zFile_t file) {
     if (file != NULL) {
-        if (wbFile_getPath(file)) {
-            wbDelete(wbFile_getPath(file));
+        if (zFile_getPath(file)) {
+            zDelete(zFile_getPath(file));
         }
-        if (wbFile_getFileHandle(file) != -1) {
-            wbFile_close(file);
+        if (zFile_getFileHandle(file) != -1) {
+            zFile_close(file);
         }
-        wbDelete(file);
+        zDelete(file);
     }
     return ;
 }
  
-void wbFile_open(wbFile_t file) {
-    wbContext_t ctx;
+void zFile_open(zFile_t file) {
+    zState_t ctx;
     uv_loop_t * loop;
      
-    if (wbFile_getOpenedQ(file) == wbTrue) {
+    if (zFile_getOpenedQ(file) == zTrue) {
         return ;
     }
      
-    ctx = wbFile_getContext(file);
-    wbAssert(ctx != NULL);
+    ctx = zFile_getState(file);
+    zAssert(ctx != NULL);
  
-    loop = wbContext_getLoop(ctx);
+    loop = zState_getLoop(ctx);
  
-    if (wbFile_existsQ(wbFile_getPath(file))) {
+    if (zFile_existsQ(zFile_getPath(file))) {
         uv_fs_t req;
-        uv_fs_unlink(loop, &req, wbFile_getPath(file), NULL);
+        uv_fs_unlink(loop, &req, zFile_getPath(file), NULL);
         uv_fs_req_cleanup(&req);
     }
  
-    uv_fs_open(loop, &wbFile_getOpenRequest(file), wbFile_getPath(file), wbFile_getFlags(file),  S_IREAD | S_IWRITE, NULL);
+    uv_fs_open(loop, &zFile_getOpenRequest(file), zFile_getPath(file), zFile_getFlags(file),  S_IREAD | S_IWRITE, NULL);
      
-    uv_fs_req_cleanup(&wbFile_getOpenRequest(file));
+    uv_fs_req_cleanup(&zFile_getOpenRequest(file));
      
-    wbFile_setFileHandle(file, (uv_file) wbFile_getOpenRequest(file).result);
-    wbFile_setOpenedQ(file, wbTrue);
+    zFile_setFileHandle(file, (uv_file) zFile_getOpenRequest(file).result);
+    zFile_setOpenedQ(file, zTrue);
  
-    wbContext_mutexed(ctx, {
-        wbLog(wbContext_getLogger(ctx), ERROR, "Opening file.");
+    zState_mutexed(ctx, {
+        zLog(zState_getLogger(ctx), ERROR, "Opening file.");
     });
  
     return ;
 }
  
-void wbFile_close(wbFile_t file) {
-    wbContext_t ctx;
+void zFile_close(zFile_t file) {
+    zState_t ctx;
     uv_loop_t * loop;
     uv_fs_t closeRequest;
  
-    if (wbFile_getOpenedQ(file) == wbFalse) {
+    if (zFile_getOpenedQ(file) == zFalse) {
         return ;
     }
      
-    ctx = wbFile_getContext(file);
-    wbAssert(ctx != NULL);
+    ctx = zFile_getState(file);
+    zAssert(ctx != NULL);
  
-    loop = wbContext_getLoop(ctx);
+    loop = zState_getLoop(ctx);
  
-    uv_fs_close(loop, &closeRequest, wbFile_getFileHandle(file), NULL);
+    uv_fs_close(loop, &closeRequest, zFile_getFileHandle(file), NULL);
      
-    wbContext_mutexed(ctx, {
-        wbLog(wbContext_getLogger(ctx), ERROR, "Closing file.");
+    zState_mutexed(ctx, {
+        zLog(zState_getLogger(ctx), ERROR, "Closing file.");
     });
  
-    wbFile_setFileHandle(file, -1);
+    zFile_setFileHandle(file, -1);
  
     return ;
 }
  
-void wbFile_write(wbFile_t file, const char * text) {
-    wbContext_t ctx;
+void zFile_write(zFile_t file, const char * text) {
+    zState_t ctx;
     uv_loop_t * loop;
     size_t textLength;
      
-    if (wbFile_getOpenedQ(file) == wbFalse) {
-        wbFile_open(file);
+    if (zFile_getOpenedQ(file) == zFalse) {
+        zFile_open(file);
     }
  
-    if (!wbFile_existsQ(wbFile_getPath(file))) {
+    if (!zFile_existsQ(zFile_getPath(file))) {
         return ;
     }
  
-    ctx = wbFile_getContext(file);
-    wbAssert(ctx != NULL);
+    ctx = zFile_getState(file);
+    zAssert(ctx != NULL);
  
-    loop = wbContext_getLoop(ctx);
+    loop = zState_getLoop(ctx);
      
-    uv_fs_req_cleanup(&wbFile_getOpenRequest(file));
+    uv_fs_req_cleanup(&zFile_getOpenRequest(file));
  
     textLength = strlen(text);
  
-    uv_fs_write(uv_default_loop(), &wbFile_getWriteRequest(file), wbFile_getFileHandle(file), (char *) text, textLength, wbFile_getOffset(file), NULL);
+    uv_fs_write(uv_default_loop(), &zFile_getWriteRequest(file), zFile_getFileHandle(file), (char *) text, textLength, zFile_getOffset(file), NULL);
      
-    wbContext_mutexed(ctx, {
-        wbLog(wbContext_getLogger(ctx), ERROR, "Writing to file.");
+    zState_mutexed(ctx, {
+        zLog(zState_getLogger(ctx), ERROR, "Writing to file.");
     });
      
-    wbFile_getOffset(file) += textLength;
+    zFile_getOffset(file) += textLength;
  
-    uv_fs_req_cleanup(&wbFile_getWriteRequest(file));
+    uv_fs_req_cleanup(&zFile_getWriteRequest(file));
  
     return ;
 }

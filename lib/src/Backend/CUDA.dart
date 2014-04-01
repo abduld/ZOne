@@ -57,3 +57,10 @@ class CUDALaunch {
   }
 }
 
+class CUDAAtomic {
+  
+}
+
+class CUDAAtomicAdd extends CUDAAtomic {
+  
+}
