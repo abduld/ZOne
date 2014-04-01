@@ -1,5 +1,9 @@
 
 library zone.analysis;
 
-part './ControlFlowDiagram.dart';
+import '../Instruction/Instruction.dart';
+
+
+part "./ControlFlowDiagram.dart";
+part "./DefUse.dart";
 

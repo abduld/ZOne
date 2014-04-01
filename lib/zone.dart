@@ -4,6 +4,7 @@ library zone;
 import "src/AST/AST.dart";
 import "src/Instruction/Instruction.dart";
 import "src/Lower/Lower.dart";
+import "src/Analysis/Analysis.dart";
 import "src/Backend/Backend.dart";
 
 void RunTests() {
