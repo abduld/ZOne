@@ -5,6 +5,8 @@ part of zone.analysis;
 class DefVisitor extends InstructionVisitor {
   Map<Instruction, Value> defs = {};
 
+  DefVisitor(insts) : super(insts);
+  
   @override
   Object visitDefault(Object obj) {
     if (obj is Instruction && obj.target != null) {
@@ -18,6 +20,8 @@ class DefVisitor extends InstructionVisitor {
 class UseVisitor extends InstructionVisitor {
   Map<Instruction, List<Value>> uses = {};
 
+  UseVisitor(insts) : super(insts);
+  
   @override
   Object visitDefault(Object obj) {
     if (obj is Instruction && obj.args != null) {
@@ -35,19 +39,17 @@ class UseVisitor extends InstructionVisitor {
 class DefPass implements InstructionPass {
   Map<Instruction, Value> defs;
   List<Instruction> run(List<Instruction> insts) {
-    DefVisitor vst = new DefVisitor();
-    List<Instruction> res = insts.map((nd) => nd.accept(vst)).toList(growable: false);
+    DefVisitor vst = new DefVisitor(insts);
     defs = vst.defs;
-    return res;
+    return vst.out;
   }
 }
 
 class UsePass implements InstructionPass {
   Map<Instruction, List<Value>> uses;
   List<Instruction> run(List<Instruction> insts) {
-    UseVisitor vst = new UseVisitor();
-    List<Instruction> res = insts.map((nd) => nd.accept(vst)).toList(growable: false);
+    UseVisitor vst = new UseVisitor(insts);
     uses = vst.uses;
-    return res;
+    return vst.out;
   }
 }

@@ -11,6 +11,8 @@ String toCType(TypeValue t) => typeMap[t.toString()];
 String cType(Value v) => v == null ? "void" : toCType(v.type);
 
 class CFunctionInstructionVisitor extends InstructionVisitor {
+  CFunctionInstructionVisitor(insts) : super(insts);
+  
   @override
   String visitLambdaInstruction(LambdaInstruction inst) {
     String returnType = cType(inst.target);
@@ -26,6 +28,8 @@ class CFunctionInstructionVisitor extends InstructionVisitor {
 }
 
 class CInstructionVisitor extends InstructionVisitor {
+  CInstructionVisitor(insts) : super(insts);
+  
   @override
   String visitBinaryInstruction(BinaryInstruction inst) {
     // TODO: implement visitBinaryInstruction
@@ -122,10 +126,10 @@ class CInstructionVisitor extends InstructionVisitor {
 }
 
 String iToCCode(List<Instruction> insts) {
-  CFunctionInstructionVisitor funcVisitor = new CFunctionInstructionVisitor();
-  CInstructionVisitor visitor = new CInstructionVisitor();
-  String res = insts.map((inst) => inst.accept(funcVisitor)).join("") +
-      insts.map((inst) => inst.accept(visitor)).where((String line) => line.trim() != "").join(";\n") + ";";
+  CFunctionInstructionVisitor funcVisitor = new CFunctionInstructionVisitor(insts);
+  CInstructionVisitor visitor = new CInstructionVisitor(insts);
+  String res = funcVisitor.out.join("") +
+      visitor.out.where((String line) => line.trim() != "").join(";\n") + ";";
   return res;
 }
 

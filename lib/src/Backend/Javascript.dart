@@ -2,6 +2,8 @@
 part of zone.backend;
 
 class JavascriptFunctionInstructionVisitor extends InstructionVisitor {
+  JavascriptFunctionInstructionVisitor(insts) : super(insts);
+  
   @override
   String visitLambdaInstruction(LambdaInstruction inst) {
     String res = "var ${inst.target} = function(${inst.args.map((arg) => arg.toString()).join(", ")}) {\n" +
@@ -15,6 +17,8 @@ class JavascriptFunctionInstructionVisitor extends InstructionVisitor {
 }
 
 class JavascriptInstructionVisitor extends InstructionVisitor {
+  JavascriptInstructionVisitor(insts) : super(insts);
+  
   @override
   String visitBinaryInstruction(BinaryInstruction inst) {
     // TODO: implement visitBinaryInstruction
@@ -108,10 +112,10 @@ class JavascriptInstructionVisitor extends InstructionVisitor {
 }
 
 String iToJavaScriptCode(List<Instruction> insts) {
-  JavascriptFunctionInstructionVisitor funcVisitor = new JavascriptFunctionInstructionVisitor();
-  JavascriptInstructionVisitor visitor = new JavascriptInstructionVisitor();
-  String res = insts.map((inst) => inst.accept(funcVisitor)).join("") +
-      insts.map((inst) => inst.accept(visitor)).where((String line) => line.trim() != "").join(";\n") + ";";
+  JavascriptFunctionInstructionVisitor funcVisitor = new JavascriptFunctionInstructionVisitor(insts);
+  JavascriptInstructionVisitor visitor = new JavascriptInstructionVisitor(insts);
+  String res = funcVisitor.out.join("") +
+      visitor.out.where((String line) => line.trim() != "").join(";\n") + ";";
   return res;
 }
 

@@ -3,16 +3,25 @@ library zone.instruction;
 
 import '../Utilities/Utilities.dart';
 import '../AST/AST.dart';
+import "../Analysis/Analysis.dart";
 
 
 part './OpCode.dart';
 part './Value.dart';
 
 part './LiftFunction.dart';
+part './FuseFunction.dart';
 part './PeepholeOptimize.dart';
 
 
 class InstructionVisitor {
+  List<Instruction> instructions;
+  List<Object> out = [];
+  InstructionVisitor(this.instructions) {
+    depends();
+    out = instructions.map((nd) => nd.accept(this)).toList(growable: false);
+  }
+  void depends() {}
   Object visitOpCode(OpCode op) => visitDefault(op);
   Object visitValue(Value val) => visitDefault(val);
   Object visitEmptyInstruction(EmptyInstruction inst) => visitDefault(inst);
@@ -24,11 +33,14 @@ class InstructionVisitor {
   Object visitDefault(Object obj) => obj;
 }
 
+class InstructionTag {
+}
 
 abstract class Instruction {
   OpCode op;
   Value target;
   List<Value> args;
+  InstructionTag tag;
   
   Instruction(this.op, this.target, this.args);
   

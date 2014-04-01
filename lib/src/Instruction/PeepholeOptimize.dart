@@ -5,6 +5,8 @@ class PeepholeOptimizeVisitor extends InstructionVisitor {
   Object prev = null;
   Map<String, IdentifierValue> rename = {};
   
+  PeepholeOptimizeVisitor(insts) : super(insts);
+  
   @override
   Instruction visitUnaryInstruction(UnaryInstruction inst) {
     if (inst.op == LoadOp) {
@@ -51,8 +53,7 @@ class PeepholeOptimizeVisitor extends InstructionVisitor {
 
 class PeepholeOptimizePass implements InstructionPass {
   List<Instruction> run(List<Instruction> insts) {
-    PeepholeOptimizeVisitor vst = new PeepholeOptimizeVisitor();
-    List<Instruction> res = insts.map((nd) => nd.accept(vst)).where((e) => e != null).toList(growable: false);
-    return res;
+    PeepholeOptimizeVisitor vst = new PeepholeOptimizeVisitor(insts);
+    return vst.out;
   }
 }

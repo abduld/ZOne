@@ -1,7 +1,12 @@
 part of zone.instruction;
 
+class ValueTag {
+  
+}
+
 abstract class Value<T> {
   T value;
+  ValueTag tag;
   
   Value(this.value);
 

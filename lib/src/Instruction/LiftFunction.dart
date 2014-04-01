@@ -4,6 +4,8 @@ part of zone.instruction;
 class LiftFunctionVisitor extends InstructionVisitor {
   Map<Value, List<Value>> extaArgs = {};
 
+  LiftFunctionVisitor(insts) : super(insts);
+  
   @override
   Instruction visitCallInstruction(CallInstruction inst) {
     if (extaArgs.containsKey(inst.function)) {
@@ -42,8 +44,7 @@ class LiftFunctionVisitor extends InstructionVisitor {
 
 class LiftFunctionPass implements InstructionPass {
   List<Instruction> run(List<Instruction> insts) {
-    LiftFunctionVisitor vst = new LiftFunctionVisitor();
-    List<Instruction> res = insts.map((nd) => nd.accept(vst)).toList(growable: false);
-    return res;
+    LiftFunctionVisitor vst = new LiftFunctionVisitor(insts);
+    return vst.out;
   }
 }
