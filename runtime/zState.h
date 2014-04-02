@@ -11,43 +11,45 @@ typedef enum {
 } zCUDAStream_t;
 
 typedef enum {
-  zStateMutex_General = 0,
-  zStateMutex_Logger,
-  zStateMutex_Timer,
-  zStateMutex_Memory,
-  zStateMutex_Error,
-  zStateMutex_IO,
-  zStateMutex_Count
-} zStateMutex_t;
+  zStateLabel_General = 0,
+  zStateLabel_Logger,
+  zStateLabel_Timer,
+  zStateLabel_Memory,
+  zStateLabel_Error,
+  zStateLabel_IO,
+  zStateLabel_Count
+} zStateLabel_t;
 
 struct st_zState_t {
-  char cuStreamInUse[zCUDAStream_count];
+  zBool cuStreamInUse[zCUDAStream_count];
   cudaStream_t cuStreams[zCUDAStream_count];
   zMemoryGroupList_t memoryGroups;
   zFunctionInformationMap_t fInfos;
-  uv_mutex_t mutexs[zStateMutex_Count];
+  uv_mutex_t mutexs[zStateLabel_Count];
+  uv_thread_t threads[zStateLabel_Count];
   zLogger_t logger;
   zTimer_t timer;
 };
 
-static inline void wbContext_lockMutex(wbContext_t ctx, zStateMutex_t lbl) {
-  if (ctx != NULL) {
-    uv_mutex_lock(&wbContext_getMutex(ctx, lbl));
+static inline void wbState_lockMutex(wbState_t st, zStateLabel_t lbl) {
+  if (st != NULL) {
+    uv_mutex_lock(&wbState_getMutex(st, lbl));
   }
   return;
 }
 
-static inline void wbContext_unlockMutex(wbContext_t ctx, zStateMutex_t lbl) {
-  if (ctx != NULL) {
-    uv_mutex_unlock(&wbContext_getMutex(ctx, lbl));
+static inline void wbState_unlockMutex(wbState_t st, zStateLabel_t lbl) {
+  if (st != NULL) {
+    uv_mutex_unlock(&wbState_getMutex(st, lbl));
   }
   return;
 }
 
-#define wbContext_mutexed(lbl, ctx, ...)                                       \
+#define wbState_mutexed(lbl, ...)                                              \
   do {                                                                         \
-    wbContext_lockMutex(ctx, zStateMutex_##lbl);                               \
+    wbState_lockMutex(st, zStateLabel_##lbl);                                  \
     { __VA_ARGS__; }                                                           \
-    wbContext_unlockMutex(ctx, zStateMutex_##lbl);                             \
+    wbState_unlockMutex(st, zStateLabel_##lbl);                                \
   } while (0)
+
 #endif /* __ZSTATE_H__ */

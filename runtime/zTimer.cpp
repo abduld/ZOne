@@ -13,6 +13,9 @@ static uint64_t o_timestart = 0;
 #endif /* __APPLE__ */
 
 uint64_t zNow(void) {
+#if 1
+  return uv_hrtime();
+#else
 #define NANOSEC ((uint64_t)1e9)
 #ifdef _MSC_VER
   LARGE_INTEGER counter;
@@ -44,6 +47,7 @@ uint64_t zNow(void) {
   return (((uint64_t)ts.tv_sec) * NANOSEC + ts.tv_nsec);
 #endif /* _MSC_VER */
 #undef NANOSEC
+#endif
 }
 
 static inline uint64_t getTime(void) {

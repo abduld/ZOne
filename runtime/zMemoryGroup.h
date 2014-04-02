@@ -15,13 +15,16 @@ struct st_zMemoryGroup_t {
   void *hostData;
   int nmems;
   zMemoryGroup_t *mems;
-  // XXX TODO ... THNK ABOUT THIS ... should mirror the information in memory
+  zMemoryStatus_t hostMemoryStatus;
+  zMemoryStatus_t deviceMemoryStatus;
 };
 
 #define zMemoryGroup_getSize(mem) ((mem)->sz)
 #define zMemoryGroup_getType(mem) ((mem)->typ)
 #define zMemoryGroup_getHostMemory(mem) ((mem)->hostMemory)
+#define zMemoryGroup_getDeviceMemoryStatus(mem) ((mem)->deviceMemoryStatus)
 #define zMemoryGroup_getDeviceMemory(mem) ((mem)->deviceMemory)
+#define zMemoryGroup_getDeviceMemoryStatus(mem) ((mem)->deviceMemoryStatus)
 #define zMemoryGroup_getMemories(mem) ((mem)->mems)
 #define zMemoryGroup_getMemory(mem, ii) (zMemoryGroup_getMemories(mem)[ii])
 #define zMemoryGroup_getMemoryCount(mem) ((mem)->nmems)
@@ -30,8 +33,12 @@ struct st_zMemoryGroup_t {
 #define zMemoryGroup_setType(mem, val) (zMemoryGroup_getType(mem) = val)
 #define zMemoryGroup_setHostMemory(mem, val)                                   \
   (zMemoryGroup_getHostMemory(mem) = val)
+#define zMemoryGroup_setDeviceMemoryStatus(mem, val)                           \
+  (zMemoryGroup_getDeviceMemoryStatus(mem) = val)
 #define zMemoryGroup_setDeviceMemory(mem, val)                                 \
   (zMemoryGroup_getDeviceMemory(mem) = val)
+#define zMemoryGroup_setDeviceMemoryStatus(mem, val)                           \
+  (zMemoryGroup_getDeviceMemoryStatus(mem) = val)
 #define zMemoryGroup_setMemoryGroup(mem, val)                                  \
   (zMemoryGroup_getMemoryGroup(mem) = val)
 #define zMemoryGroup_setMemories(mem, val) (zMemoryGroup_getMemories(mem) = val)
