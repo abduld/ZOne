@@ -2,7 +2,6 @@
 #ifndef __ZUTILS_H__
 #define __ZUTILS_H__
 
-
 #include <assert.h>
 #include <zCUDA.h>
 
@@ -10,16 +9,23 @@
 #define zFile __FILE__
 #define zFunction __func__
 
-#define zExit()  do { zAssert(0); exit(1); } while(0)
-#define zPrint(msg) do { std::cout << msg << std::endl; } while (0)
+#define zExit()                                                                \
+  do {                                                                         \
+    zAssert(0);                                                                \
+    exit(1);                                                                   \
+  } while (0)
+#define zPrint(msg)                                                            \
+  do {                                                                         \
+    std::cout << msg << std::endl;                                             \
+  } while (0)
 
 #ifdef Z_CONFIG_DEBUG
 #define zAssert(cond) assert(cond)
-#define zAssertMessage(msg, cond)                                             \
+#define zAssertMessage(msg, cond)                                              \
   do {                                                                         \
     if (!(cond)) {                                                             \
-      zPrint(msg);                                                            \
-      zAssert(cond);                                                          \
+      zPrint(msg);                                                             \
+      zAssert(cond);                                                           \
     }                                                                          \
   } while (0)
 #define zError(msg) zAssertMessage(msg, False)

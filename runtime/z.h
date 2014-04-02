@@ -3,9 +3,7 @@
 #ifndef __Z_H__
 #define __Z_H__
 
-
 #include "zOptions.h"
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,4 +17,3 @@
 #include "zUtils.h"
 
 #endif /* __Z_H__ */
-

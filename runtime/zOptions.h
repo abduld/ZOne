@@ -2,7 +2,6 @@
 #ifndef __ZOPTIONS_H__
 #define __ZOPTIONS_H__
 
-
 #define True true
 #define False false
 
@@ -23,6 +22,4 @@ typedef float zReal_t;
 #define _CRT_NONSTDC_NO_DEPRECATE 1
 #endif /* _MSC_VER */
 
-
 #endif /* __ZOPTIONS_H__ */
-

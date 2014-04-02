@@ -1,12 +1,11 @@
 
-#include  <z.h>
+#include <z.h>
 
-static const char * zErrorMessages[] = {
-#define zError_define(err, msg, ...)   msg,
+static const char *zErrorMessages[] = {
+#define zError_define(err, msg, ...) msg,
 #include "error_inc.h"
 #undef zError_define
 };
-
 
 zError_t zError_new() {
   zError_t err;
@@ -27,15 +26,16 @@ void zError_delete(zError_t err) {
   if (err != NULL) {
     zDelete(err);
   }
-  return ;
+  return;
 }
 
-void zError_update(zError_t err, zErrorCode_t code, const char * file, const char * fun, int line) {
+void zError_update(zError_t err, zErrorCode_t code, const char *file,
+                   const char *fun, int line) {
   zState_t ctx;
-  const char * msg;
+  const char *msg;
 
   if (err == NULL) {
-    return ;
+    return;
   }
 
   ctx = zError_getState(err);
@@ -43,15 +43,15 @@ void zError_update(zError_t err, zErrorCode_t code, const char * file, const cha
   zState_lockMutex(ctx);
 
   if (code == zError_uv) {
-    uv_loop_t * loop;
+    uv_loop_t *loop;
     uv_err_t uvErr;
-    
+
     if (zError_getLoop(err) != NULL) {
       loop = zError_getLoop(err);
     } else if (ctx != NULL && zState_getLoop(ctx)) {
       loop = zState_getLoop(ctx);
     } else {
-      return ;
+      return;
     }
 
     uvErr = uv_last_error(loop);
@@ -72,14 +72,14 @@ void zError_update(zError_t err, zErrorCode_t code, const char * file, const cha
   zError_setFile(err, file);
   zError_setFunction(err, fun);
   zError_setLine(err, line);
-  
+
   zState_unlockMutex(ctx);
 
-  return ;
+  return;
 }
 
-const char * zError_message(zError_t err) {
-  const char * res = NULL;
+const char *zError_message(zError_t err) {
+  const char *res = NULL;
   if (err != NULL) {
     if (zError_getMessage(err) == NULL) {
       zAssert(zError_getCode(err) > 0);
@@ -94,7 +94,7 @@ const char * zError_message(zError_t err) {
 
 #define LINE_STR_LENGTH ((CHAR_BIT * sizeof(int) - 1) / 3 + 2)
 
-char * zError_toCString(zError_t err) {
+char *zError_toCString(zError_t err) {
   if (err != NULL && zFailQ(err)) {
     char lineStr[LINE_STR_LENGTH];
 
@@ -113,7 +113,7 @@ char * zError_toCString(zError_t err) {
 
     zStringBuffer_append(buf, ".");
 
-    char * res = zStringBuffer_toCString(buf);
+    char *res = zStringBuffer_toCString(buf);
     zStringBuffer_deleteStructure(buf);
     return res;
   }

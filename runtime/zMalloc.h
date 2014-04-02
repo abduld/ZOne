@@ -54,7 +54,7 @@ static inline void *xRealloc(void *mem, size_t sz) {
 static inline void *xcuMalloc(size_t sz) {
   void *mem = NULL;
   if (sz != 0) {
-    cudaError_t err = cudaMallocHost((void **) &mem, sz + zMalloc_padding);
+    cudaError_t err = cudaMallocHost((void **)&mem, sz + zMalloc_padding);
     if (zSuccessQ(err)) {
       mem = mem + zMalloc_padding;
       zMalloc_setSize(mem, sz);
@@ -82,7 +82,8 @@ static inline void *xcuRealloc(void *mem, size_t sz) {
     void *res = xcuMalloc(sz);
     zAssert(res != NULL);
     if (res != NULL) {
-      cudaError_t err = cudaMemcpy(res, mem, zMalloc_getSize(mem), cudaMemcpyHostToHost);
+      cudaError_t err =
+          cudaMemcpy(res, mem, zMalloc_getSize(mem), cudaMemcpyHostToHost);
       checkSuccess(err);
     }
     xcuFree(mem);
@@ -94,10 +95,12 @@ static inline void *xcuRealloc(void *mem, size_t sz) {
 #define zNewArray(type, len) ((type *)zMalloc((len) * sizeof(type)))
 #define zMalloc(sz) xcuMalloc(sz)
 #define zDelete(var) zFree(var)
-#define zFree(var)   do { xcuFree(var); var = NULL; } while(0)
+#define zFree(var)                                                             \
+  do {                                                                         \
+    xcuFree(var);                                                              \
+    var = NULL;                                                                \
+  } while (0)
 #define zRealloc(var, newSize) xcuRealloc(var, newSize)
 #define zReallocArray(t, m, n) ((t *)xcuRealloc(m, n * sizeof(t)))
 
-
 #endif /* __ZMALLOC_H__ */
-
