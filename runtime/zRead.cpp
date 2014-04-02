@@ -18,6 +18,8 @@ static zMemoryGroup_t zReadArray(zState_t st, const char *file,
   uv_queue_work(loop, &work, allocDeviceMemory, setDeviceMemoryAllocated);
 
   // for each chunk read the data and copy it to the memory in the group
+
+   
 }
 
 zMemoryGroup_t zReadBit8Array(zState_t st, const char *file, int rank,

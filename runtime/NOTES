@@ -1,0 +1,3 @@
+
+- one can set the environment UV_THREADPOOL_SIZE to change the number of threads launched by libuv.
+ https://github.com/joyent/libuv/blob/master/src/unix/threadpool.c
