@@ -49,5 +49,11 @@ static size_t flattenedLength(int rank, size_t *dims, zMemoryType_t typ) {
 typedef struct st_zMemory_t zMemory_t;
 typedef struct st_zMemoryGroup_t *zMemoryGroup_t;
 typedef struct st_zState_t *zState_t;
+typedef struct st_zFunctionInformation_t zFunctionInformation_t;
+typedef struct st_zLogEntry_t *zLogEntry_t;
+typedef struct st_zLogger_t *zLogger_t;
+
+typedef vector<zMemoryGroup_t> zMemoryGroupList_t;
+typedef unordered_map<string, zFunctionInformation_t> zFunctionInformationMap_t;
 
 #endif /* __ZTYPES_H__ */
