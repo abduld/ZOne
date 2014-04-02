@@ -32,7 +32,7 @@ static inline size_t zMemoryType_size(zMemoryType_t typ) {
   return (size_t)(-1);
 }
 
-static size_t flattenedLength(int rank, size_t *dims) {
+static size_t computeFlattenedLength(int rank, size_t *dims) {
   int ii = 0;
   size_t sz = 1;
 
@@ -42,8 +42,8 @@ static size_t flattenedLength(int rank, size_t *dims) {
   return sz;
 }
 
-static size_t flattenedLength(int rank, size_t *dims, zMemoryType_t typ) {
-  return flattenedLength(rank, dims) * zMemoryType_size(typ);
+static size_t computeByteCount(zMemoryType_t typ, int rank, size_t *dims) {
+  return computeFlattenedLength(rank, dims) * zMemoryType_size(typ);
 }
 
 typedef struct st_zMemory_t zMemory_t;
