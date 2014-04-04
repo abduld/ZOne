@@ -19,7 +19,9 @@ class InstructionVisitor {
   List<Object> out = [];
   InstructionVisitor(this.instructions) {
     depends();
-    out = instructions.map((nd) => nd.accept(this)).toList(growable: false);
+    out = instructions.where((nd) => nd != null)
+                      .map((nd) => nd.accept(this))
+                      .toList(growable: false);
   }
   void depends() {}
   Object visitOpCode(OpCode op) => visitDefault(op);
