@@ -24,6 +24,13 @@ void RunTests() {
       Let hist :: []Integer = 0;
       Map(((x :: Integer) :: Void => x), img);
     """;
+    
+  String histogram2 = """
+      data :: Integer[] = ReadIntegerList("myFile");
+      histogram :: Integer[] = Zeros(255);
+      Map((x :: Integer) :: Void => histogram[x] += 1; Return ; data);
+
+  """;
   ProgramNode prog = Parse(testCode);
   List<Instruction> insts = Lower(prog);
   List<InstructionPass> passes = [new LiftFunctionPass(), new PeepholeOptimizePass()];
