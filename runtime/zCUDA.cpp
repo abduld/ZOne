@@ -38,7 +38,7 @@ void afterAllocDeviceMemory(uv_work_t *req, int status) {
 	  	zMemory_setDeviceMemory(mg, deviceMem + offset);
 	  	offset += zMemory_getByteCount(mem);
 	  }
-  	zMemoryGroup_setDeviceMemoryStatus(mg, zMemoryStatus_allocated);
+  	zMemoryGroup_setDeviceMemoryStatus(mg, zMemoryStatus_allocatedDevice);
 	}
   zDelete(req->data);
   zDelete(req);
@@ -65,7 +65,7 @@ void zCUDA_copyToDevice(zState_t st, zMemory_t mem) {
 
 	assert(zMemory_deviceMemoryAllocatedQ(mem));
 
-	if (status == zMemoryStatus_allocated) {
+	if (status == zMemoryStatus_allocatedDevice || status = zMemoryStatus_dirtyHost) {
 		cudaStream_t strm = zState_getCopyToDeviceStream(st, zMemory_getId(mem));
 		assert(strm != NULL);
 		cudaError_t err = cudaMemcpyAsync(zMemory_getDeviceMemory(mem), zMemory_getHostMemory(mem),
@@ -77,3 +77,18 @@ void zCUDA_copyToDevice(zState_t st, zMemory_t mem) {
 	}
 }
 
+void zCUDA_copyToHost(zState_t st, zMemory_t mem) {
+	zMemoryStatus_t status = zMemory_getStatus(mem);
+
+	assert(zMemory_hostMemoryAllocatedQ(mem));
+
+	if (status == zMemoryStatus_allocatedHost || status == zMemoryStatus_dirtyDevice) {
+		cudaStream_t strm = zState_getCopyToHostStream(st, zMemory_getId(mem));
+		assert(strm != NULL);
+		cudaError_t err = cudaMemcpyAsync(zMemory_getHostMemory(mem), zMemory_getDeviceMemory(mem),
+			zMemory_getByteCount(mem), cudaMemcpyDevicetoHost, strm);
+  	zState_setError(st, err);
+	} else {
+		zLog(TRACE, "Skipping recopy of data.");
+	}
+}

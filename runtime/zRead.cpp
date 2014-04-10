@@ -26,7 +26,7 @@ static zMemoryGroup_t zReadArray(zState_t st, const char *file,
       if (zSuccessQ(zErr)) {
         if (deviceMemoryAllocatedQ == zFalse) {
           // block until memory has been allocated
-          while (zMemoryGroup_getDeviceMemoryStatus(mg) == zMemoryStatus_unallocated && zSuccessQ(zErr)) {}
+          while (zSuccessQ(zErr) && !zMemoryGroup_deviceMemoryAllocatedQ(mg)) {}
           deviceMemoryAllocatedQ = zTrue;
         }
         // at this point we know that device memory has been allocated

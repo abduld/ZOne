@@ -4,9 +4,12 @@
 
 typedef enum en_zMemoryStatus_t {
   zMemoryStatus_unallocated = 0,
-  zMemoryStatus_allocated,
-  zMemoryStatus_copied,
-  zMemoryStatus_computed
+  zMemoryStatus_allocatedHost,
+  zMemoryStatus_allocatedDevice,
+  zMemoryStatus_dirtyDevice,
+  zMemoryStatus_dirtyHost,
+  zMemoryStatus_cleanDevice,
+  zMemoryStatus_cleanHost,
 } zMemoryStatus_t;
 
 struct st_zMemory_t {
@@ -30,8 +33,8 @@ static inline int zMemory_getId(zMemory_t mem) {
   }
 }
 
-#define zMemory_hostMemoryAllocatedQ(mem) (zMemory_getHostMemoryStatus(mem) > zMemoryStatus_allocated)
-#define zMemory_deviceMemoryAllocatedQ(mem) (zMemory_getDeviceMemoryStatus(mem) > zMemoryStatus_allocated)
+#define zMemory_hostMemoryAllocatedQ(mem) (zMemory_getHostMemoryStatus(mem) >= zMemoryStatus_allocatedHost)
+#define zMemory_deviceMemoryAllocatedQ(mem) (zMemory_getDeviceMemoryStatus(mem) >= zMemoryStatus_allocatedDevice)
 
 #define zMemory_getByteCount(mem) ((mem).sz)
 #define zMemory_getType(mem) ((mem).typ)

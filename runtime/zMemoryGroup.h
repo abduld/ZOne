@@ -21,6 +21,10 @@ struct st_zMemoryGroup_t {
   zMemoryStatus_t deviceMemoryStatus;
 };
 
+
+#define zMemoryGroup_hostMemoryAllocatedQ(mem) (zMemoryGroup_getHostMemoryStatus(mem) >= zMemoryStatus_allocatedHost)
+#define zMemoryGroup_deviceMemoryAllocatedQ(mem) (zMemoryGroup_getDeviceMemoryStatus(mem) >= zMemoryStatus_allocatedDevice)
+
 #define zMemoryGroup_getId(mem) ((mem)->id)
 #define zMemoryGroup_getByteCount(mem) ((mem)->byteCount)
 #define zMemoryGroup_getRank(mem) ((mem)->rank)
