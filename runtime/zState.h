@@ -29,7 +29,12 @@ struct st_zState_t {
   uv_thread_t threads[zStateLabel_Count];
   zLogger_t logger;
   zTimer_t timer;
+  zError_t err;
+  uv_cpu_info_t cpuInfo;
 };
+
+
+#define zErr zState_geError(st)
 
 static inline void wbState_lockMutex(wbState_t st, zStateLabel_t lbl) {
   if (st != NULL) {
