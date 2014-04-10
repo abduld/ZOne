@@ -21,7 +21,7 @@ void allocDeviceMemory(uv_work_t *req) {
   size_t byteCount = zMemoryGroup_getByteCount(mg);
 
   cudaError_t err = cudaMalloc(&deviceMem, byteCount);
-  zError(zErr, err);
+  zState_setError(st, err);
 }
 
 void afterAllocDeviceMemory(uv_work_t *req, int status) {
@@ -31,7 +31,7 @@ void afterAllocDeviceMemory(uv_work_t *req, int status) {
   zMemoryGroup_t mg = MemoryAllocateWork_getMemoryGroup(work);
   void * deviceMem = zMemoryGroup_getDeviceMemory(mg);
   if (status == -1) {
-    zError(zErr, memoryAllocation);
+    zState_setError(st, zError_memoryAllocation);
   } else {
 	  for (int ii = 0; ii < zMemoryGroup_getMemoryCount(mg); ii++) {
 	  	zMemory_t mem = zMemoryGroup_getMemory(mg, ii);
@@ -56,6 +56,24 @@ void zCUDA_malloc(zState_t st, zMemoryGroup_t mem) {
 
   uv_queue_work(loop, work, allocDeviceMemory, afterAllocDeviceMemory);
 
+// should just use cudaMallocAsync, but code is kept here for reference (spent a lot of time figuring it out)
   return ;
+}
+
+void zCUDA_copyToDevice(zState_t st, zMemory_t mem) {
+	zMemoryStatus_t status = zMemory_getStatus(mem);
+
+	assert(zMemory_deviceMemoryAllocatedQ(mem));
+
+	if (status == zMemoryStatus_allocated) {
+		cudaStream_t strm = zState_getCopyToDeviceStream(st, zMemory_getId(mem));
+		assert(strm != NULL);
+		cudaError_t err = cudaMemcpyAsync(zMemory_getDeviceMemory(mem), zMemory_getHostMemory(mem),
+			zMemory_getByteCount(mem), cudaMemcpyHostToDevice, strm);
+  	zState_setError(st, err);
+  	// one cannot just set zMemoryStatus_copied here, since the copy has not happened yet
+	} else {
+		zLog(TRACE, "Skipping recopy of data.");
+	}
 }
 

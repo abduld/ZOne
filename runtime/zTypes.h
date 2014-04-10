@@ -52,8 +52,10 @@ typedef struct st_zState_t *zState_t;
 typedef struct st_zFunctionInformation_t zFunctionInformation_t;
 typedef struct st_zLogEntry_t *zLogEntry_t;
 typedef struct st_zLogger_t *zLogger_t;
+typedef struct st_zStream_t zStream_t;
 
 typedef vector<zMemoryGroup_t> zMemoryGroupList_t;
+typedef vector<zStream_t> zStreamList_t;
 typedef unordered_map<string, zFunctionInformation_t> zFunctionInformationMap_t;
 
 #endif /* __ZTYPES_H__ */

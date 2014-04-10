@@ -17,6 +17,7 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank, size_t
 	mg = zNew(struct st_zMemoryGroup_t);
 	mems = zNewArray(zMemory_t, nMems);
 
+	int id = zState_getNextMemoryGroupId(st);
   size_t byteCount = computeByteCount(typ, rank, dims);
   size_t chunkSize = zCeil(byteCount, nMems);
   char * hostMem = zNewArray(byteCount, char);
@@ -28,9 +29,11 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank, size_t
 	for (int ii = 0; ii < nMems; ii++) {
 		size_t sz = zMin(bytesLeft, chunkSize);
 		mems[ii] = zMemory_new(st, &hostMem[ii*chunkSize], sz);
+		zMemory_setMemoryGroup(mems[ii], mg);
 		bytesLeft -= chunkSize;
 	}
 
+	zMemoryGroup_setId(mem, id);
 	zMemoryGroup_setByteCount(mem, bytecount);
 	zMemoryGroup_setType(mem, typ);
 	zMemoryGroup_setRank(mem, rank);
@@ -43,6 +46,8 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank, size_t
 
   zMemoryGroup_setHostMemoryStatus(mg, zMemoryStatus_allocated);
   zMemoryGroup_setDeviceMemoryStatus(mg, zMemoryStatus_unallocated);
+
+  zState_addMemoryGroup(st, mg);
 
 	zCUDA_malloc(st, mg);
 

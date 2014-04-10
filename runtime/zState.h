@@ -20,9 +20,15 @@ typedef enum {
   zStateLabel_Count
 } zStateLabel_t;
 
+struct st_zStream_t {
+  cudaStream_t compute;
+  cudaStream_t deviceToHost;
+  cudaStream_t hostToDevice;
+};
+
 struct st_zState_t {
   zBool cuStreamInUse[zCUDAStream_count];
-  cudaStream_t cuStreams[zCUDAStream_count];
+  zStreamList_t cuStreams;
   zMemoryGroupList_t memoryGroups;
   zFunctionInformationMap_t fInfos;
   uv_mutex_t mutexs[zStateLabel_Count];

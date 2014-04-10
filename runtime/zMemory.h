@@ -4,7 +4,9 @@
 
 typedef enum en_zMemoryStatus_t {
   zMemoryStatus_unallocated = 0,
-  zMemoryStatus_allocated
+  zMemoryStatus_allocated,
+  zMemoryStatus_copied,
+  zMemoryStatus_computed
 } zMemoryStatus_t;
 
 struct st_zMemory_t {
@@ -16,13 +18,25 @@ struct st_zMemory_t {
   void *deviceMemory;
   zMemoryStatus_t hostMemoryStatus;
   zMemoryStatus_t deviceMemoryStatus;
-  zMemoryGroup_t *group;
+  zMemoryGroup_t group;
 };
+
+static inline int zMemory_getId(zMemory_t mem) {
+  zMemoryGroup_t mg = zMemory_getMemoryGroup(mem);
+  if ( == NULL) {
+    return -1;
+  } else {
+    return zMemoryGroup_getId(mg);
+  }
+}
+
+#define zMemory_hostMemoryAllocatedQ(mem) (zMemory_getHostMemoryStatus(mem) > zMemoryStatus_allocated)
+#define zMemory_deviceMemoryAllocatedQ(mem) (zMemory_getDeviceMemoryStatus(mem) > zMemoryStatus_allocated)
 
 #define zMemory_getByteCount(mem) ((mem).sz)
 #define zMemory_getType(mem) ((mem).typ)
-#define zMemory_getRank(mem) ((mem)->rank)
-#define zMemory_getDimensions(mem) ((mem)->dims)
+#define zMemory_getRank(mem) ((mem).rank)
+#define zMemory_getDimensions(mem) ((mem).dims)
 #define zMemory_getHostMemory(mem) ((mem).hostMemory)
 #define zMemory_getHostMemoryStatus(mem) ((mem).hostMemoryStatus)
 #define zMemory_getDeviceMemory(mem) ((mem).deviceMemory)
