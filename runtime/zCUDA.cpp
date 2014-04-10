@@ -2,21 +2,9 @@
 #include "z.h"
 
 
-typedef struct st_MemoryAllocateWork_t {
-  zState_t st;
-  zMemoryGroup_t mg;
-} * MemoryAllocateWork_t;
-
-#define MemoryAllocateWork_getState(obj) ((obj)->st)
-#define MemoryAllocateWork_getMemoryGroup(obj) ((obj)->mg)
-
-#define MemoryAllocateWork_setState(obj, val) (MemoryAllocateWork_getState(obj) = val)
-#define MemoryAllocateWork_setMemoryGroup(obj, val) (MemoryAllocateWork_getMemoryGroup(obj) = val)
-
 void allocDeviceMemory(uv_work_t *req) {
-  MemoryAllocateWork_t work = (MemoryAllocateWork_t) req->data;
-  zState_t st = MemoryAllocateWork_getState(work);
-  zMemoryGroup_t mg = MemoryAllocateWork_getMemoryGroup(work);
+  zMemoryGroup_t mg = (zMemoryGroup_t) req->data;
+  zState_t st = zMemoryGroup_getState(mg);
   void * deviceMem = zMemoryGroup_getDeviceMemory(mg);
   size_t byteCount = zMemoryGroup_getByteCount(mg);
 
@@ -26,9 +14,8 @@ void allocDeviceMemory(uv_work_t *req) {
 
 void afterAllocDeviceMemory(uv_work_t *req, int status) {
   size_t offset = 0;
-  MemoryAllocateWork_t work = (MemoryAllocateWork_t) req->data;
-  zState_t st = MemoryAllocateWork_getState(work);
-  zMemoryGroup_t mg = MemoryAllocateWork_getMemoryGroup(work);
+  zMemoryGroup_t mg = (zMemoryGroup_t) req->data;
+  zState_t st = zMemoryGroup_getState(mg);
   void * deviceMem = zMemoryGroup_getDeviceMemory(mg);
   if (status == -1) {
     zState_setError(st, zError_memoryAllocation);
@@ -40,19 +27,15 @@ void afterAllocDeviceMemory(uv_work_t *req, int status) {
 	  }
   	zMemoryGroup_setDeviceMemoryStatus(mg, zMemoryStatus_allocatedDevice);
 	}
-  zDelete(req->data);
-  zDelete(req);
+  // TODO: think about .... zDelete(req);
 }
 
-void zCUDA_malloc(zState_t st, zMemoryGroup_t mem) {
+void zCUDA_malloc(zMemoryGroup_t mem) {
 	uv_work_t * work = New(uv_work_t);
 
-	assert(zMemoryGroup_getDeviceMemoryStatus(mem) == zMemoryStatus_unallocated);
+	zAssert(!zMemory_deviceMemoryAllocatedQ(mem));
 
-  MemoryAllocateWork_t workData = zNew(struct st_MemoryAllocateWork_t);
-  MemoryAllocateWork_setState(workData, state);
-  MemoryAllocateWork_setMemoryGroup(workData, mg);
-  work->data = workData;
+  work->data = mem;
 
   uv_queue_work(loop, work, allocDeviceMemory, afterAllocDeviceMemory);
 
@@ -60,14 +43,15 @@ void zCUDA_malloc(zState_t st, zMemoryGroup_t mem) {
   return ;
 }
 
-void zCUDA_copyToDevice(zState_t st, zMemory_t mem) {
+void zCUDA_copyToDevice(zMemory_t mem) {
+	zState_t st = zMemory_getState(mem);
 	zMemoryStatus_t status = zMemory_getStatus(mem);
 
-	assert(zMemory_deviceMemoryAllocatedQ(mem));
+	zAssert(zMemory_deviceMemoryAllocatedQ(mem));
 
 	if (status == zMemoryStatus_allocatedDevice || status = zMemoryStatus_dirtyHost) {
 		cudaStream_t strm = zState_getCopyToDeviceStream(st, zMemory_getId(mem));
-		assert(strm != NULL);
+		zAssert(strm != NULL);
 		cudaError_t err = cudaMemcpyAsync(zMemory_getDeviceMemory(mem), zMemory_getHostMemory(mem),
 			zMemory_getByteCount(mem), cudaMemcpyHostToDevice, strm);
   	zState_setError(st, err);
@@ -77,14 +61,15 @@ void zCUDA_copyToDevice(zState_t st, zMemory_t mem) {
 	}
 }
 
-void zCUDA_copyToHost(zState_t st, zMemory_t mem) {
+void zCUDA_copyToHost(zMemory_t mem) {
+	zState_t st = zMemory_getState(mem);
 	zMemoryStatus_t status = zMemory_getStatus(mem);
 
-	assert(zMemory_hostMemoryAllocatedQ(mem));
+	zAssert(zMemory_hostMemoryAllocatedQ(mem));
 
 	if (status == zMemoryStatus_allocatedHost || status == zMemoryStatus_dirtyDevice) {
 		cudaStream_t strm = zState_getCopyToHostStream(st, zMemory_getId(mem));
-		assert(strm != NULL);
+		zAssert(strm != NULL);
 		cudaError_t err = cudaMemcpyAsync(zMemory_getHostMemory(mem), zMemory_getDeviceMemory(mem),
 			zMemory_getByteCount(mem), cudaMemcpyDevicetoHost, strm);
   	zState_setError(st, err);

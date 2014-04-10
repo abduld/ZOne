@@ -13,6 +13,7 @@ typedef enum en_zMemoryStatus_t {
 } zMemoryStatus_t;
 
 struct st_zMemory_t {
+  zState_t st;
   size_t byteCount;
   int rank;
   size_t *dims;
@@ -26,7 +27,7 @@ struct st_zMemory_t {
 
 static inline int zMemory_getId(zMemory_t mem) {
   zMemoryGroup_t mg = zMemory_getMemoryGroup(mem);
-  if ( == NULL) {
+  if (mg == NULL) {
     return -1;
   } else {
     return zMemoryGroup_getId(mg);
@@ -36,6 +37,7 @@ static inline int zMemory_getId(zMemory_t mem) {
 #define zMemory_hostMemoryAllocatedQ(mem) (zMemory_getHostMemoryStatus(mem) >= zMemoryStatus_allocatedHost)
 #define zMemory_deviceMemoryAllocatedQ(mem) (zMemory_getDeviceMemoryStatus(mem) >= zMemoryStatus_allocatedDevice)
 
+#define zMemory_getState(mem) ((mem).st)
 #define zMemory_getByteCount(mem) ((mem).sz)
 #define zMemory_getType(mem) ((mem).typ)
 #define zMemory_getRank(mem) ((mem).rank)
@@ -46,6 +48,7 @@ static inline int zMemory_getId(zMemory_t mem) {
 #define zMemory_getDeviceMemoryStatus(mem) ((mem).deviceMemoryStatus)
 #define zMemory_getMemoryGroup(mem) ((mem).group)
 
+#define zMemory_setState(mem, val) (zMemory_getState(mem) = val)
 #define zMemory_setByteCount(mem, val) (zMemory_getByteCount(mem) = val)
 #define zMemory_setType(mem, val) (zMemory_getType(mem) = val)
 #define zMemory_setDimensions(mem, val) (zMemory_getDimensions(mem) = val)

@@ -34,6 +34,7 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank, size_t
 	}
 
 	zMemoryGroup_setId(mem, id);
+	zMemoryGroup_setState(mem, st);
 	zMemoryGroup_setByteCount(mem, bytecount);
 	zMemoryGroup_setType(mem, typ);
 	zMemoryGroup_setRank(mem, rank);
@@ -49,7 +50,7 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank, size_t
 
   zState_addMemoryGroup(st, mg);
 
-	zCUDA_malloc(st, mg);
+	zCUDA_malloc(mg);
 
   return mg;
 }

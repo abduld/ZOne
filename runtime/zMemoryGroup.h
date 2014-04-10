@@ -9,6 +9,7 @@
 
 struct st_zMemoryGroup_t {
   int id;
+  zState_t st;
   size_t byteCount;
   int rank;
   size_t *dims;
@@ -26,6 +27,7 @@ struct st_zMemoryGroup_t {
 #define zMemoryGroup_deviceMemoryAllocatedQ(mem) (zMemoryGroup_getDeviceMemoryStatus(mem) >= zMemoryStatus_allocatedDevice)
 
 #define zMemoryGroup_getId(mem) ((mem)->id)
+#define zMemoryGroup_getState(mem) ((mem)->st)
 #define zMemoryGroup_getByteCount(mem) ((mem)->byteCount)
 #define zMemoryGroup_getRank(mem) ((mem)->rank)
 #define zMemoryGroup_getDimensions(mem) ((mem)->dims)
@@ -39,6 +41,7 @@ struct st_zMemoryGroup_t {
 #define zMemoryGroup_getMemoryCount(mem) ((mem)->nmems)
 
 #define zMemoryGroup_setId(mem, val) (zMemoryGroup_getId(mem) = val)
+#define zMemoryGroup_setState(mem, val) (zMemoryGroup_getState(mem) = val)
 #define zMemoryGroup_setByteCount(mem, val) (zMemoryGroup_getByteCount(mem) = val)
 #define zMemoryGroup_setDimensions(mem, val) (zMemoryGroup_getDimensions(mem) = val)
 #define zMemoryGroup_setRank(mem, val) (zMemoryGroup_getRank(mem) = val)
