@@ -33,10 +33,9 @@ static inline size_t zMemoryType_size(zMemoryType_t typ) {
 }
 
 static size_t computeFlattenedLength(int rank, size_t *dims) {
-  int ii = 0;
   size_t sz = 1;
 
-  while (ii < rank) {
+  for (int ii = 0; ii < rank; ii++) {
     sz *= dims[ii];
   }
   return sz;
