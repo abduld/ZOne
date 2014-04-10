@@ -5,7 +5,7 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 
-#define zCUDACheck(stmt)                                                       \
+#define zCUDA_check(stmt)                                                       \
   do {                                                                         \
     cudaError_t err = stmt;                                                    \
     if (err != cudaSuccess) {                                                  \

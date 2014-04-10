@@ -31,16 +31,19 @@ void zError_delete(zError_t err) {
 
 void zError_update(zError_t err, zErrorCode_t code, const char *file,
                    const char *fun, int line) {
-  zState_t ctx;
+  zState_t st;
   const char *msg;
 
   if (err == NULL) {
     return;
   }
 
-  ctx = zError_getState(err);
+  st = zError_getState(err);
+  if (st == NULL) {
+    return ;
+  }
 
-  zState_lockMutex(ctx);
+  zState_lockMutex(st);
 
   if (code == zError_uv) {
     uv_loop_t *loop;
@@ -48,8 +51,8 @@ void zError_update(zError_t err, zErrorCode_t code, const char *file,
 
     if (zError_getLoop(err) != NULL) {
       loop = zError_getLoop(err);
-    } else if (ctx != NULL && zState_getLoop(ctx)) {
-      loop = zState_getLoop(ctx);
+    } else if (st != NULL && zState_getLoop(st)) {
+      loop = zState_getLoop(st);
     } else {
       return;
     }
@@ -73,7 +76,7 @@ void zError_update(zError_t err, zErrorCode_t code, const char *file,
   zError_setFunction(err, fun);
   zError_setLine(err, line);
 
-  zState_unlockMutex(ctx);
+  zState_unlockMutex(st);
 
   return;
 }

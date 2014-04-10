@@ -33,10 +33,9 @@ static inline size_t zMemoryType_size(zMemoryType_t typ) {
 }
 
 static size_t computeFlattenedLength(int rank, size_t *dims) {
-  int ii = 0;
   size_t sz = 1;
 
-  while (ii < rank) {
+  for (int ii = 0; ii < rank; ii++) {
     sz *= dims[ii];
   }
   return sz;
@@ -52,8 +51,10 @@ typedef struct st_zState_t *zState_t;
 typedef struct st_zFunctionInformation_t zFunctionInformation_t;
 typedef struct st_zLogEntry_t *zLogEntry_t;
 typedef struct st_zLogger_t *zLogger_t;
+typedef struct st_zStream_t zStream_t;
 
 typedef vector<zMemoryGroup_t> zMemoryGroupList_t;
+typedef vector<zStream_t> zStreamList_t;
 typedef unordered_map<string, zFunctionInformation_t> zFunctionInformationMap_t;
 
 #endif /* __ZTYPES_H__ */
