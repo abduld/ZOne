@@ -63,11 +63,9 @@ static inline int zMemory_getId(zMemory_t mem) {
 
 zMemory_t zMemory_new(zState_t st, size_t sz);
 zMemory_t zMemory_new(zState_t st, void *data, size_t sz);
-void zMemory_delete(zState_t st, zMemory_t mem);
+void zMemory_delete(zMemory_t mem);
 
-void zMemory_copyToDevice(zState_t st, zMemory_t mem);
-void zMemory_copyToDevice(zState_t st, zMemory_t mem, void * hostMem, size_t byteCount);
-void zMemory_copyToHost(zState_t st, zMemory_t mem);
-void zMemory_copyToHost(zState_t st, zMemory_t mem);
+void zMemory_copyToDevice(zMemory_t mem);
+void zMemory_copyToHost(zMemory_t mem);
 
 #endif /* __ZMEMORY_H__ */

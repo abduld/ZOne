@@ -62,18 +62,17 @@ struct st_zMemoryGroup_t {
 #define zMemoryGroup_setMemoryCount(mem, val)                                  \
   (zMemoryGroup_getMemoryCount(mem) = val)
 
-zMemoryGroup_t zMemoryGroup_new(zState_t st, size_t sz);
-zMemoryGroup_t zMemoryGroup_new(zState_t st, void *data, size_t sz);
-void zMemoryGroup_delete(zState_t st, zMemoryGroup_t mem);
+zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank, size_t *dims) ;
+void zMemoryGroup_delete(zMemoryGroup_t mem);
 
-void zMemoryGroup_freeHostMemory(zState_t st, zMemoryGroup_t mem);
-void zMemoryGroup_freeDeviceMemory(zState_t st, zMemoryGroup_t mem);
+void zMemoryGroup_freeHostMemory(zMemoryGroup_t mem);
+void zMemoryGroup_freeDeviceMemory(zMemoryGroup_t mem);
 
-void zMemoryGroup_copyToDevice(zState_t st, zMemoryGroup_t mem);
-void zMemoryGroup_copyToHost(zState_t st, zMemoryGroup_t mem);
+void zMemoryGroup_copyToDevice(zMemoryGroup_t mem);
+void zMemoryGroup_copyToHost(zMemoryGroup_t mem);
 
-void zMemoryGroup_copyToDevice(zState_t st, zMemoryGroup_t mem, int elem);
-void zMemoryGroup_copyToHost(zState_t st, zMemoryGroup_t mem, int elem);
+void zMemoryGroup_copyToDevice(zMemoryGroup_t mem, int elem);
+void zMemoryGroup_copyToHost(zMemoryGroup_t mem, int elem);
 
 static inline void zMemoryGroup_setDeviceMemoryStatus(zMemoryGroup_t mg, zMemoryStatus_t st) {
   if (mg != NULL) {

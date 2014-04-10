@@ -11,7 +11,7 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank, size_t
 #ifdef Z_CONFIG_MAX_CHUNKS
 	nMems = Z_CONFIG_MAX_CHUNKS;
 #else
-	nMems = zState_getNCores(st);
+	nMems = zState_getCPUCount(st);
 #endif
 
 	mg = zNew(struct st_zMemoryGroup_t);
@@ -55,4 +55,31 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank, size_t
   return mg;
 }
 
+void zMemoryGroup_delete(zMemoryGroup_t mem) {
+
+}
+
+void zMemoryGroup_freeHostMemory(zMemoryGroup_t mem) {
+
+}
+
+void zMemoryGroup_freeDeviceMemory(zMemoryGroup_t mem) {
+
+}
+
+void zMemoryGroup_copyToDevice(zMemoryGroup_t mem) {
+
+}
+
+void zMemoryGroup_copyToHost(zMemoryGroup_t mem) {
+
+}
+
+void zMemoryGroup_copyToDevice(zMemoryGroup_t mem, int elem) {
+
+}
+
+void zMemoryGroup_copyToHost(zMemoryGroup_t mem, int elem) {
+
+}
 
