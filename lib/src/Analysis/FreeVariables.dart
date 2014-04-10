@@ -8,6 +8,7 @@ class FreeVariablesVisitor extends InstructionVisitor {
   
   @override
   Instruction visitLambdaInstruction(LambdaInstruction inst) {
+    //print("FreeVariablesPass: visiting LambdaInstruction $inst");
     List<Value> freeVars = freeVariables(inst);
     inst.args.addAll(freeVars);
     free[inst] = freeVars;
@@ -21,8 +22,11 @@ class FreeVariablesVisitor extends InstructionVisitor {
     List<Value> bound = new List<Value>.from(inst.args, growable: true);
     List<Value> free = [];
     inst.body.forEach((Instruction line) {
+      //print("line: $line");
       line.args.forEach((arg) {
+        //print("  arg: $arg");
         if (arg is IdentifierValue && !bound.any((b) => arg.sameQ(b))) {
+          //print("    adding free: $arg");
           free.add(arg);
         }
       });
@@ -37,7 +41,7 @@ class FreeVariablesPass implements InstructionPass {
   Map<LambdaInstruction, List<Value>> free;
   List<Instruction> run(List<Instruction> insts) {
     FreeVariablesVisitor vst = new FreeVariablesVisitor(insts);
-    free  = vst.free;
+    free = vst.free;
     return vst.out;
   }
 }

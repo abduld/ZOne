@@ -9,7 +9,6 @@ import "../Analysis/Analysis.dart";
 part './OpCode.dart';
 part './Value.dart';
 
-part './LiftFunction.dart';
 part './FuseFunction.dart';
 part './PeepholeOptimize.dart';
 

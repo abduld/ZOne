@@ -16,7 +16,7 @@ void RunTests() {
       Let m :: Integer = 2 + g;
       Let i :: Integer = 2 + m;
       //Let k :: Integer = (x :: Integer) :: Integer => Return(x + 1);
-      Map((x :: Integer) :: Integer => Return(x + 1), [1,2,3,4]);
+      Map((x :: Integer) :: Integer => Return(x + 1 + g), [1,2,3,4]);
       //((x :: Integer) :: Integer => Return(x + 1)) :@ [1,2,3,4];
     """;
   
@@ -32,7 +32,9 @@ void RunTests() {
   """;
   ProgramNode prog = Parse(testCode);
   List<Instruction> insts = Lower(prog);
-  List<InstructionPass> passes = [new LiftFunctionPass(), new PeepholeOptimizePass()];
+  LiftFunctionPass lfp = new LiftFunctionPass();
+  List<InstructionPass> passes = [lfp];
+  //List<InstructionPass> passes = [new LiftFunctionPass(), new PeepholeOptimizePass()];
   List<Instruction> minsts = passes.fold(insts, (List<Instruction> prev, InstructionPass pass) => pass.run(prev));
   print(ToCCode(minsts));
 }
