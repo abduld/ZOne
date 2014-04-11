@@ -8,9 +8,9 @@ class FreeVariablesVisitor extends InstructionVisitor {
   
   @override
   Instruction visitLambdaInstruction(LambdaInstruction inst) {
-    //print("FreeVariablesPass: visiting LambdaInstruction $inst");
+    print("FreeVariablesVisitor.visitLambdaInstruction: inst=$inst");
     List<Value> freeVars = freeVariables(inst);
-    inst.args.addAll(freeVars);
+    print("FreeVariablesVisitor.visitLambdaInstruction: freeVars=$freeVars");
     free[inst] = freeVars;
     return inst; 
   }

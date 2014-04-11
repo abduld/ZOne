@@ -14,6 +14,7 @@ class LiftFunctionVisitor extends InstructionVisitor {
   Instruction visitCallInstruction(CallInstruction inst) {
     if (extaArgs.containsKey(inst.function)) {
       inst.args.addAll(extaArgs[inst.function]);
+      print("LiftFunctionVisitor.visitCallInstruction: added args to $inst");
     }
     return inst;
   }
@@ -21,11 +22,10 @@ class LiftFunctionVisitor extends InstructionVisitor {
  
   @override
   Instruction visitLambdaInstruction(LambdaInstruction inst) {
-    //print("LiftFunction.vLI: $inst");
-    //print("LiftFunction.vLI: $freeVariables");
+    print("LiftFunctionVisitor.visitLambdaInstruction: $inst");
+    print("LiftFunctionVisitor.visitLambdaInstruction: $freeVariables");
     List<Value> freeVars = freeVariables[inst];
     inst.args.addAll(freeVars);
-    extaArgs[inst.target] = freeVars;
     return inst; 
   }
   
