@@ -9,7 +9,6 @@ import "../Analysis/Analysis.dart";
 part './OpCode.dart';
 part './Value.dart';
 
-part './LiftFunction.dart';
 part './FuseFunction.dart';
 part './PeepholeOptimize.dart';
 
@@ -19,7 +18,9 @@ class InstructionVisitor {
   List<Object> out = [];
   InstructionVisitor(this.instructions) {
     depends();
-    out = instructions.map((nd) => nd.accept(this)).toList(growable: false);
+    out = instructions.where((nd) => nd != null)
+                      .map((nd) => nd.accept(this))
+                      .toList(growable: false);
   }
   void depends() {}
   Object visitOpCode(OpCode op) => visitDefault(op);
