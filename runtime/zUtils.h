@@ -4,6 +4,12 @@
 
 #include <assert.h>
 #include <zCUDA.h>
+#include "tbb/tbb.h"
+#include "tbb/parallel_for.h"
+#include "tbb/task_scheduler_init.h"
+#include "tbb/task.h"
+
+using namespace tbb;
 
 #define zLine __LINE__
 #define zFile __FILE__

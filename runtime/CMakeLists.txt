@@ -2,6 +2,10 @@
 
 project(libzrts)
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+
+list( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake )
+
+find_package(TBB REQUIRED)
 find_package(CUDA REQUIRED)
 
 if(NOT CUDA_FOUND)
@@ -29,6 +33,16 @@ set(CUDA_NVCC_FLAGS_RELEASE
     "-lm;"
 )
 
+set(TBB_LIBRARIES
+    debug;${TBB_LIBRARY_DEBUG};
+    ${TBB_LIBRARY_MALLOC_DEBUG};
+    optimized;
+    ${TBB_LIBRARY};
+    ${TBB_LIBRARY_MALLOC}
+)
+
+include_directories( ${TBB_INCLUDE_DIRS} )
+
 if (UNIX)
     set(CUDA_NVCC_FLAGS_RELEASE
         ${CUDA_NVCC_FLAGS_RELEASE}
@@ -48,7 +62,7 @@ include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CUDA_INCLUDE_DIRS})
 
 cuda_add_library(${name} ${zhdr} ${zsrc})
-target_link_libraries(${name} uv)
+target_link_libraries(${name} tbb)
 
 if(UNIX)
     target_link_libraries(${name} ${LIBRT_LIBRARIES})
