@@ -1,53 +1,60 @@
 
 #include "z.h"
 
+class cudaMallocTask: public task {
+public:
+    task* dummy;
+    zMemoryGroup_t mg;
 
-void allocDeviceMemory(uv_work_t *req) {
-  zMemoryGroup_t mg = (zMemoryGroup_t) req->data;
-  zState_t st = zMemoryGroup_getState(mg);
-  void * deviceMem = zMemoryGroup_getDeviceMemory(mg);
-  size_t byteCount = zMemoryGroup_getByteCount(mg);
+    DagTask( task * dummy_, zMemoryGroup_t mem_) : dummy(dummy_), mg(mg_) {
+        input[0] = input[1] = 0;
+    }
+    task* execute() {
+    		size_t offset = 0;
+			  zState_t st = zMemoryGroup_getState(mg);
+			  void * deviceMem = zMemoryGroup_getDeviceMemory(mg);
+			  size_t byteCount = zMemoryGroup_getByteCount(mg);
 
-  cudaError_t err = cudaMalloc(&deviceMem, byteCount);
-  zState_setError(st, err);
-}
+			  cudaError_t err = cudaMalloc(&deviceMem, byteCount);
+			  zState_setError(st, err);
+			  if (status == -1) {
+			    zState_setError(st, zError_memoryAllocation);
+			  } else {
+				  for (int ii = 0; ii < zMemoryGroup_getMemoryCount(mg); ii++) {
+				  	zMemory_t mem = zMemoryGroup_getMemory(mg, ii);
+				  	zMemory_setDeviceMemory(mg, deviceMem + offset);
+				  	offset += zMemory_getByteCount(mem);
+				  }
+			  	zMemoryGroup_setDeviceMemoryStatus(mg, zMemoryStatus_allocatedDevice);
+				}
+				dummy->destroy(*dummy);
+        return NULL;
+    }
+};
 
-void afterAllocDeviceMemory(uv_work_t *req, int status) {
-  size_t offset = 0;
-  zMemoryGroup_t mg = (zMemoryGroup_t) req->data;
-  zState_t st = zMemoryGroup_getState(mg);
-  void * deviceMem = zMemoryGroup_getDeviceMemory(mg);
-  if (status == -1) {
-    zState_setError(st, zError_memoryAllocation);
-  } else {
-	  for (int ii = 0; ii < zMemoryGroup_getMemoryCount(mg); ii++) {
-	  	zMemory_t mem = zMemoryGroup_getMemory(mg, ii);
-	  	zMemory_setDeviceMemory(mg, deviceMem + offset);
-	  	offset += zMemory_getByteCount(mem);
-	  }
-  	zMemoryGroup_setDeviceMemoryStatus(mg, zMemoryStatus_allocatedDevice);
-	}
-  // TODO: think about .... zDelete(req);
-}
+void zCUDA_malloc(zMemoryGroup_t mg) {
 
-void zCUDA_malloc(zMemoryGroup_t mem) {
-	uv_work_t * work = New(uv_work_t);
+	task* dummy = new( task::allocate_root() ) empty_task;
+	dummy->set_ref_count(k+1);
+	task& tk = *new( dummy->allocate_child() ) T(dummy, mg);
+	dummy->spawn(tk);
 
-	zAssert(!zMemory_deviceMemoryAllocatedQ(mem));
-
-  work->data = mem;
-
-  uv_queue_work(loop, work, allocDeviceMemory, afterAllocDeviceMemory);
-
-// should just use cudaMallocAsync, but code is kept here for reference (spent a lot of time figuring it out)
   return ;
+}
+
+static void onCopyToDeviceStreamFinish(cudaStream_t stream, cudaError_t status, void * userData) {
+	zMemory_t mem;
+	assert(status == cudaSuccess);
+	mem = (zMemory_t) userData;
+	zMemory_setDeviceMemoryStatus(mem, zMemoryStatus_copied);
+	return ;
 }
 
 void zCUDA_copyToDevice(zMemory_t mem) {
 	zState_t st = zMemory_getState(mem);
 	zMemoryStatus_t status = zMemory_getStatus(mem);
 
-	zAssert(zMemory_deviceMemoryAllocatedQ(mem));
+	while (!zMemory_deviceMemoryAllocatedQ(mem)) {}
 
 	if (status == zMemoryStatus_allocatedDevice || status = zMemoryStatus_dirtyHost) {
 		cudaStream_t strm = zState_getCopyToDeviceStream(st, zMemory_getId(mem));
@@ -55,10 +62,18 @@ void zCUDA_copyToDevice(zMemory_t mem) {
 		cudaError_t err = cudaMemcpyAsync(zMemory_getDeviceMemory(mem), zMemory_getHostMemory(mem),
 			zMemory_getByteCount(mem), cudaMemcpyHostToDevice, strm);
   	zState_setError(st, err);
-  	// one cannot just set zMemoryStatus_copied here, since the copy has not happened yet
+  	cudaStreamAddCallback(strm, onCopyToDeviceStreamFinish, (void *) mem, 0);
 	} else {
 		zLog(TRACE, "Skipping recopy of data.");
 	}
+}
+
+static void onCopyToHostStreamFinish(cudaStream_t stream, cudaError_t status, void * userData) {
+	zMemory_t mem;
+	assert(status == cudaSuccess);
+	mem = (zMemory_t) userData;
+	zMemory_setDeviceMemoryStatus(mem, zMemoryStatus_copied);
+	return ;
 }
 
 void zCUDA_copyToHost(zMemory_t mem) {
@@ -73,6 +88,7 @@ void zCUDA_copyToHost(zMemory_t mem) {
 		cudaError_t err = cudaMemcpyAsync(zMemory_getHostMemory(mem), zMemory_getDeviceMemory(mem),
 			zMemory_getByteCount(mem), cudaMemcpyDevicetoHost, strm);
   	zState_setError(st, err);
+  	cudaStreamAddCallback(strm, onCopyToHostStreamFinish, (void *) mem, 0);
 	} else {
 		zLog(TRACE, "Skipping recopy of data.");
 	}

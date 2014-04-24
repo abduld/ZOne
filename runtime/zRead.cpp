@@ -2,44 +2,22 @@
 
 #include "z.h"
 
-void afterReadChunk(uv_fs_t * req) {
-  zMemory_t * pmem = (zMemory_t *) req->data;
-  zAssert(pmem != NULL);
-  zMemory_t mem = *pmem;
-  zState_t st = zMemory_getState(mem);
-  uv_loop_t * loop = zState_getLoop(st);
-  if (req->result < 0) {
-    uv_err_t uvErr = uv_last_error(loop);
-    zState_setError(st, uvErr);
-  } else if (req->result == 0) {
-    // TODO: think about what if not all have finished reading
-    // zFile_close(fileName);
-  }
-  // spin until memory has been allocated
-  while (!zMemory_deviceMemoryAllocatedQ(mg)) {}
-  zMemory_copyToDevice(mem);
-  uv_fs_req_cleanup(req);
-}
-
 static zMemoryGroup_t zReadArray(zState_t st, const char *fileName,
                                  zMemoryType_t typ, int rank, size_t *dims) {
 
-  uv_loop_t *loop = zState_getLoop(st);
-
   zMemoryGroup_t mg = zMemoryGroup_new(st, type, rank, dims);
+  size_t memBytecount = zMemoryGroup_getByteCount(mem);
+  int nMems = zMemoryGroup_getMemoryCount(mg);
 
-  zFile_t file = zFile_open(st, fileName, S_IREAD);
-  // TODO: one can interleave the host memory alloc with the fileName read here
-  // TODO: need to know if malloc is thread safe...
-
-  size_t offset = 0;
-  for (int ii = 0; ii < zMemoryGroup_getMemoryCount(mg); ii++) {
-      zMemory_t mem = zMemoryGroup_getMemory(mg, ii);
-      size_t memBytecount = zMemory_getByteCount(mem);
-      zFile_readChunk(file, zMemory_getHostMemory(mem), memBytecount, offset,
-        afterReadChunk, &zMemoryGroup_getMemory(mg, ii));
-      offset += memBytecount;
-  }
+  tbb::parallel_for (size_t(0), nMems, [=](size_t ii) {
+    size_t offset = ii * (memBytecount / nMems);
+    size_t end = zMin((ii+1) * (memBytecount / nMems), zMemoryGroup_getByteCount(mg));
+    size_t bufferSize = end - offset;
+    zMemory_t mem = zMemoryGroup_getMemory(mg, ii);
+    zFile_t file = zFile_open(fileName, 'r');
+    zFile_readChunk(file, zMemory_getHostMemory(mem), bufferSize, offset);
+    zMemory_copyToDevice(mem);
+  });
 
   return mg;
 }

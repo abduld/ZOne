@@ -4,10 +4,11 @@
 #define __ZSTATE_H__
 
 typedef enum {
-  zCUDAStream_deviceToHost = 0,
-  zCUDAStream_hostToDevice = 1,
-  zCUDAStream_compute = 2,
-  zCUDAStream_count = 3
+  zCUDAStream_malloc = 0,
+  zCUDAStream_deviceToHost = 1,
+  zCUDAStream_hostToDevice = 2,
+  zCUDAStream_compute = 3,
+  zCUDAStream_count = 4
 } zCUDAStream_t;
 
 typedef enum {
@@ -22,6 +23,7 @@ typedef enum {
 
 struct st_zStream_t {
   cudaStream_t compute;
+  cudaStream_t malloc;
   cudaStream_t deviceToHost;
   cudaStream_t hostToDevice;
 };

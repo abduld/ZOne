@@ -7,12 +7,7 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank, size_t
 	zMemory_t *mems;
 	zMemoryGroup_t mg;
 
-
-#ifdef Z_CONFIG_MAX_CHUNKS
-	nMems = Z_CONFIG_MAX_CHUNKS;
-#else
-	nMems = zState_getCPUCount(st);
-#endif
+	nMems = tbb::task_scheduler_init::automatic;
 
 	mg = zNew(struct st_zMemoryGroup_t);
 	mems = zNewArray(zMemory_t, nMems);
