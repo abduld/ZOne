@@ -6,8 +6,7 @@ public:
     task* dummy;
     zMemoryGroup_t mg;
 
-    DagTask( task * dummy_, zMemoryGroup_t mem_) : dummy(dummy_), mg(mg_) {
-        input[0] = input[1] = 0;
+    cudaMallocTask( task * dummy_, zMemoryGroup_t mem_) : dummy(dummy_), mg(mg_) {
     }
     task* execute() {
     		size_t offset = 0;
@@ -17,9 +16,7 @@ public:
 
 			  cudaError_t err = cudaMalloc(&deviceMem, byteCount);
 			  zState_setError(st, err);
-			  if (status == -1) {
-			    zState_setError(st, zError_memoryAllocation);
-			  } else {
+    		if (zSuccessQ(err)) {
 				  for (int ii = 0; ii < zMemoryGroup_getMemoryCount(mg); ii++) {
 				  	zMemory_t mem = zMemoryGroup_getMemory(mg, ii);
 				  	zMemory_setDeviceMemory(mg, deviceMem + offset);
@@ -36,7 +33,7 @@ void zCUDA_malloc(zMemoryGroup_t mg) {
 
 	task* dummy = new( task::allocate_root() ) empty_task;
 	dummy->set_ref_count(k+1);
-	task& tk = *new( dummy->allocate_child() ) T(dummy, mg);
+	task& tk = *new( dummy->allocate_child() ) cudaMallocTask(dummy, mg);
 	dummy->spawn(tk);
 
   return ;
