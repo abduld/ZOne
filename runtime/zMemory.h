@@ -32,8 +32,10 @@ static inline int zMemory_getId(zMemory_t mem) {
   }
 }
 
-#define zMemory_hostMemoryAllocatedQ(mem) (zMemory_getHostMemoryStatus(mem) >= zMemoryStatus_allocatedHost)
-#define zMemory_deviceMemoryAllocatedQ(mem) (zMemory_getDeviceMemoryStatus(mem) >= zMemoryStatus_allocatedDevice)
+#define zMemory_hostMemoryAllocatedQ(mem)                                      \
+  (zMemory_getHostMemoryStatus(mem) >= zMemoryStatus_allocatedHost)
+#define zMemory_deviceMemoryAllocatedQ(mem)                                    \
+  (zMemory_getDeviceMemoryStatus(mem) >= zMemoryStatus_allocatedDevice)
 
 #define zMemory_getState(mem) ((mem)->st)
 #define zMemory_getByteCount(mem) ((mem)->sz)

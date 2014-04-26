@@ -4,6 +4,4 @@
 
 #include "tbb/tbb.h"
 
-
 #endif /* __ZTBB_H__ */
-

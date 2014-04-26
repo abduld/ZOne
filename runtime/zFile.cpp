@@ -65,11 +65,10 @@ void zFile_open(zFile_t file, int mode) {
   return;
 }
 
-void zFile_open(zFile_t file) {
-  zFile_open(file, S_IREAD | S_IWRITE);
-}
+void zFile_open(zFile_t file) { zFile_open(file, S_IREAD | S_IWRITE); }
 
-void zFile_readChunk(zFile_t file, void * buffer, size_t sz, size_t offset, uv_fs_cb cb, void * data) {
+void zFile_readChunk(zFile_t file, void *buffer, size_t sz, size_t offset,
+                     uv_fs_cb cb, void *data) {
   zState_t st;
   uv_loop_t *loop;
   uv_fs_t req;
@@ -83,8 +82,8 @@ void zFile_readChunk(zFile_t file, void * buffer, size_t sz, size_t offset, uv_f
 
   req->data = data;
 
-  uv_fs_read(loop, req, zFile_getFileHandle(file),
-              (char *)buf, bufSize, offset, cb);
+  uv_fs_read(loop, req, zFile_getFileHandle(file), (char *)buf, bufSize, offset,
+             cb);
 }
 
 void zFile_close(zFile_t file) {

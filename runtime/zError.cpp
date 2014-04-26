@@ -40,7 +40,7 @@ void zError_update(zError_t err, zErrorCode_t code, const char *file,
 
   st = zError_getState(err);
   if (st == NULL) {
-    return ;
+    return;
   }
 
   zState_lockMutex(st);

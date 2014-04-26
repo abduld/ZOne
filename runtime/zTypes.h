@@ -45,7 +45,7 @@ static size_t computeByteCount(zMemoryType_t typ, int rank, size_t *dims) {
   return computeFlattenedLength(rank, dims) * zMemoryType_size(typ);
 }
 
-typedef struct st_zMemory_t * zMemory_t;
+typedef struct st_zMemory_t *zMemory_t;
 typedef struct st_zMemoryGroup_t *zMemoryGroup_t;
 typedef struct st_zState_t *zState_t;
 typedef struct st_zFunctionInformation_t zFunctionInformation_t;

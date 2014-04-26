@@ -38,10 +38,9 @@ struct st_zState_t {
   zLogger_t logger;
   zTimer_t timer;
   zError_t err;
-  uv_cpu_info_t * cpuInfo;
+  uv_cpu_info_t *cpuInfo;
   int cpuCount;
 };
-
 
 #define zErr zState_geError(st)
 
