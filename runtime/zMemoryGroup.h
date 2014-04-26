@@ -20,6 +20,7 @@ struct st_zMemoryGroup_t {
   zMemoryGroup_t *mems;
   zMemoryStatus_t hostMemoryStatus;
   zMemoryStatus_t deviceMemoryStatus;
+  speculative_spin_mutex mutex;
 };
 
 #define zMemoryGroup_hostMemoryAllocatedQ(mem)                                 \
@@ -40,6 +41,7 @@ struct st_zMemoryGroup_t {
 #define zMemoryGroup_getMemories(mem) ((mem)->mems)
 #define zMemoryGroup_getMemory(mem, ii) (zMemoryGroup_getMemories(mem)[ii])
 #define zMemoryGroup_getMemoryCount(mem) ((mem)->nmems)
+#define zMemoryGroup_getMutex(mem) ((mem)->mutex)
 
 #define zMemoryGroup_setId(mem, val) (zMemoryGroup_getId(mem) = val)
 #define zMemoryGroup_setState(mem, val) (zMemoryGroup_getState(mem) = val)
@@ -64,6 +66,8 @@ struct st_zMemoryGroup_t {
   (zMemoryGroup_getMemory(mem, ii) = val)
 #define zMemoryGroup_setMemoryCount(mem, val)                                  \
   (zMemoryGroup_getMemoryCount(mem) = val)
+#define zMemoryGroup_setMutex(mem, val)                                  \
+  (zMemoryGroup_getMutex(mem) = val)
 
 zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank,
                                 size_t *dims);

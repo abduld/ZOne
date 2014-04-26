@@ -8,33 +8,17 @@ struct st_zFile_t {
   zContext_t ctx;
   char *path;
   int flags;
-  uv_file fh;
-  uv_fs_t openRequest;
-  uv_fs_t readRequest;
-  uv_fs_t writeRequest;
-  zBool openedQ;
-  size_t offset;
 };
 
 #define zFile_getContext(fs) ((fs)->ctx)
 #define zFile_getPath(fs) ((fs)->path)
 #define zFile_getFlags(fs) ((fs)->flags)
-#define zFile_getFileHandle(fs) ((fs)->fh)
-#define zFile_getOpenRequest(fs) ((fs)->openRequest)
-#define zFile_getReadRequest(fs) ((fs)->readRequest)
-#define zFile_getWriteRequest(fs) ((fs)->writeRequest)
 #define zFile_getOpenedQ(fs) ((fs)->openedQ)
-#define zFile_getOffset(fs) ((fs)->offset)
 
 #define zFile_setContext(fs, val) (zFile_getContext(fs) = val)
 #define zFile_setPath(fs, val) (zFile_getPath(fs) = val)
 #define zFile_setFlags(fs, val) (zFile_getFlags(fs) = val)
-#define zFile_setFileHandle(fs, val) (zFile_getFileHandle(fs) = val)
-#define zFile_setOpenRequest(fs, val) (zFile_getOpenRequest(fs) = val)
-#define zFile_setReadRequest(fs, val) (zFile_getReadRequest(fs) = val)
-#define zFile_setWriteRequest(fs, val) (zFile_getWriteRequest(fs) = val)
 #define zFile_setOpenedQ(fs, val) (zFile_getOpenedQ(fs) = val)
-#define zFile_setOffset(fs, val) (zFile_getOffset(fs) = val)
 
 static inline char *zDirectory_getTemporary() {
   char *buffer;
@@ -75,10 +59,9 @@ static inline zBool zFile_existsQ(const char *path) {
   return zFalse;
 }
 
-zFile_t zFile_new(const char *path, int flags);
+zFile_t zFile_new(zState_t st, const char *path, int flags);
+void zFile_readChunk(zFile_t file, void *buffer, size_t sz, size_t offset);
 void zFile_delete(zFile_t file);
-void zFile_open(zFile_t file);
-void zFile_close(zFile_t file);
 void zFile_write(zFile_t file, const char *text);
 
 #endif /* __ZFILE_H__ */

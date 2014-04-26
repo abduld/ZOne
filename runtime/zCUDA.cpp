@@ -12,7 +12,8 @@ public:
     zState_t st = zMemoryGroup_getState(mg);
     void *deviceMem = zMemoryGroup_getDeviceMemory(mg);
     size_t byteCount = zMemoryGroup_getByteCount(mg);
-
+    speculative_spin_mutex mutex = zMemoryGroup_getMutex(mg);
+    mutex::scoped_lock();
     cudaError_t err = cudaMalloc(&deviceMem, byteCount);
     zState_setError(st, err);
     if (zSuccessQ(err)) {
@@ -29,7 +30,6 @@ public:
 };
 
 void zCUDA_malloc(zMemoryGroup_t mg) {
-
   task *dummy = new (task::allocate_root()) empty_task;
   dummy->set_ref_count(k + 1);
   task &tk = *new (dummy->allocate_child()) cudaMallocTask(dummy, mg);
@@ -50,11 +50,18 @@ static void onCopyToDeviceStreamFinish(cudaStream_t stream, cudaError_t status,
 void zCUDA_copyToDevice(zMemory_t mem) {
   zState_t st = zMemory_getState(mem);
   zMemoryStatus_t status = zMemory_getStatus(mem);
+  zMemoryGroup_t mg = zMemory_getMemoryGroup(mem);
+  speculative_spin_mutex mutex = zMemoryGroup_getMutex(mg);
 
-  while (!zMemory_deviceMemoryAllocatedQ(mem)) {
+  while (!zMemoryStatus_allocatedHost(mem)) {
   }
 
-  if (status == zMemoryStatus_allocatedDevice || status =
+  {
+    mutex::scoped_lock();
+    while (!zMemoryStatus_allocatedDevice(mem)) {}
+  }
+
+  if (status == zMemoryStatus_allocatedDevice || status ==
           zMemoryStatus_dirtyHost) {
     cudaStream_t strm = zState_getCopyToDeviceStream(st, zMemory_getId(mem));
     zAssert(strm != NULL);

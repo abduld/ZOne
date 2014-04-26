@@ -11,13 +11,13 @@ static zMemoryGroup_t zReadArray(zState_t st, const char *fileName,
 
   tbb::parallel_for(size_t(0), nMems, [=](size_t ii) {
     size_t offset = ii * (memBytecount / nMems);
-    size_t end =
-        zMin((ii + 1) * (memBytecount / nMems), zMemoryGroup_getByteCount(mg));
+    size_t end = zMin((ii + 1) * (memBytecount / nMems), memBytecount);
     size_t bufferSize = end - offset;
     zMemory_t mem = zMemoryGroup_getMemory(mg, ii);
-    zFile_t file = zFile_open(fileName, 'r');
+    zFile_t file = zFile_new(fileName, O_RDONLY);
     zFile_readChunk(file, zMemory_getHostMemory(mem), bufferSize, offset);
     zMemory_copyToDevice(mem);
+    zFile_delete(file);
   });
 
   return mg;
