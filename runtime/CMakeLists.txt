@@ -34,11 +34,8 @@ set(CUDA_NVCC_FLAGS_RELEASE
 )
 
 set(TBB_LIBRARIES
-    debug;${TBB_LIBRARY_DEBUG};
-    ${TBB_LIBRARY_MALLOC_DEBUG};
-    optimized;
-    ${TBB_LIBRARY};
-    ${TBB_LIBRARY_MALLOC}
+    "tbb"
+    "tbbmalloc"
 )
 
 include_directories( ${TBB_INCLUDE_DIRS} )
@@ -61,8 +58,9 @@ file( GLOB  zsrc *.cpp *.c *.cu)
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CUDA_INCLUDE_DIRS})
 
-cuda_add_library(${name} ${zhdr} ${zsrc})
-target_link_libraries(${name} tbb)
+set (name "zrt")
+cuda_add_library(${name} ${zsrc} SHARED)
+target_link_libraries(${name} ${TBB_LIBRARIES})
 
 if(UNIX)
     target_link_libraries(${name} ${LIBRT_LIBRARIES})

@@ -51,8 +51,6 @@
 
 set(_TBB_LIB_NAME "tbb")
 set(_TBB_LIB_MALLOC_NAME "${_TBB_LIB_NAME}malloc")
-set(_TBB_LIB_DEBUG_NAME "${_TBB_LIB_NAME}_debug")
-set(_TBB_LIB_MALLOC_DEBUG_NAME "${_TBB_LIB_MALLOC_NAME}_debug")
 
 
 if( MSVC )
@@ -64,7 +62,7 @@ if( MSVC )
 endif( )
 
 if ( NOT TBB_ROOT )
-    set(TBB_ROOT $ENV{TBB_ROOT})
+    set(TBB_ROOT / )
 endif( )
 message ("TBB_ROOT:" ${TBB_ROOT} )
 if ( NOT TBB_ROOT )
@@ -95,26 +93,18 @@ else ( )
                 PATHS ENV LIBRARY_PATH ENV LD_LIBRARY_PATH)
     find_library(TBB_MALLOC_LIBRARY ${_TBB_LIB_MALLOC_NAME} HINTS ${_TBB_LIBRARY_DIR}/${TBB_COMPILER}
                 PATHS ENV LIBRARY_PATH ENV LD_LIBRARY_PATH)
-    find_library(TBB_LIBRARY_DEBUG ${_TBB_LIB_DEBUG_NAME} HINTS ${_TBB_LIBRARY_DIR}/${TBB_COMPILER}
-                PATHS ENV LIBRARY_PATH ENV LD_LIBRARY_PATH)
-    find_library(TBB_MALLOC_LIBRARY_DEBUG ${_TBB_LIB_MALLOC_DEBUG_NAME} HINTS ${_TBB_LIBRARY_DIR}/${TBB_COMPILER}
-                PATHS ENV LIBRARY_PATH ENV LD_LIBRARY_PATH)        
 
     message ("TBB_LIBRARY:" ${TBB_LIBRARY})
     message ("TBB_MALLOC_LIBRARY:" ${TBB_MALLOC_LIBRARY})
-    message ("TBB_LIBRARY_DEBUG:" ${TBB_LIBRARY_DEBUG})
-    message ("TBB_MALLOC_LIBRARY_DEBUG:" ${TBB_MALLOC_LIBRARY_DEBUG})
 
     mark_as_advanced( TBB_LIBRARY )
     mark_as_advanced( TBB_MALLOC_LIBRARY )
-    mark_as_advanced( TBB_LIBRARY_DEBUG )
-    mark_as_advanced( TBB_MALLOC_LIBRARY_DEBUG )
 
     mark_as_advanced( TBB_ROOT )
     message ( "TBB_ROOT: "${TBB_ROOT} )
 
     include( FindPackageHandleStandardArgs )
-    FIND_PACKAGE_HANDLE_STANDARD_ARGS( TBB DEFAULT_MSG TBB_LIBRARY TBB_MALLOC_LIBRARY TBB_LIBRARY_DEBUG TBB_MALLOC_LIBRARY_DEBUG TBB_INCLUDE_DIRS TBB_ROOT)
+    FIND_PACKAGE_HANDLE_STANDARD_ARGS( TBB DEFAULT_MSG TBB_LIBRARY TBB_MALLOC_LIBRARY TBB_INCLUDE_DIRS TBB_ROOT)
 
     if( NOT TBB_FOUND )
         message( STATUS "FindTBB looked for libraries named tbb but could not find" )
