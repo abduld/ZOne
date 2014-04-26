@@ -52,6 +52,5 @@ extern void zError_update(zError_t err, zErrorCode_t code, const char *file,
                           const char *fun, int line);
 
 extern char *zError_toLog(zError_t err);
-extern json_t *zError_toJSON(zError_t err);
 
 #endif /* __ZERROR_H__ */

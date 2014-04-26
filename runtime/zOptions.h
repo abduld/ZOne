@@ -2,8 +2,8 @@
 #ifndef __ZOPTIONS_H__
 #define __ZOPTIONS_H__
 
-#define True true
-#define False false
+#define zTrue true
+#define zFalse false
 
 #define Z_CONFIG_DEBUG True
 #define Z_CONFIG_EAGER_COPY True
@@ -13,6 +13,7 @@
 typedef bool zBool_t;
 typedef int zInteger_t;
 typedef float zReal_t;
+
 
 #ifdef _MSC_VER
 #define __func__ __FUNCTION__

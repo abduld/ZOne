@@ -29,7 +29,7 @@ struct st_zStream_t {
 };
 
 struct st_zState_t {
-  zBool cuStreamInUse[zCUDAStream_count];
+  zBool_t cuStreamInUse[zCUDAStream_count];
   zStreamList_t cuStreams;
   zMemoryGroupList_t memoryGroups;
   zFunctionInformationMap_t fInfos;
@@ -37,7 +37,6 @@ struct st_zState_t {
   zLogger_t logger;
   zTimer_t timer;
   zError_t err;
-  uv_cpu_info_t *cpuInfo;
   int cpuCount;
 };
 

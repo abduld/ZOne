@@ -63,7 +63,7 @@ void zStringBuffer_delete(zStringBuffer_t sb) {
 	return ;
 }
 
-static zBool zStringBuffer_expand(zStringBuffer_t sb, size_t len) {
+static zBool_t zStringBuffer_expand(zStringBuffer_t sb, size_t len) {
 	if (sb) {
 		if (zStringBuffer_getCurrentLength(sb) + len < zStringBuffer_getMaxLength(sb) - 1) {
 			return zTrue;

@@ -3,7 +3,6 @@
 #ifndef __ZSTRING_H__
 #define __ZSTRING_H__
 
-#include <z.h>
 #include <vector>
 #include <string>
 #include <ostream>
@@ -272,13 +271,13 @@ zString(const T0 &x0, const T1 &x1, const T2 &x2, const T3 &x3, const T4 &x4,
 }
 
 template <typename X, typename Y>
-static inline zBool zString_sameQ(const X &x, const Y &y) {
+static inline zBool_t zString_sameQ(const X &x, const Y &y) {
   string xs = zString(x);
   string ys = zString(y);
   return strcmp(xs.c_str(), ys.c_str()) == 0;
 }
 
-static inline zBool zString_sameQ(const string &x, const string &y) {
+static inline zBool_t zString_sameQ(const string &x, const string &y) {
   return x.compare(y) == 0;
 }
 
@@ -296,7 +295,7 @@ static inline char *zString_toLower(const char *str) {
   }
 }
 
-static inline zBool zString_startsWith(const char *str, const char *prefix) {
+static inline zBool_t zString_startsWith(const char *str, const char *prefix) {
   while (*prefix != '\0') {
     if (*str == '\0' || *str != *prefix) {
       return zFalse;

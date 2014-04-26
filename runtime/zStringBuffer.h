@@ -7,7 +7,7 @@ zStringBuffer_t zStringBuffer_new(void);
 zStringBuffer_t zStringBuffer_initialize(size_t sz);
 void zStringBuffer_delete(zStringBuffer_t sb);
 void zStringBuffer_deleteStructure(zStringBuffer_t sb);
-static zBool zStringBuffer_expand(zStringBuffer_t sb, size_t len);
+static zBool_t zStringBuffer_expand(zStringBuffer_t sb, size_t len);
 void zStringBuffer_setId(zStringBuffer_t sb, int id);
 int zStringBuffer_id(zStringBuffer_t sb);
 size_t zStringBuffer_length(zStringBuffer_t sb);
