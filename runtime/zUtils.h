@@ -36,11 +36,11 @@ using namespace tbb;
       zAssert(cond);                                                           \
     }                                                                          \
   } while (0)
-#define zError(msg) zAssertMessage(msg, False)
+#define zPrint_error(msg) zAssertMessage(msg, False)
 #else /* WB_DEBUG */
 #define zAssert(...)
 #define zAssertMessage(...)
-#define zError(msg) zPrint(msg)
+#define zPrint_error(msg) zPrint(msg)
 #endif /* WB_DEBUG */
 
 #include "zMalloc.h"

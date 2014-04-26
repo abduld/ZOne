@@ -3,6 +3,12 @@
 #define __ZTYPES_H__
 
 #include <stdint.h>
+#include <vector>
+#include <string>
+#include <unordered_map>
+
+
+using namespace std;
 
 typedef enum {
   zMemoryType_unknown = -99,
@@ -17,7 +23,7 @@ typedef enum {
 static inline size_t zMemoryType_size(zMemoryType_t typ) {
   switch (typ) {
   case zMemoryType_void:
-    return sizeof(void);
+    return sizeof(unsigned char);
   case zMemoryType_bit8:
     return sizeof(int8_t);
   case zMemoryType_int32:

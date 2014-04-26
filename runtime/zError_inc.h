@@ -1,7 +1,7 @@
 
 
 #ifndef zError_define
-#error "zError_define is not defined
+#error "zError_define is not defined"
 #endif /* zError_define */
 
 zError_define(success, "success")

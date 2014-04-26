@@ -29,7 +29,8 @@ set(CUDA_NVCC_FP_FLAGS
 )
 
 set(CUDA_NVCC_FLAGS_RELEASE 
-    "-O3;"
+    "-O0;"
+    "-g;"
     "-lm;"
 )
 
@@ -43,7 +44,7 @@ include_directories( ${TBB_INCLUDE_DIRS} )
 if (UNIX)
     set(CUDA_NVCC_FLAGS_RELEASE
         ${CUDA_NVCC_FLAGS_RELEASE}
-        "-Xcompiler;-malign-double;"
+        "-Xcompiler;-malign-double;-std=c++11"
     )
 else (UNIX)
     set(CUDA_NVCC_FLAGS_RELEASE
@@ -51,6 +52,12 @@ else (UNIX)
         "-Xcompiler;-bigobj;"
     )
 endif (UNIX)
+ADD_DEFINITIONS(
+    -std=c++11
+)
+list( APPEND CMAKE_CXX_FLAGS
+    "-std=c++11 ${CMAKE_CXX_FLAGS} -g -ftest-coverage -fprofile-arcs"
+)
 
 file( GLOB  zhdr *.hpp *.h )
 file( GLOB  zsrc *.cpp *.c *.cu)
@@ -59,7 +66,7 @@ include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CUDA_INCLUDE_DIRS})
 
 set (name "zrt")
-cuda_add_library(${name} ${zsrc} SHARED)
+add_library(${name} ${zsrc})
 target_link_libraries(${name} ${TBB_LIBRARIES})
 
 if(UNIX)

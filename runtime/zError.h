@@ -5,13 +5,13 @@
 
 typedef enum en_zErrorCode_t {
 #define zError_define(err, ...) zError_##err,
-#include "error_inc.h"
+#include "zError_inc.h"
 #undef zError_define
   zSuccess = zError_success
 } zErrorCode_t;
 
 #define zSuccessQ(err)                                                         \
-  (zError_getCode(err) == zSuccess || zError_getCode(err) == zError_uv)
+  (zError_getCode(err) == zSuccess || zError_getCode(err) == cudaSuccess)
 #define zFailQ(err) (!(zSuccessQ(err)))
 
 struct st_zError_t {
@@ -42,7 +42,6 @@ struct st_zError_t {
 
 #define zError(err, code)                                                      \
   zError_update(err, zError_##code, zFile, zFunction, zLine)
-#define zError_uv(err) zError(err, uv)
 
 extern zError_t zError_new();
 extern void zError_delete(zError_t err);

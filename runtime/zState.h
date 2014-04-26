@@ -33,8 +33,7 @@ struct st_zState_t {
   zStreamList_t cuStreams;
   zMemoryGroupList_t memoryGroups;
   zFunctionInformationMap_t fInfos;
-  uv_mutex_t mutexs[zStateLabel_Count];
-  uv_thread_t threads[zStateLabel_Count];
+  speculative_spin_mutex mutexs[zStateLabel_Count];
   zLogger_t logger;
   zTimer_t timer;
   zError_t err;
@@ -44,25 +43,12 @@ struct st_zState_t {
 
 #define zErr zState_geError(st)
 
-static inline void wbState_lockMutex(wbState_t st, zStateLabel_t lbl) {
-  if (st != NULL) {
-    uv_mutex_lock(&wbState_getMutex(st, lbl));
-  }
-  return;
-}
-
-static inline void wbState_unlockMutex(wbState_t st, zStateLabel_t lbl) {
-  if (st != NULL) {
-    uv_mutex_unlock(&wbState_getMutex(st, lbl));
-  }
-  return;
-}
-
 #define wbState_mutexed(lbl, ...)                                              \
   do {                                                                         \
-    wbState_lockMutex(st, zStateLabel_##lbl);                                  \
+    speculative_spin_mutex mutex = wbState_getMutex(st, zStateLabel_##lbl);    \
+    mutex::scoped_lock();                                                      \
     { __VA_ARGS__; }                                                           \
-    wbState_unlockMutex(st, zStateLabel_##lbl);                                \
   } while (0)
+
 
 #endif /* __ZSTATE_H__ */
