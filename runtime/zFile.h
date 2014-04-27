@@ -5,17 +5,17 @@
 #include "z.h"
 
 struct st_zFile_t {
-  zContext_t ctx;
+  zState_t st;
   char *path;
   int flags;
 };
 
-#define zFile_getContext(fs) ((fs)->ctx)
+#define zFile_getState(fs) ((fs)->st)
 #define zFile_getPath(fs) ((fs)->path)
 #define zFile_getFlags(fs) ((fs)->flags)
 #define zFile_getOpenedQ(fs) ((fs)->openedQ)
 
-#define zFile_setContext(fs, val) (zFile_getContext(fs) = val)
+#define zFile_setState(fs, val) (zFile_getState(fs) = val)
 #define zFile_setPath(fs, val) (zFile_getPath(fs) = val)
 #define zFile_setFlags(fs, val) (zFile_getFlags(fs) = val)
 #define zFile_setOpenedQ(fs, val) (zFile_getOpenedQ(fs) = val)

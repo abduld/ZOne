@@ -2,15 +2,6 @@
 #ifndef __ZMEMORY_H__
 #define __ZMEMORY_H__
 
-typedef enum en_zMemoryStatus_t {
-  zMemoryStatus_unallocated = 0,
-  zMemoryStatus_allocatedHost,
-  zMemoryStatus_allocatedDevice,
-  zMemoryStatus_dirtyDevice,
-  zMemoryStatus_dirtyHost,
-  zMemoryStatus_cleanDevice,
-  zMemoryStatus_cleanHost,
-} zMemoryStatus_t;
 
 struct st_zMemory_t {
   zState_t st;

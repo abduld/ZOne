@@ -17,7 +17,7 @@ struct st_zMemoryGroup_t {
   void *hostData;
   zMemoryType_t typ;
   int nmems;
-  zMemoryGroup_t *mems;
+  zMemory_t *mems;
   zMemoryStatus_t hostMemoryStatus;
   zMemoryStatus_t deviceMemoryStatus;
   speculative_spin_mutex mutex;

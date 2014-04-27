@@ -45,8 +45,6 @@ struct st_zError_t {
 extern zError_t zError_new();
 extern void zError_delete(zError_t err);
 
-extern void zError_update(zError_t err, uv_err_t code, const char *file,
-                          const char *fun, int line);
 extern void zError_update(zError_t err, zErrorCode_t code, const char *file,
                           const char *fun, int line);
 
