@@ -21,7 +21,6 @@ struct st_zError_t {
   const char *file;
   const char *function;
   zState_t st;
-  uv_loop_t *loop;
 };
 
 #define zError_getMessage(err) ((err)->msg)

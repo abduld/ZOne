@@ -49,7 +49,7 @@ static inline char *zFile_nameJoin(const char *dir, const char *file) {
   return zString_duplicate(out);
 }
 
-static inline zBool zFile_existsQ(const char *path) {
+static inline zBool_t zFile_existsQ(const char *path) {
   FILE *file;
 
   if (file = fopen(path, "r")) {
