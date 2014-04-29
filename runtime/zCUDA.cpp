@@ -44,7 +44,8 @@ static void onCopyToDeviceStreamFinish(cudaStream_t stream, cudaError_t status,
   zMemory_t mem;
   assert(status == cudaSuccess);
   mem = (zMemory_t)userData;
-  zMemory_setDeviceMemoryStatus(mem, zMemoryStatus_copied);
+  zMemory_setDeviceMemoryStatus(mem, zMemoryStatus_cleanDevice);
+  zMemory_setHostMemoryStatus(mem, zMemoryStatus_cleanHost);
   return;
 }
 
@@ -84,7 +85,8 @@ static void onCopyToHostStreamFinish(cudaStream_t stream, cudaError_t status,
   zMemory_t mem;
   assert(status == cudaSuccess);
   mem = (zMemory_t)userData;
-  zMemory_setDeviceMemoryStatus(mem, zMemoryStatus_copied);
+  zMemory_setDeviceMemoryStatus(mem, zMemoryStatus_cleanDevice);
+  zMemory_setHostMemoryStatus(mem, zMemoryStatus_cleanHost);
   return;
 }
 
