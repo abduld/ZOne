@@ -19,7 +19,7 @@ struct st_zMemory_t {
   (zMemory_getDeviceMemoryStatus(mem) >= zMemoryStatus_allocatedDevice)
 
 #define zMemory_getState(mem) ((mem)->st)
-#define zMemory_getByteCount(mem) ((mem)->sz)
+#define zMemory_getByteCount(mem) ((mem)->byteCount)
 #define zMemory_getType(mem) ((mem)->typ)
 #define zMemory_getHostMemory(mem) ((mem)->hostMemory)
 #define zMemory_getHostMemoryStatus(mem) ((mem)->hostMemoryStatus)

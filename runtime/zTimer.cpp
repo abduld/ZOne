@@ -54,7 +54,7 @@ static inline uint64_t getTime(void) {
   return zNow();
 }
 
-static inline zTimerNode_t zTimerNode_new(int id, zTimerKind_t kind,
+static inline zTimerNode_t zTimerNode_new(int id, string kind,
                                           const char *file, const char *fun,
                                           int startLine) {
   zTimerNode_t node = zNew(struct st_zTimerNode_t);
@@ -243,7 +243,7 @@ static inline void _insertIntoList(zTimer_t timer, zTimerNode_t node) {
   zTimer_incrementLength(timer);
 }
 
-zTimerNode_t zTimer_start(zState_t st, zTimerKind_t kind, const char *file,
+zTimerNode_t zTimer_start(zState_t st, string kind, const char *file,
                           const char *fun, int line) {
   int id;
   uint64_t currentTime;
@@ -256,7 +256,7 @@ zTimerNode_t zTimer_start(zState_t st, zTimerKind_t kind, const char *file,
 
     currentTime = getTime();
 
-    id = zTimer_getLength();
+    id = zTimer_getLength(timer);
 
     node = zTimerNode_new(id, kind, file, fun, line);
 
@@ -273,25 +273,25 @@ zTimerNode_t zTimer_start(zState_t st, zTimerKind_t kind, const char *file,
   return node;
 }
 
-zTimerNode_t zTimer_start(zState_t st, zTimerKind_t kind, string msg,
+zTimerNode_t zTimer_start(zState_t st, string kind, string msg,
                           const char *file, const char *fun, int line) {
-  zTimerNode_t node = zTimer_start(kind, file, fun, line);
+  zTimerNode_t node = zTimer_start(st, kind, file, fun, line);
   zTimerNode_setMessage(node, zString_duplicate(msg));
   return node;
 }
 
-static inline zTimerNode_t _findNode(zTimer_t timer, zTimerKind_t kind,
+static inline zTimerNode_t _findNode(zTimer_t timer, string kind,
                                      string msg) {
   zTimerNode_t iter;
 
   for (iter = zTimer_getTail(timer); iter != NULL;
        iter = zTimerNode_getPrevious(iter)) {
     if (msg == "") {
-      if (!zTimerNode_stoppedQ(iter) && zTimerNode_getKind(iter) == kind) {
+      if (!zTimerNode_stoppedQ(iter) && zString_sameQ(zTimerNode_getKind(iter), kind)) {
         return iter;
       }
     } else {
-      if (!zTimerNode_stoppedQ(iter) && zTimerNode_getKind(iter) == kind &&
+      if (!zTimerNode_stoppedQ(iter) && zString_sameQ(zTimerNode_getKind(iter), kind) &&
           msg == zTimerNode_getMessage(iter)) {
         return iter;
       }
@@ -300,7 +300,7 @@ static inline zTimerNode_t _findNode(zTimer_t timer, zTimerKind_t kind,
   return NULL;
 }
 
-void zTimer_stop(zState_t st, zTimerKind_t kind, string msg, const char *file,
+void zTimer_stop(zState_t st, string kind, string msg, const char *file,
                  const char *fun, int line) {
   uint64_t currentTime;
   zTimerNode_t node;
@@ -329,7 +329,7 @@ void zTimer_stop(zState_t st, zTimerKind_t kind, string msg, const char *file,
   return;
 }
 
-void zTimer_stop(zState_t st, zTimerKind_t kind, const char *file,
+void zTimer_stop(zState_t st, string kind, const char *file,
                  const char *fun, int line) {
   zTimer_stop(st, kind, "", file, fun, line);
 }

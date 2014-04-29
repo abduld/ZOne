@@ -42,7 +42,7 @@ void zError_update(zError_t err, zErrorCode_t code, const char *file,
     return;
   }
 
-  wbState_mutexed(Error, {
+  zState_mutexed(Error, {
 
     zAssert(code > 0);
     zAssert(code < sizeof(zErrorMessages));

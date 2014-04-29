@@ -15,12 +15,10 @@
 extern uint64_t _hrtime_frequency;
 #endif /* _WIN32 */
 
-extern zTimer_t _timer;
-
 struct st_zTimerNode_t {
   int id;
   int level;
-  zBool stoppedQ;
+  zBool_t stoppedQ;
   string kind;
   uint64_t startTime;
   uint64_t endTime;
@@ -97,20 +95,20 @@ void zTimer_delete(zTimer_t timer);
 
 string zTimer_toString(zTimer_t timer);
 
-zTimerNode_t zTimer_start(zState_t st, zTimerKind_t kind, const char *file,
+zTimerNode_t zTimer_start(zState_t st, string kind, const char *file,
                           const char *fun, int line);
-zTimerNode_t zTimer_start(zState_t st, zTimerKind_t kind, string msg,
+zTimerNode_t zTimer_start(zState_t st, string kind, string msg,
                           const char *file, const char *fun, int line);
-void zTimer_stop(zState_t st, zTimerKind_t kind, string msg, const char *file,
+void zTimer_stop(zState_t st, string kind, string msg, const char *file,
                  const char *fun, int line);
-void zTimer_stop(zState_t st, zTimerKind_t kind, const char *file,
+void zTimer_stop(zState_t st, string kind, const char *file,
                  const char *fun, int line);
 
 #define zTime_start(kind, ...)                                                 \
-  zTimer_start(st, zTimerKind_##kind, zString(__VA_ARGS__), zFile, zFunction,  \
+  zTimer_start(st, #kind, zString(__VA_ARGS__), zFile, zFunction,  \
                zLine)
 #define zTime_stop(kind, ...)                                                  \
-  zTimer_stop(st, zTimerKind_##kind, zString(__VA_ARGS__), zFile, zFunction,   \
+  zTimer_stop(st, kind, zString(__VA_ARGS__), zFile, zFunction,   \
               zLine)
 
 #endif /* __ZTIMER_H__ */

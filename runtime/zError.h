@@ -10,11 +10,6 @@ typedef enum en_zErrorCode_t {
   zSuccess = zError_success
 } zErrorCode_t;
 
-#define zSuccessQ(err)                                                         \
-  (zError_getCode(err) == zSuccess ||                                          \
-   ((cudaError)zError_getCode(err)) == cudaSuccess)
-#define zFailQ(err) (!(zSuccessQ(err)))
-
 struct st_zError_t {
   int line;
   zErrorCode_t code;
@@ -48,5 +43,21 @@ extern void zError_update(zError_t err, zErrorCode_t code, const char *file,
                           const char *fun, int line);
 
 extern char *zError_toLog(zError_t err);
+
+
+static inline zBool_t zSuccessQ(zError_t err) {
+  return (zError_getCode(err) == zSuccess ||
+   ((cudaError)zError_getCode(err)) == cudaSuccess);
+}
+
+static inline zBool_t zSuccessQ(zErrorCode_t err) {
+  return err == zSuccess;
+}
+
+static inline zBool_t zSuccessQ(cudaError err) {
+  return err == cudaSuccess;
+}
+
+#define zFailQ(err) (!(zSuccessQ(err)))
 
 #endif /* __ZERROR_H__ */

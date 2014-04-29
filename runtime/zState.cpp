@@ -11,6 +11,14 @@ void freeCPUInfo(zState_t st) {
 }
 
 
+void zState_setError(zState_t st, zErrorCode_t errCode) {
+	return ; // todo
+}
+
+void zState_setError(zState_t st, cudaError cuErr) {
+	return ; // todo
+}
+
 void zState_addMemoryGroup(zState_t st, zMemoryGroup_t mg) {
 	return ;
 }

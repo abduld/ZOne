@@ -6,7 +6,7 @@ public:
   task *dummy;
   zMemoryGroup_t mg;
 
-  cudaMallocTask(task *dummy_, zMemoryGroup_t mem_) : dummy(dummy_), mg(mg_) {}
+  cudaMallocTask(task *dummy_, zMemoryGroup_t mg_) : dummy(dummy_), mg(mg_) {}
   task *execute() {
     size_t offset = 0;
     zState_t st = zMemoryGroup_getState(mg);
@@ -19,7 +19,7 @@ public:
     if (zSuccessQ(err)) {
       for (int ii = 0; ii < zMemoryGroup_getMemoryCount(mg); ii++) {
         zMemory_t mem = zMemoryGroup_getMemory(mg, ii);
-        zMemory_setDeviceMemory(mg, deviceMem + offset);
+        zMemory_setDeviceMemory(mg, ((char *) deviceMem) + offset);
         offset += zMemory_getByteCount(mem);
       }
       zMemoryGroup_setDeviceMemoryStatus(mg, zMemoryStatus_allocatedDevice);
@@ -30,8 +30,9 @@ public:
 };
 
 void zCUDA_malloc(zMemoryGroup_t mg) {
+  //http://www.threadingbuildingblocks.org/docs/help/reference/task_scheduler/catalog_of_recommended_task_patterns.htm
   task *dummy = new (task::allocate_root()) empty_task;
-  dummy->set_ref_count(k + 1);
+  dummy->set_ref_count(1);
   task &tk = *new (dummy->allocate_child()) cudaMallocTask(dummy, mg);
   dummy->spawn(tk);
 

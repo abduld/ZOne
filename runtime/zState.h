@@ -70,20 +70,21 @@ struct st_zState_t {
 #define zState_setMutex(st, ii) (zState_getMutex(st, ii) = val)
 #define zState_setLogger(st, val) (zState_getLogger(st) = val)
 #define zState_setTimer(st, val) (zState_getTimer(st) = val)
-#define zState_setError(st, val) (zState_getError(st) = val)
 
 #define zErr zState_geError(st)
 
 zState_t zState_new();
 void zState_delete(zState_t st);
 
-#define wbState_mutexed(lbl, ...)                                              \
+#define zState_mutexed(lbl, ...)                                              \
   do {                                                                         \
     speculative_spin_mutex mutex = zState_getMutex(st, zStateLabel_##lbl);     \
     mutex::scoped_lock();                                                      \
     { __VA_ARGS__; }                                                           \
   } while (0)
 
+void zState_setError(zState_t st, zErrorCode_t errCode);
+void zState_setError(zState_t st, cudaError cuErr);
 void zState_addMemoryGroup(zState_t st, zMemoryGroup_t mg);
 
 #endif /* __ZSTATE_H__ */
