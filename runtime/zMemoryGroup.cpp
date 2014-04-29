@@ -52,17 +52,29 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank,
 
 void zMemoryGroup_delete(zMemoryGroup_t mem) {}
 
-void zMemoryGroup_freeHostMemory(zMemoryGroup_t mem) {}
+void zMemoryGroup_freeHostMemory(zMemoryGroup_t mem) {
+  if (mem && zMemoryGroup_hostMemoryAllocatedQ(mem) && 
+    zMemoryGroup_getHostMemory(mem) ! = NULL) {
+    zFree(zMemoryGroup_getHostMemory(mem));
+  zMemoryGroup_setHostMemoryStatus(mem, zMemoryStatus_unallocated);
+  }
+}
 
-void zMemoryGroup_freeDeviceMemory(zMemoryGroup_t mem) {}
+void zMemoryGroup_freeDeviceMemory(zMemoryGroup_t mem) {
+  if (mem && zMemoryGroup_deviceMemoryAllocatedQ(mem) && 
+    zMemoryGroup_getDeviceMemory(mem) ! = NULL) {
+    zCUDA_free(zMemoryGroup_getDeviceMemory(mem));
+  zMemoryGroup_setDeviceMemoryStatus(mem, zMemoryStatus_unallocated);
+  }
+}
 
-void zMemoryGroup_copyToDevice(zMemoryGroup_t mem) {}
+void zMemoryGroup_copyToDevice(zMemoryGroup_t mem) {
+  zCUDA_copyToDevice(mem);
+}
 
-void zMemoryGroup_copyToHost(zMemoryGroup_t mem) {}
-
-void zMemoryGroup_copyToDevice(zMemoryGroup_t mem, int elem) {}
-
-void zMemoryGroup_copyToHost(zMemoryGroup_t mem, int elem) {}
+void zMemoryGroup_copyToHost(zMemoryGroup_t mem) {
+  zCUDA_copyToHost(mem);
+}
 
 void zMemoryGroup_setDeviceMemoryStatus(zMemoryGroup_t mg, zMemoryStatus_t st) {
   if (mg != NULL) {
@@ -72,7 +84,7 @@ void zMemoryGroup_setDeviceMemoryStatus(zMemoryGroup_t mg, zMemoryStatus_t st) {
         zMemory_setDeviceMemoryStatus(mem, st);
       }
     }
-    zMemoryGroup__setDeviceMemoryStatus(mem, st);
+    zMemoryGroup__setDeviceMemoryStatus(mg, st);
   }
 }
 
@@ -84,6 +96,6 @@ void zMemoryGroup_setHostMemoryStatus(zMemoryGroup_t mg, zMemoryStatus_t st) {
         zMemory_setHostMemoryStatus(mem, st);
       }
     }
-    zMemoryGroup__setHostMemoryStatus(mem, st);
+    zMemoryGroup__setHostMemoryStatus(mg, st);
   }
 }
