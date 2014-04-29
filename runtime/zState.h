@@ -84,4 +84,6 @@ void zState_delete(zState_t st);
     { __VA_ARGS__; }                                                           \
   } while (0)
 
+void zState_addMemoryGroup(zState_t st, zMemoryGroup_t mg);
+
 #endif /* __ZSTATE_H__ */

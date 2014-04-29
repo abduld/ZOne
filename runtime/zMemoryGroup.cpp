@@ -68,12 +68,48 @@ void zMemoryGroup_freeDeviceMemory(zMemoryGroup_t mem) {
   }
 }
 
-void zMemoryGroup_copyToDevice(zMemoryGroup_t mem) {
-  zCUDA_copyToDevice(mem);
+void zMemoryGroup_copyToDevice(zMemoryGroup_t mg) {
+  if (mg == NULL) {
+    return ;
+  }
+
+  while (!zMemoryGroup_hostMemoryAllocatedQ(mg) || !zMemoryGroup_deviceMemoryAllocatedQ(mg)) {
+  }
+
+  int nMems = zMemoryGroup_getMemoryCount(mg);
+
+  tbb::parallel_for(0, nMems, [=](int ii) {
+    zMemoryGroup_copyToDevice(mg, ii);
+  });
 }
 
-void zMemoryGroup_copyToHost(zMemoryGroup_t mem) {
-  zCUDA_copyToHost(mem);
+void zMemoryGroup_copyToHost(zMemoryGroup_t mg) {
+  if (mg == NULL) {
+    return ;
+  }
+
+  while (!zMemoryGroup_hostMemoryAllocatedQ(mg) || !zMemoryGroup_deviceMemoryAllocatedQ(mg)) {
+  }
+
+  int nMems = zMemoryGroup_getMemoryCount(mg);
+
+  tbb::parallel_for(0, nMems, [=](int ii) {
+    zMemoryGroup_copyToHost(mg, ii);
+  });
+}
+
+void zMemoryGroup_copyToDevice(zMemoryGroup_t mg, int elem) {
+  if (mg != NULL && elem < zMemoryGroup_getMemoryCount(mg)) {
+    zMemory_t mem = zMemoryGroup_getMemory(mg, elem);
+    zCUDA_copyToDevice(mem);
+  }
+}
+
+void zMemoryGroup_copyToHost(zMemoryGroup_t mg, int elem) {
+  if (mg != NULL && elem < zMemoryGroup_getMemoryCount(mg)) {
+    zMemory_t mem = zMemoryGroup_getMemory(mg, elem);
+    zCUDA_copyToHost(mem);
+  }
 }
 
 void zMemoryGroup_setDeviceMemoryStatus(zMemoryGroup_t mg, zMemoryStatus_t st) {

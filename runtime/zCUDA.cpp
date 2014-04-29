@@ -50,6 +50,7 @@ static void onCopyToDeviceStreamFinish(cudaStream_t stream, cudaError_t status,
 void zCUDA_copyToDevice(zMemory_t mem) {
   zState_t st = zMemory_getState(mem);
   zMemoryStatus_t status = zMemory_getStatus(mem);
+  /*
   zMemoryGroup_t mg = zMemory_getMemoryGroup(mem);
   speculative_spin_mutex mutex = zMemoryGroup_getMutex(mg);
 
@@ -61,6 +62,7 @@ void zCUDA_copyToDevice(zMemory_t mem) {
     while (!zMemoryStatus_allocatedDevice(mem)) {
     }
   }
+  */
 
   if (status == zMemoryStatus_allocatedDevice ||
       status == zMemoryStatus_dirtyHost) {
