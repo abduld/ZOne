@@ -13,8 +13,8 @@ struct st_zMemoryGroup_t {
   size_t byteCount;
   int rank;
   size_t *dims;
-  void *deviceData;
-  void *hostData;
+  void *deviceMemory;
+  void *hostMemory;
   zMemoryType_t typ;
   int nmems;
   zMemory_t *mems;

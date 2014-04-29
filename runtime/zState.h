@@ -41,7 +41,8 @@ struct st_zState_t {
   int cpuCount;
 };
 
-#define zState_getNextMemoryGroupId(st)  ((st)->nextMemId)
+#define zState_peekNextMemoryGroupId(st)  ((st)->nextMemId)
+#define zState_getNextMemoryGroupId(st)  (zState_peekNextMemoryGroupId(st)++)
 #define zState_getCUDAStreamsInUse(st)  ((st)->cuStreamInUse)
 #define zState_getCUDAStreamInUse(st, ii) (zState_getCUDAStreamsInUse(st)[ii])
 #define zState_getCUDAStreams(st)  ((st)->cuStreams)
@@ -54,7 +55,23 @@ struct st_zState_t {
 #define zState_getTimer(st) ((st)->timer)
 #define zState_getError(st) ((st)->err)
 
+#define zState_setNextMemoryGroupId(st, val)  (zState_peekNextMemoryGroupId(st) = val)
+#define zState_setCUDAStreamsInUse(st, val)  (zState_getCUDAStreamsInUse(st) = val)
+#define zState_setCUDAStreamInUse(st, ii) (zState_getCUDAStreamInUse(st, ii) = val)
+#define zState_setCUDAStreams(st, val)  (zState_getCUDAStreams(st) = val)
+#define zState_setCUDAStream(st, ii) (zState_getCUDAStream(st, ii) = val)
+#define zState_setMemoryGroups(st, val) (zState_getMemoryGroups(st) = val)
+#define zState_setFunctionInformationMap(st, val) (zState_getFunctionInformationMap(st) = val)
+#define zState_setMutexes(st, val) (zState_getMutexes(st) = val)
+#define zState_setMutex(st, ii) (zState_getMutex(st, ii) = val)
+#define zState_setLogger(st, val) (zState_getLogger(st) = val)
+#define zState_setTimer(st, val) (zState_getTimer(st) = val)
+#define zState_setError(st, val) (zState_getError(st) = val)
+
 #define zErr zState_geError(st)
+
+zState_t zState_new();
+void zState_delete(zState_t st);
 
 #define wbState_mutexed(lbl, ...)                                              \
   do {                                                                         \

@@ -15,9 +15,9 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank,
   int id = zState_getNextMemoryGroupId(st);
   size_t byteCount = computeByteCount(typ, rank, dims);
   size_t chunkSize = zCeil(byteCount, nMems);
-  char *hostMem = zNewArray(byteCount, char);
+  char *hostMem = zNewArray(char, byteCount);
 
-  dimsCopy = NewArray(size_t, rank);
+  size_t * dimsCopy = zNewArray(size_t, rank);
   memcpy(dimsCopy, dims, rank * sizeof(size_t));
 
   size_t bytesLeft = byteCount;
@@ -28,19 +28,19 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank,
     bytesLeft -= chunkSize;
   }
 
-  zMemoryGroup_setId(mem, id);
-  zMemoryGroup_setState(mem, st);
-  zMemoryGroup_setByteCount(mem, bytecount);
-  zMemoryGroup_setType(mem, typ);
-  zMemoryGroup_setRank(mem, rank);
-  zMemoryGroup_setDimensions(mem, dimsCopy);
-  zMemoryGroup_setHostMemory(mem, hostMem);
-  zMemoryGroup_setDeviceMemory(mem, NULL);
+  zMemoryGroup_setId(mg, id);
+  zMemoryGroup_setState(mg, st);
+  zMemoryGroup_setByteCount(mg, byteCount);
+  zMemoryGroup_setType(mg, typ);
+  zMemoryGroup_setRank(mg, rank);
+  zMemoryGroup_setDimensions(mg, dimsCopy);
+  zMemoryGroup_setHostMemory(mg, hostMem);
+  zMemoryGroup_setDeviceMemory(mg, NULL);
 
-  zMemoryGroup_setMemoryCount(mem, nMems);
-  zMemoryGroup_setMemories(mem, mems);
+  zMemoryGroup_setMemoryCount(mg, nMems);
+  zMemoryGroup_setMemories(mg, mems);
 
-  zMemoryGroup_setHostMemoryStatus(mg, zMemoryStatus_allocated);
+  zMemoryGroup_setHostMemoryStatus(mg, zMemoryStatus_allocatedHost);
   zMemoryGroup_setDeviceMemoryStatus(mg, zMemoryStatus_unallocated);
 
   zState_addMemoryGroup(st, mg);

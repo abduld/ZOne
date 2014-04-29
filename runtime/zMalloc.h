@@ -91,8 +91,8 @@ static inline void *xcuRealloc(void *mem, size_t sz) {
   }
 }
 
-#define zNew(type) ((type *)zMalloc(sizeof(type)))
-#define zNewArray(type, len) ((type *)zMalloc((len) * sizeof(type)))
+#define zNew(typ) ((typ *)zMalloc(sizeof(typ)))
+#define zNewArray(typ, len) ((typ *)zMalloc((len) * sizeof(typ)))
 #define zMalloc(sz) xcuMalloc(sz)
 #define zDelete(var) zFree(var)
 #define zFree(var)                                                             \
