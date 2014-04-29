@@ -53,7 +53,7 @@ struct st_zMemoryGroup_t {
 #define zMemoryGroup_setType(mem, val) (zMemoryGroup_getType(mem) = val)
 #define zMemoryGroup_setHostMemory(mem, val)                                   \
   (zMemoryGroup_getHostMemory(mem) = val)
-#define zMemoryGroup__sethostMemoryStatus(mem, val)                            \
+#define zMemoryGroup__setHostMemoryStatus(mem, val)                            \
   (zMemoryGroup_getDeviceMemoryStatus(mem) = val)
 #define zMemoryGroup_setDeviceMemory(mem, val)                                 \
   (zMemoryGroup_getDeviceMemory(mem) = val)

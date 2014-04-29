@@ -104,3 +104,11 @@ void zCUDA_copyToHost(zMemory_t mem) {
     zLog(TRACE, "Skipping recopy of data.");
   }
 }
+
+void zCUDA_free(void * mem) {
+  if (mem != NULL) {
+    cudaFree(mem);
+  }
+}
+
+
