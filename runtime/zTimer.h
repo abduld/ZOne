@@ -101,14 +101,12 @@ zTimerNode_t zTimer_start(zState_t st, string kind, string msg,
                           const char *file, const char *fun, int line);
 void zTimer_stop(zState_t st, string kind, string msg, const char *file,
                  const char *fun, int line);
-void zTimer_stop(zState_t st, string kind, const char *file,
-                 const char *fun, int line);
+void zTimer_stop(zState_t st, string kind, const char *file, const char *fun,
+                 int line);
 
 #define zTime_start(kind, ...)                                                 \
-  zTimer_start(st, #kind, zString(__VA_ARGS__), zFile, zFunction,  \
-               zLine)
+  zTimer_start(st, #kind, zString(__VA_ARGS__), zFile, zFunction, zLine)
 #define zTime_stop(kind, ...)                                                  \
-  zTimer_stop(st, kind, zString(__VA_ARGS__), zFile, zFunction,   \
-              zLine)
+  zTimer_stop(st, kind, zString(__VA_ARGS__), zFile, zFunction, zLine)
 
 #endif /* __ZTIMER_H__ */

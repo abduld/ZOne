@@ -53,49 +53,48 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank,
 void zMemoryGroup_delete(zMemoryGroup_t mem) {}
 
 void zMemoryGroup_freeHostMemory(zMemoryGroup_t mem) {
-  if (mem && zMemoryGroup_hostMemoryAllocatedQ(mem) && 
-    zMemoryGroup_getHostMemory(mem) != NULL) {
+  if (mem && zMemoryGroup_hostMemoryAllocatedQ(mem) &&
+      zMemoryGroup_getHostMemory(mem) != NULL) {
     zFree(zMemoryGroup_getHostMemory(mem));
-  zMemoryGroup_setHostMemoryStatus(mem, zMemoryStatus_unallocated);
+    zMemoryGroup_setHostMemoryStatus(mem, zMemoryStatus_unallocated);
   }
 }
 
 void zMemoryGroup_freeDeviceMemory(zMemoryGroup_t mem) {
-  if (mem && zMemoryGroup_deviceMemoryAllocatedQ(mem) && 
-    zMemoryGroup_getDeviceMemory(mem) != NULL) {
+  if (mem && zMemoryGroup_deviceMemoryAllocatedQ(mem) &&
+      zMemoryGroup_getDeviceMemory(mem) != NULL) {
     zCUDA_free(zMemoryGroup_getDeviceMemory(mem));
-  zMemoryGroup_setDeviceMemoryStatus(mem, zMemoryStatus_unallocated);
+    zMemoryGroup_setDeviceMemoryStatus(mem, zMemoryStatus_unallocated);
   }
 }
 
 void zMemoryGroup_copyToDevice(zMemoryGroup_t mg) {
   if (mg == NULL) {
-    return ;
+    return;
   }
 
-  while (!zMemoryGroup_hostMemoryAllocatedQ(mg) || !zMemoryGroup_deviceMemoryAllocatedQ(mg)) {
+  while (!zMemoryGroup_hostMemoryAllocatedQ(mg) ||
+         !zMemoryGroup_deviceMemoryAllocatedQ(mg)) {
   }
 
   int nMems = zMemoryGroup_getMemoryCount(mg);
 
-  tbb::parallel_for(0, nMems, [=](int ii) {
-    zMemoryGroup_copyToDevice(mg, ii);
-  });
+  tbb::parallel_for(0, nMems,
+                    [=](int ii) { zMemoryGroup_copyToDevice(mg, ii); });
 }
 
 void zMemoryGroup_copyToHost(zMemoryGroup_t mg) {
   if (mg == NULL) {
-    return ;
+    return;
   }
 
-  while (!zMemoryGroup_hostMemoryAllocatedQ(mg) || !zMemoryGroup_deviceMemoryAllocatedQ(mg)) {
+  while (!zMemoryGroup_hostMemoryAllocatedQ(mg) ||
+         !zMemoryGroup_deviceMemoryAllocatedQ(mg)) {
   }
 
   int nMems = zMemoryGroup_getMemoryCount(mg);
 
-  tbb::parallel_for(0, nMems, [=](int ii) {
-    zMemoryGroup_copyToHost(mg, ii);
-  });
+  tbb::parallel_for(0, nMems, [=](int ii) { zMemoryGroup_copyToHost(mg, ii); });
 }
 
 void zMemoryGroup_copyToDevice(zMemoryGroup_t mg, int elem) {

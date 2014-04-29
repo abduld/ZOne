@@ -44,19 +44,14 @@ extern void zError_update(zError_t err, zErrorCode_t code, const char *file,
 
 extern char *zError_toLog(zError_t err);
 
-
 static inline zBool_t zSuccessQ(zError_t err) {
   return (zError_getCode(err) == zSuccess ||
-   ((cudaError)zError_getCode(err)) == cudaSuccess);
+          ((cudaError)zError_getCode(err)) == cudaSuccess);
 }
 
-static inline zBool_t zSuccessQ(zErrorCode_t err) {
-  return err == zSuccess;
-}
+static inline zBool_t zSuccessQ(zErrorCode_t err) { return err == zSuccess; }
 
-static inline zBool_t zSuccessQ(cudaError err) {
-  return err == cudaSuccess;
-}
+static inline zBool_t zSuccessQ(cudaError err) { return err == cudaSuccess; }
 
 #define zFailQ(err) (!(zSuccessQ(err)))
 

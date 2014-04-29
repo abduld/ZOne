@@ -76,7 +76,7 @@ struct st_zState_t {
 zState_t zState_new();
 void zState_delete(zState_t st);
 
-#define zState_mutexed(lbl, ...)                                              \
+#define zState_mutexed(lbl, ...)                                               \
   do {                                                                         \
     speculative_spin_mutex mutex = zState_getMutex(st, zStateLabel_##lbl);     \
     mutex::scoped_lock();                                                      \

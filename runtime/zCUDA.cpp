@@ -19,7 +19,7 @@ public:
     if (zSuccessQ(err)) {
       for (int ii = 0; ii < zMemoryGroup_getMemoryCount(mg); ii++) {
         zMemory_t mem = zMemoryGroup_getMemory(mg, ii);
-        zMemory_setDeviceMemory(mg, ((char *) deviceMem) + offset);
+        zMemory_setDeviceMemory(mg, ((char *)deviceMem) + offset);
         offset += zMemory_getByteCount(mem);
       }
       zMemoryGroup_setDeviceMemoryStatus(mg, zMemoryStatus_allocatedDevice);
@@ -30,7 +30,7 @@ public:
 };
 
 void zCUDA_malloc(zMemoryGroup_t mg) {
-  //http://www.threadingbuildingblocks.org/docs/help/reference/task_scheduler/catalog_of_recommended_task_patterns.htm
+  // http://www.threadingbuildingblocks.org/docs/help/reference/task_scheduler/catalog_of_recommended_task_patterns.htm
   task *dummy = new (task::allocate_root()) empty_task;
   dummy->set_ref_count(1);
   task &tk = *new (dummy->allocate_child()) cudaMallocTask(dummy, mg);
@@ -108,10 +108,8 @@ void zCUDA_copyToHost(zMemory_t mem) {
   }
 }
 
-void zCUDA_free(void * mem) {
+void zCUDA_free(void *mem) {
   if (mem != NULL) {
     cudaFree(mem);
   }
 }
-
-

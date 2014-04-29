@@ -15,10 +15,8 @@
     }                                                                          \
   } while (0)
 
-
-
 void zCUDA_malloc(zMemoryGroup_t mg);
-void zCUDA_free(void * mem);
+void zCUDA_free(void *mem);
 void zCUDA_copyToDevice(zMemory_t mem);
 void zCUDA_copyToHost(zMemory_t mem);
 
