@@ -29,7 +29,6 @@ struct st_zError_t {
 #define zError_getFile(err) ((err)->file)
 #define zError_getFunction(err) ((err)->function)
 #define zError_getState(err) ((err)->st)
-#define zError_getLoop(err) ((err)->loop)
 
 #define zError_setMessage(err, val) (zError_getMessage(err) = val)
 #define zError_setCode(err, val) (zError_getCode(err) = val)
@@ -37,7 +36,6 @@ struct st_zError_t {
 #define zError_setFile(err, val) (zError_getFile(err) = val)
 #define zError_setFunction(err, val) (zError_getFunction(err) = val)
 #define zError_setState(err, val) (zError_getState(err) = val)
-#define zError_setLoop(err, val) (zError_getLoop(err) = val)
 
 #define zError(err, code)                                                      \
   zError_update(err, zError_##code, zFile, zFunction, zLine)

@@ -60,6 +60,7 @@ typedef struct st_zLogger_t *zLogger_t;
 typedef struct st_zStream_t zStream_t;
 typedef struct st_zTimer_t * zTimer_t;
 typedef struct st_zError_t * zError_t;
+typedef struct st_zFile_t * zFile_t;
 typedef struct st_zStringBuffer_t * zStringBuffer_t;
 
 typedef vector<zMemoryGroup_t> zMemoryGroupList_t;

@@ -4,7 +4,7 @@
 
 typedef struct st_zMapFunction_t {
   string name;
-  zMemoryGroup_t (*f)(dim3 blockDim, dim3 gridDim, zMemoryGroup_t)
+  zMemoryGroup_t (*f)(dim3 blockDim, dim3 gridDim, zMemoryGroup_t);
 } zMapFunction_t;
 
 typedef struct st_zMapGroupFunction_t {

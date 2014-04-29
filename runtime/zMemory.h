@@ -14,15 +14,6 @@ struct st_zMemory_t {
   zMemoryGroup_t group;
 };
 
-static inline int zMemory_getId(zMemory_t mem) {
-  zMemoryGroup_t mg = zMemory_getMemoryGroup(mem);
-  if (mg == NULL) {
-    return -1;
-  } else {
-    return zMemoryGroup_getId(mg);
-  }
-}
-
 #define zMemory_hostMemoryAllocatedQ(mem)                                      \
   (zMemory_getHostMemoryStatus(mem) >= zMemoryStatus_allocatedHost)
 #define zMemory_deviceMemoryAllocatedQ(mem)                                    \
@@ -54,5 +45,16 @@ void zMemory_delete(zMemory_t mem);
 
 void zMemory_copyToDevice(zMemory_t mem);
 void zMemory_copyToHost(zMemory_t mem);
+
+
+static inline int zMemory_getId(zMemory_t mem) {
+  zMemoryGroup_t mg = zMemory_getMemoryGroup(mem);
+  if (mg == NULL) {
+    return -1;
+  } else {
+    return zMemoryGroup_getId(mg);
+  }
+}
+
 
 #endif /* __ZMEMORY_H__ */

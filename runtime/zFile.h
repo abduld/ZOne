@@ -20,6 +20,14 @@ struct st_zFile_t {
 #define zFile_setFlags(fs, val) (zFile_getFlags(fs) = val)
 #define zFile_setOpenedQ(fs, val) (zFile_getOpenedQ(fs) = val)
 
+static inline char * zEnvironment_get(const char * name) {
+#ifdef _WIN32
+#error "todo"
+#else
+  return getenv(name);
+#endif
+}
+
 static inline char *zDirectory_getTemporary() {
   char *buffer;
 
@@ -45,7 +53,7 @@ static inline char *zDirectory_getTemporary() {
 #endif
 
 static inline char *zFile_nameJoin(const char *dir, const char *file) {
-  string out = zString(dim, zDirectory_slash, file);
+  string out = zString(dir, zDirectory_slash, file);
   return zString_duplicate(out);
 }
 

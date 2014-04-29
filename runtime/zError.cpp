@@ -3,7 +3,7 @@
 
 static const char *zErrorMessages[] = {
 #define zError_define(err, msg, ...) msg,
-#include "error_inc.h"
+#include "zError_inc.h"
 #undef zError_define
 };
 
@@ -17,7 +17,6 @@ zError_t zError_new() {
   zError_setFunction(err, NULL);
   zError_setFile(err, NULL);
   zError_setLine(err, -1);
-  zError_setLoop(err, NULL);
 
   return err;
 }
@@ -43,32 +42,12 @@ void zError_update(zError_t err, zErrorCode_t code, const char *file,
     return;
   }
 
-  zState_lockMutex(st);
+  wbState_mutexed(Error, {
 
-  if (code == zError_uv) {
-    uv_loop_t *loop;
-    uv_err_t uvErr;
-
-    if (zError_getLoop(err) != NULL) {
-      loop = zError_getLoop(err);
-    } else if (st != NULL && zState_getLoop(st)) {
-      loop = zState_getLoop(st);
-    } else {
-      return;
-    }
-
-    uvErr = uv_last_error(loop);
-    if (uvErr.code == UV_OK) {
-      zError_setCode(err, zSuccess);
-      msg = zErrorMessages[zSuccess];
-    } else {
-      msg = uv_strerror(uvErr);
-    }
-  } else {
-    zAssert(code > 0);
+  zAssert(code > 0);
     zAssert(code < sizeof(zErrorMessages));
     msg = zErrorMessages[code];
-  }
+  
 
   zError_setCode(err, code);
   zError_setMessage(err, msg);
@@ -76,7 +55,7 @@ void zError_update(zError_t err, zErrorCode_t code, const char *file,
   zError_setFunction(err, fun);
   zError_setLine(err, line);
 
-  zState_unlockMutex(st);
+});
 
   return;
 }

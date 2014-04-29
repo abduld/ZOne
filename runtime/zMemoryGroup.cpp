@@ -63,3 +63,30 @@ void zMemoryGroup_copyToHost(zMemoryGroup_t mem) {}
 void zMemoryGroup_copyToDevice(zMemoryGroup_t mem, int elem) {}
 
 void zMemoryGroup_copyToHost(zMemoryGroup_t mem, int elem) {}
+
+
+void zMemoryGroup_setDeviceMemoryStatus(zMemoryGroup_t mg,
+                                                      zMemoryStatus_t st) {
+  if (mg != NULL) {
+    for (int ii = 0; ii < zMemoryGroup_getMemoryCount(mg); ii++) {
+      zMemory_t mem = zMemoryGroup_getMemory(mg, ii);
+      if (mem != NULL) {
+        zMemory_setDeviceMemoryStatus(mem, st);
+      }
+    }
+    zMemoryGroup__setDeviceMemoryStatus(mem, st);
+  }
+}
+
+void zMemoryGroup_setHostMemoryStatus(zMemoryGroup_t mg,
+                                                    zMemoryStatus_t st) {
+  if (mg != NULL) {
+    for (int ii = 0; ii < zMemoryGroup_getMemoryCount(mg); ii++) {
+      zMemory_t mem = zMemoryGroup_getMemory(mg, ii);
+      if (mem != NULL) {
+        zMemory_setHostMemoryStatus(mem, st);
+      }
+    }
+    zMemoryGroup__setHostMemoryStatus(mem, st);
+  }
+}
