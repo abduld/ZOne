@@ -20,7 +20,7 @@ struct st_zFile_t {
 #define zFile_setFlags(fs, val) (zFile_getFlags(fs) = val)
 #define zFile_setOpenedQ(fs, val) (zFile_getOpenedQ(fs) = val)
 
-static inline char * zEnvironment_get(const char * name) {
+static inline char *zEnvironment_get(const char *name) {
 #ifdef _WIN32
 #error "todo"
 #else

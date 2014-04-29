@@ -11,7 +11,8 @@ typedef enum en_zErrorCode_t {
 } zErrorCode_t;
 
 #define zSuccessQ(err)                                                         \
-  (zError_getCode(err) == zSuccess || ((cudaError) zError_getCode(err)) == cudaSuccess)
+  (zError_getCode(err) == zSuccess ||                                          \
+   ((cudaError)zError_getCode(err)) == cudaSuccess)
 #define zFailQ(err) (!(zSuccessQ(err)))
 
 struct st_zError_t {

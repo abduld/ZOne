@@ -46,36 +46,26 @@ using namespace tbb;
 
 #include "zMalloc.h"
 
-
-template <typename T0, typename T1>
-static T0 zCeil(const T0 & n, const T1 & d) {
-  return (T0) ceil(static_cast<double>(n) / static_cast<double>(d));
+template <typename T0, typename T1> static T0 zCeil(const T0 &n, const T1 &d) {
+  return (T0)ceil(static_cast<double>(n) / static_cast<double>(d));
 }
 
-template <>
-int zCeil(const int & n, const int & d) {
+template <> int zCeil(const int &n, const int &d) { return (n + (d - 1)) / d; }
+
+template <> size_t zCeil(const size_t &n, const size_t &d) {
   return (n + (d - 1)) / d;
 }
 
-template <>
-size_t zCeil(const size_t & n, const size_t & d) {
+template <> size_t zCeil(const size_t &n, const int &d) {
   return (n + (d - 1)) / d;
 }
 
-template <>
-size_t zCeil(const size_t & n, const int & d) {
-  return (n + (d - 1)) / d;
-}
-
-template <typename T>
-static T zMin(const T & m, const T & n) {
+template <typename T> static T zMin(const T &m, const T &n) {
   return m < n ? m : n;
 }
 
-template <typename T>
-static T zMax(const T & m, const T & n) {
+template <typename T> static T zMax(const T &m, const T &n) {
   return m > n ? m : n;
 }
-
 
 #endif /* __ZUTILS_H__ */

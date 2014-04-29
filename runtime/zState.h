@@ -41,11 +41,11 @@ struct st_zState_t {
   int cpuCount;
 };
 
-#define zState_peekNextMemoryGroupId(st)  ((st)->nextMemId)
-#define zState_getNextMemoryGroupId(st)  (zState_peekNextMemoryGroupId(st)++)
-#define zState_getCUDAStreamsInUse(st)  ((st)->cuStreamInUse)
+#define zState_peekNextMemoryGroupId(st) ((st)->nextMemId)
+#define zState_getNextMemoryGroupId(st) (zState_peekNextMemoryGroupId(st)++)
+#define zState_getCUDAStreamsInUse(st) ((st)->cuStreamInUse)
 #define zState_getCUDAStreamInUse(st, ii) (zState_getCUDAStreamsInUse(st)[ii])
-#define zState_getCUDAStreams(st)  ((st)->cuStreams)
+#define zState_getCUDAStreams(st) ((st)->cuStreams)
 #define zState_getCUDAStream(st, ii) (zState_getCUDAStreams(st)[ii])
 #define zState_getMemoryGroups(st) ((st)->memoryGroups)
 #define zState_getFunctionInformationMap(st) ((st)->fInfos)
@@ -55,13 +55,17 @@ struct st_zState_t {
 #define zState_getTimer(st) ((st)->timer)
 #define zState_getError(st) ((st)->err)
 
-#define zState_setNextMemoryGroupId(st, val)  (zState_peekNextMemoryGroupId(st) = val)
-#define zState_setCUDAStreamsInUse(st, val)  (zState_getCUDAStreamsInUse(st) = val)
-#define zState_setCUDAStreamInUse(st, ii) (zState_getCUDAStreamInUse(st, ii) = val)
-#define zState_setCUDAStreams(st, val)  (zState_getCUDAStreams(st) = val)
+#define zState_setNextMemoryGroupId(st, val)                                   \
+  (zState_peekNextMemoryGroupId(st) = val)
+#define zState_setCUDAStreamsInUse(st, val)                                    \
+  (zState_getCUDAStreamsInUse(st) = val)
+#define zState_setCUDAStreamInUse(st, ii)                                      \
+  (zState_getCUDAStreamInUse(st, ii) = val)
+#define zState_setCUDAStreams(st, val) (zState_getCUDAStreams(st) = val)
 #define zState_setCUDAStream(st, ii) (zState_getCUDAStream(st, ii) = val)
 #define zState_setMemoryGroups(st, val) (zState_getMemoryGroups(st) = val)
-#define zState_setFunctionInformationMap(st, val) (zState_getFunctionInformationMap(st) = val)
+#define zState_setFunctionInformationMap(st, val)                              \
+  (zState_getFunctionInformationMap(st) = val)
 #define zState_setMutexes(st, val) (zState_getMutexes(st) = val)
 #define zState_setMutex(st, ii) (zState_getMutex(st, ii) = val)
 #define zState_setLogger(st, val) (zState_getLogger(st) = val)
@@ -75,10 +79,9 @@ void zState_delete(zState_t st);
 
 #define wbState_mutexed(lbl, ...)                                              \
   do {                                                                         \
-    speculative_spin_mutex mutex = zState_getMutex(st, zStateLabel_##lbl);    \
+    speculative_spin_mutex mutex = zState_getMutex(st, zStateLabel_##lbl);     \
     mutex::scoped_lock();                                                      \
     { __VA_ARGS__; }                                                           \
   } while (0)
-
 
 #endif /* __ZSTATE_H__ */

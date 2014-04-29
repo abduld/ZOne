@@ -58,11 +58,12 @@ void zCUDA_copyToDevice(zMemory_t mem) {
 
   {
     mutex::scoped_lock();
-    while (!zMemoryStatus_allocatedDevice(mem)) {}
+    while (!zMemoryStatus_allocatedDevice(mem)) {
+    }
   }
 
-  if (status == zMemoryStatus_allocatedDevice || status ==
-          zMemoryStatus_dirtyHost) {
+  if (status == zMemoryStatus_allocatedDevice ||
+      status == zMemoryStatus_dirtyHost) {
     cudaStream_t strm = zState_getCopyToDeviceStream(st, zMemory_getId(mem));
     zAssert(strm != NULL);
     cudaError_t err = cudaMemcpyAsync(

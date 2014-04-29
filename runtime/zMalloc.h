@@ -2,14 +2,12 @@
 #ifndef __ZMALLOC_H__
 #define __ZMALLOC_H__
 
-enum {
-  zMalloc_fieldSize = 0,
-  zMalloc_fieldCount
-};
+enum { zMalloc_fieldSize = 0, zMalloc_fieldCount };
 
 #define zMalloc_padding (zMalloc_fieldCount * sizeof(size_t))
-#define zMalloc_address(mem) (((char *) mem) - zMalloc_padding)
-#define zMalloc_getSize(mem) (((size_t *) zMalloc_address(mem))[zMalloc_fieldSize])
+#define zMalloc_address(mem) (((char *)mem) - zMalloc_padding)
+#define zMalloc_getSize(mem)                                                   \
+  (((size_t *)zMalloc_address(mem))[zMalloc_fieldSize])
 #define zMalloc_setSize(mem, sz) (zMalloc_getSize(mem) = sz)
 
 static inline void *xMalloc(size_t sz) {
@@ -18,7 +16,7 @@ static inline void *xMalloc(size_t sz) {
     mem = malloc(sz + zMalloc_padding);
   }
   if (mem != NULL) {
-    mem = ((char *) mem) + zMalloc_padding;
+    mem = ((char *)mem) + zMalloc_padding;
     zMalloc_setSize(mem, sz);
     return mem;
   } else {
@@ -43,7 +41,7 @@ static inline void *xRealloc(void *mem, size_t sz) {
     void *tm = zMalloc_address(mem);
     void *res = realloc(tm, sz);
     if (res != NULL) {
-      res = ((char *) res) + zMalloc_padding;
+      res = ((char *)res) + zMalloc_padding;
       zAssert(res != NULL);
       zMalloc_setSize(res, sz);
     }
@@ -56,7 +54,7 @@ static inline void *xcuMalloc(size_t sz) {
   if (sz != 0) {
     cudaError_t err = cudaMallocHost((void **)&mem, sz + zMalloc_padding);
     if (err == cudaSuccess) {
-      mem = ((char *) mem) + zMalloc_padding;
+      mem = ((char *)mem) + zMalloc_padding;
       zMalloc_setSize(mem, sz);
       return mem;
     }

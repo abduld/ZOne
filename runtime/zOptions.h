@@ -14,7 +14,6 @@ typedef bool zBool_t;
 typedef int zInteger_t;
 typedef float zReal_t;
 
-
 #ifdef _MSC_VER
 #define __func__ __FUNCTION__
 #ifndef _CRT_SECURE_NO_WARNINGS

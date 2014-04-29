@@ -44,18 +44,16 @@ void zError_update(zError_t err, zErrorCode_t code, const char *file,
 
   wbState_mutexed(Error, {
 
-  zAssert(code > 0);
+    zAssert(code > 0);
     zAssert(code < sizeof(zErrorMessages));
     msg = zErrorMessages[code];
-  
 
-  zError_setCode(err, code);
-  zError_setMessage(err, msg);
-  zError_setFile(err, file);
-  zError_setFunction(err, fun);
-  zError_setLine(err, line);
-
-});
+    zError_setCode(err, code);
+    zError_setMessage(err, msg);
+    zError_setFile(err, file);
+    zError_setFunction(err, fun);
+    zError_setLine(err, line);
+  });
 
   return;
 }

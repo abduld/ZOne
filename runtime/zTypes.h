@@ -7,7 +7,6 @@
 #include <string>
 #include <unordered_map>
 
-
 using namespace std;
 
 typedef enum {
@@ -54,20 +53,18 @@ static size_t computeByteCount(zMemoryType_t typ, int rank, size_t *dims) {
 typedef struct st_zMemory_t *zMemory_t;
 typedef struct st_zMemoryGroup_t *zMemoryGroup_t;
 typedef struct st_zState_t *zState_t;
-typedef struct st_zFunctionInformation_t * zFunctionInformation_t;
+typedef struct st_zFunctionInformation_t *zFunctionInformation_t;
 typedef struct st_zLogEntry_t *zLogEntry_t;
 typedef struct st_zLogger_t *zLogger_t;
 typedef struct st_zStream_t zStream_t;
-typedef struct st_zTimer_t * zTimer_t;
-typedef struct st_zError_t * zError_t;
-typedef struct st_zFile_t * zFile_t;
-typedef struct st_zStringBuffer_t * zStringBuffer_t;
+typedef struct st_zTimer_t *zTimer_t;
+typedef struct st_zError_t *zError_t;
+typedef struct st_zFile_t *zFile_t;
+typedef struct st_zStringBuffer_t *zStringBuffer_t;
 
 typedef vector<zMemoryGroup_t> zMemoryGroupList_t;
 typedef vector<zStream_t> zStreamList_t;
 typedef unordered_map<string, zFunctionInformation_t> zFunctionInformationMap_t;
-
-
 
 typedef enum en_zMemoryStatus_t {
   zMemoryStatus_unallocated = 0,

@@ -17,7 +17,7 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank,
   size_t chunkSize = zCeil(byteCount, nMems);
   char *hostMem = zNewArray(char, byteCount);
 
-  size_t * dimsCopy = zNewArray(size_t, rank);
+  size_t *dimsCopy = zNewArray(size_t, rank);
   memcpy(dimsCopy, dims, rank * sizeof(size_t));
 
   size_t bytesLeft = byteCount;
@@ -64,9 +64,7 @@ void zMemoryGroup_copyToDevice(zMemoryGroup_t mem, int elem) {}
 
 void zMemoryGroup_copyToHost(zMemoryGroup_t mem, int elem) {}
 
-
-void zMemoryGroup_setDeviceMemoryStatus(zMemoryGroup_t mg,
-                                                      zMemoryStatus_t st) {
+void zMemoryGroup_setDeviceMemoryStatus(zMemoryGroup_t mg, zMemoryStatus_t st) {
   if (mg != NULL) {
     for (int ii = 0; ii < zMemoryGroup_getMemoryCount(mg); ii++) {
       zMemory_t mem = zMemoryGroup_getMemory(mg, ii);
@@ -78,8 +76,7 @@ void zMemoryGroup_setDeviceMemoryStatus(zMemoryGroup_t mg,
   }
 }
 
-void zMemoryGroup_setHostMemoryStatus(zMemoryGroup_t mg,
-                                                    zMemoryStatus_t st) {
+void zMemoryGroup_setHostMemoryStatus(zMemoryGroup_t mg, zMemoryStatus_t st) {
   if (mg != NULL) {
     for (int ii = 0; ii < zMemoryGroup_getMemoryCount(mg); ii++) {
       zMemory_t mem = zMemoryGroup_getMemory(mg, ii);

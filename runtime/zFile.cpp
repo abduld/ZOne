@@ -38,18 +38,16 @@ void zFile_readChunk(zFile_t file, void *buffer, size_t sz, size_t offset) {
   st = zFile_getState(file);
   zAssert(st != NULL);
 
-  
   fd = open(zFile_getPath(file), zFile_getFlags(file));
   zAssert(fd > 0);
   fseek(fd, offset, 0);
-  const char * memblock = mmap(NULL, sz, PROT_WRITE, MAP_PRIVATE, fd, 0);
+  const char *memblock = mmap(NULL, sz, PROT_WRITE, MAP_PRIVATE, fd, 0);
   zAssert(memblock != MAP_FAILED);
 
   memcpy(*data, memblock, sz);
 
   close(fd);
 }
-
 
 void zFile_write(zFile_t file, const char *text) {
 

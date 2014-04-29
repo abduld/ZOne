@@ -2,7 +2,6 @@
 #ifndef __ZMEMORY_H__
 #define __ZMEMORY_H__
 
-
 struct st_zMemory_t {
   zState_t st;
   size_t byteCount;
@@ -46,7 +45,6 @@ void zMemory_delete(zMemory_t mem);
 void zMemory_copyToDevice(zMemory_t mem);
 void zMemory_copyToHost(zMemory_t mem);
 
-
 static inline int zMemory_getId(zMemory_t mem) {
   zMemoryGroup_t mg = zMemory_getMemoryGroup(mem);
   if (mg == NULL) {
@@ -55,6 +53,5 @@ static inline int zMemory_getId(zMemory_t mem) {
     return zMemoryGroup_getId(mg);
   }
 }
-
 
 #endif /* __ZMEMORY_H__ */

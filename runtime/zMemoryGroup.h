@@ -66,8 +66,7 @@ struct st_zMemoryGroup_t {
   (zMemoryGroup_getMemory(mem, ii) = val)
 #define zMemoryGroup_setMemoryCount(mem, val)                                  \
   (zMemoryGroup_getMemoryCount(mem) = val)
-#define zMemoryGroup_setMutex(mem, val)                                  \
-  (zMemoryGroup_getMutex(mem) = val)
+#define zMemoryGroup_setMutex(mem, val) (zMemoryGroup_getMutex(mem) = val)
 
 zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank,
                                 size_t *dims);
@@ -82,9 +81,7 @@ void zMemoryGroup_copyToHost(zMemoryGroup_t mem);
 void zMemoryGroup_copyToDevice(zMemoryGroup_t mem, int elem);
 void zMemoryGroup_copyToHost(zMemoryGroup_t mem, int elem);
 
-void zMemoryGroup_setDeviceMemoryStatus(zMemoryGroup_t mg,
-                                                      zMemoryStatus_t st);
+void zMemoryGroup_setDeviceMemoryStatus(zMemoryGroup_t mg, zMemoryStatus_t st);
 
-void zMemoryGroup_setHostMemoryStatus(zMemoryGroup_t mg,
-                                                    zMemoryStatus_t st);
+void zMemoryGroup_setHostMemoryStatus(zMemoryGroup_t mg, zMemoryStatus_t st);
 #endif /* __ZMEMORYGROUP_H__ */
