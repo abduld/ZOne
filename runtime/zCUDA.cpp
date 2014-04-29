@@ -51,7 +51,6 @@ static void onCopyToDeviceStreamFinish(cudaStream_t stream, cudaError_t status,
 
 void zCUDA_copyToDevice(zMemory_t mem) {
   zState_t st = zMemory_getState(mem);
-  zMemoryStatus_t status = zMemory_getStatus(mem);
   /*
   zMemoryGroup_t mg = zMemory_getMemoryGroup(mem);
   speculative_spin_mutex mutex = zMemoryGroup_getMutex(mg);
@@ -66,8 +65,10 @@ void zCUDA_copyToDevice(zMemory_t mem) {
   }
   */
 
-  if (status == zMemoryStatus_allocatedDevice ||
-      status == zMemoryStatus_dirtyHost) {
+  zAssert(zMemory_deviceMemoryAllocatedQ(mem));
+
+  if (zMemory_hostMemoryAllocatedQ(mem) &&
+      zMemory_getHostMemoryStatus(mem) == zMemoryStatus_dirtyHost) {
     cudaStream_t strm = zState_getCopyToDeviceStream(st, zMemory_getId(mem));
     zAssert(strm != NULL);
     cudaError_t err = cudaMemcpyAsync(
@@ -92,17 +93,17 @@ static void onCopyToHostStreamFinish(cudaStream_t stream, cudaError_t status,
 
 void zCUDA_copyToHost(zMemory_t mem) {
   zState_t st = zMemory_getState(mem);
-  zMemoryStatus_t status = zMemory_getStatus(mem);
 
   zAssert(zMemory_hostMemoryAllocatedQ(mem));
 
-  if (status == zMemoryStatus_allocatedHost ||
-      status == zMemoryStatus_dirtyDevice) {
+  if (zMemory_hostMemoryAllocatedQ(mem) &&
+      zMemory_deviceMemoryAllocatedQ(mem) &&
+      zMemory_getDeviceMemoryStatus(mem) == zMemoryStatus_dirtyDevice) {
     cudaStream_t strm = zState_getCopyToHostStream(st, zMemory_getId(mem));
     zAssert(strm != NULL);
     cudaError_t err = cudaMemcpyAsync(
         zMemory_getHostMemory(mem), zMemory_getDeviceMemory(mem),
-        zMemory_getByteCount(mem), cudaMemcpyDevicetoHost, strm);
+        zMemory_getByteCount(mem), cudaMemcpyDeviceToHost, strm);
     zState_setError(st, err);
     cudaStreamAddCallback(strm, onCopyToHostStreamFinish, (void *)mem, 0);
   } else {
