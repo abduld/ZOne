@@ -8,7 +8,7 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank,
   zMemoryGroup_t mg;
 
   nMems = zState_getCPUCount(st);
-  
+
   mg = zNew(struct st_zMemoryGroup_t);
   mems = zNewArray(zMemory_t, nMems);
 

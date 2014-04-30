@@ -51,10 +51,14 @@ struct st_zState_t {
 #define zState_getCUDAStreamsInUse(st) ((st)->cuStreamInUse)
 #define zState_getCUDAStreamInUse(st, ii) (zState_getCUDAStreamsInUse(st)[ii])
 #define zState_getCUDAStreams(st) ((st)->cuStreams)
-#define zState_getComputeStream(st) (zStreams_getCompute(zState_getCUDAStreams(st)))
-#define zState_getMallocStream(st) (zStreams_getMalloc(zState_getCUDAStreams(st)))
-#define zState_getCopyToHostStream(st) (zStreams_getDeviceToHost(zState_getCUDAStreams(st)))
-#define zState_getCopyToDeviceStream(st) (zStreams_getHostToDevice(zState_getCUDAStreams(st)))
+#define zState_getComputeStream(st)                                            \
+  (zStreams_getCompute(zState_getCUDAStreams(st)))
+#define zState_getMallocStream(st)                                             \
+  (zStreams_getMalloc(zState_getCUDAStreams(st)))
+#define zState_getCopyToHostStream(st)                                         \
+  (zStreams_getDeviceToHost(zState_getCUDAStreams(st)))
+#define zState_getCopyToDeviceStream(st)                                       \
+  (zStreams_getHostToDevice(zState_getCUDAStreams(st)))
 #define zState_getMemoryGroups(st) ((st)->memoryGroups)
 #define zState_getMemoryGroup(st, ii) (zState_getMemoryGroups(st)[ii])
 #define zState_getFunctionInformationMap(st) ((st)->fInfos)
@@ -69,7 +73,7 @@ struct st_zState_t {
   (zState_peekNextMemoryGroupId(st) = val)
 #define zState_setCUDAStreamsInUse(st, val)                                    \
   (zState_getCUDAStreamsInUse(st) = val)
-#define zState_setCUDAStreamInUse(st, ii, val)                                      \
+#define zState_setCUDAStreamInUse(st, ii, val)                                 \
   (zState_getCUDAStreamInUse(st, ii) = val)
 #define zState_setCUDAStreams(st, val) (zState_getCUDAStreams(st) = val)
 #define zState_setCUDAStream(st, ii, val) (zState_getCUDAStream(st, ii) = val)
