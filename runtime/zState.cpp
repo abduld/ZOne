@@ -6,11 +6,6 @@ zState_t zState_new() {
   zState_t st = zNew(struct st_zState_t);
   zState_setNextMemoryGroupId(st, 0);
 
-  cudaStreamCreate(&zState_getComputeStream(st));
-  cudaStreamCreate(&zState_getMallocStream(st));
-  cudaStreamCreate(&zState_getCopyToDeviceStream(st));
-  cudaStreamCreate(&zState_getCopyToHostStream(st));
-
   zState_setMemoryGroups(st, {});
   zState_setFunctionInformationMap(st, {});
   zState_setLogger(st, zLogger_new());
@@ -36,6 +31,11 @@ void zState_addMemoryGroup(zState_t st, zMemoryGroup_t mg) {
   if (mg != NULL) {
     int id = zState_getNextMemoryGroupId(st);
     zState_setMemoryGroup(st, id, mg);
+    zState_setCUDAStreams(st, id, zNew(struct st_zStreams_t));
+    cudaStreamCreate(&zState_getComputeStream(st, id));
+    cudaStreamCreate(&zState_getMallocStream(st, id));
+    cudaStreamCreate(&zState_getCopyToDeviceStream(st, id));
+    cudaStreamCreate(&zState_getCopyToHostStream(st, id));
     zMemoryGroup_setId(mg, id);
   }
   return;

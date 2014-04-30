@@ -28,14 +28,14 @@ struct st_zStreams_t {
   cudaStream_t hostToDevice;
 };
 
-#define zStreams_getCompute(strm) ((strm).compute)
-#define zStreams_getMalloc(strm) ((strm).malloc)
-#define zStreams_getDeviceToHost(strm) ((strm).deviceToHost)
-#define zStreams_getHostToDevice(strm) ((strm).hostToDevice)
+#define zStreams_getCompute(strm) ((strm)->compute)
+#define zStreams_getMalloc(strm) ((strm)->malloc)
+#define zStreams_getDeviceToHost(strm) ((strm)->deviceToHost)
+#define zStreams_getHostToDevice(strm) ((strm)->hostToDevice)
 
 struct st_zState_t {
   int nextMemId;
-  zStreams_t cuStreams;
+  zStreamsMap_t cuStreams;
   zMemoryGroupMap_t memoryGroups;
   zFunctionInformationMap_t fInfos;
   speculative_spin_mutex mutexs[zStateLabel_Count];
@@ -47,15 +47,16 @@ struct st_zState_t {
 
 #define zState_peekNextMemoryGroupId(st) ((st)->nextMemId)
 #define zState_getNextMemoryGroupId(st) (zState_peekNextMemoryGroupId(st)++)
-#define zState_getCUDAStreams(st) ((st)->cuStreams)
-#define zState_getComputeStream(st)                                            \
-  (zStreams_getCompute(zState_getCUDAStreams(st)))
-#define zState_getMallocStream(st)                                             \
-  (zStreams_getMalloc(zState_getCUDAStreams(st)))
-#define zState_getCopyToHostStream(st)                                         \
-  (zStreams_getDeviceToHost(zState_getCUDAStreams(st)))
-#define zState_getCopyToDeviceStream(st)                                       \
-  (zStreams_getHostToDevice(zState_getCUDAStreams(st)))
+#define zState_getCUDAStreamsMap(st) ((st)->cuStreams)
+#define zState_getCUDAStreams(st, ii) (zState_getCUDAStreamsMap(st)[ii])
+#define zState_getComputeStream(st, ii)                                        \
+  (zStreams_getCompute(zState_getCUDAStreams(st, ii)))
+#define zState_getMallocStream(st, ii)                                         \
+  (zStreams_getMalloc(zState_getCUDAStreams(st, ii)))
+#define zState_getCopyToHostStream(st, ii)                                     \
+  (zStreams_getDeviceToHost(zState_getCUDAStreams(st, ii)))
+#define zState_getCopyToDeviceStream(st, ii)                                   \
+  (zStreams_getHostToDevice(zState_getCUDAStreams(st, ii)))
 #define zState_getMemoryGroups(st) ((st)->memoryGroups)
 #define zState_getMemoryGroup(st, ii) (zState_getMemoryGroups(st)[ii])
 #define zState_getFunctionInformationMap(st) ((st)->fInfos)
@@ -68,8 +69,7 @@ struct st_zState_t {
 
 #define zState_setNextMemoryGroupId(st, val)                                   \
   (zState_peekNextMemoryGroupId(st) = val)
-#define zState_setCUDAStreams(st, val) (zState_getCUDAStreams(st) = val)
-#define zState_setCUDAStream(st, ii, val) (zState_getCUDAStream(st, ii) = val)
+#define zState_setCUDAStreams(st, ii, val) (zState_getCUDAStreams(st, ii) = val)
 #define zState_setMemoryGroups(st, val) (zState_getMemoryGroups(st) = val)
 #define zState_setMemoryGroup(st, ii, val) (zState_getMemoryGroup(st, ii) = val)
 #define zState_setFunctionInformationMap(st, val)                              \
