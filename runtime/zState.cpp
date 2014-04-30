@@ -5,9 +5,6 @@
 zState_t zState_new() {
   zState_t st = zNew(struct st_zState_t);
   zState_setNextMemoryGroupId(st, 0);
-  for (int ii = 0; ii < zCUDAStream_count; ii++) {
-    zState_setCUDAStreamInUse(st, ii, zFalse);
-  }
 
   cudaStreamCreate(&zState_getComputeStream(st));
   cudaStreamCreate(&zState_getMallocStream(st));
