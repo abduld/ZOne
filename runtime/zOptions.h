@@ -10,7 +10,7 @@
 //#define Z_CONFIG_MAX_CHUNKS 4
 #define Z_CONFIG_SYNC_CUDA_TIME 0
 
-typedef bool zBool_t;
+typedef int zBool_t;
 typedef int zInteger_t;
 typedef float zReal_t;
 

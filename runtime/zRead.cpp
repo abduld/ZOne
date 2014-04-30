@@ -5,16 +5,16 @@
 static zMemoryGroup_t zReadArray(zState_t st, const char *fileName,
                                  zMemoryType_t typ, int rank, size_t *dims) {
 
-  zMemoryGroup_t mg = zMemoryGroup_new(st, type, rank, dims);
-  size_t memBytecount = zMemoryGroup_getByteCount(mem);
+  zMemoryGroup_t mg = zMemoryGroup_new(st, typ, rank, dims);
+  size_t memBytecount = zMemoryGroup_getByteCount(mg);
   int nMems = zMemoryGroup_getMemoryCount(mg);
 
-  tbb::parallel_for(size_t(0), nMems, [=](size_t ii) {
+  tbb::parallel_for(0, nMems, [=](int ii) {
     size_t offset = ii * (memBytecount / nMems);
     size_t end = zMin((ii + 1) * (memBytecount / nMems), memBytecount);
     size_t bufferSize = end - offset;
     zMemory_t mem = zMemoryGroup_getMemory(mg, ii);
-    zFile_t file = zFile_new(fileName, O_RDONLY);
+    zFile_t file = zFile_new(st, fileName, O_RDONLY);
     zFile_readChunk(file, zMemory_getHostMemory(mem), bufferSize, offset);
     zMemory_copyToDevice(mem);
     zFile_delete(file);

@@ -3,7 +3,7 @@
 
 zLogger_t _logger = NULL;
 
-static inline zBool zLogEntry_hasNext(zLogEntry_t elem) {
+static inline zBool_t zLogEntry_hasNext(zLogEntry_t elem) {
   return zLogEntry_getNext(elem) != NULL;
 }
 
@@ -13,7 +13,7 @@ static inline zLogEntry_t zLogEntry_new() {
   elem = zNew(struct st_zLogEntry_t);
 
   zLogEntry_setMessage(elem, NULL);
-  zLogEntry_setTime(elem, _hrtime());
+  zLogEntry_setTime(elem, zNow());
 #ifndef NDEBUG
   zLogEntry_setLevel(elem, zLogLevel_TRACE);
 #else
@@ -93,17 +93,6 @@ zLogger_t zLogger_new() {
 
   return logger;
 }
-
-static inline void _zLogger_setLevel(zLogger_t logger, zLogLevel_t level) {
-  zLogger_getLevel(logger) = level;
-}
-
-static inline void _zLogger_setLevel(zLogLevel_t level) {
-  z_init();
-  _zLogger_setLevel(_logger, level);
-}
-
-#define zLogger_setLevel(level) _zLogger_setLevel(zLogLevel_##level)
 
 void zLogger_clear(zLogger_t logger) {
   if (logger != NULL) {

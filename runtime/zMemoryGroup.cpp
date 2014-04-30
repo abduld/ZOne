@@ -7,8 +7,8 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank,
   zMemory_t *mems;
   zMemoryGroup_t mg;
 
-  nMems = tbb::task_scheduler_init::automatic;
-
+  nMems = zState_getCPUCount(st);
+  
   mg = zNew(struct st_zMemoryGroup_t);
   mems = zNewArray(zMemory_t, nMems);
 

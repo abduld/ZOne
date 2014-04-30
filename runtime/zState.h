@@ -56,12 +56,14 @@ struct st_zState_t {
 #define zState_getCopyToHostStream(st) (zStreams_getDeviceToHost(zState_getCUDAStreams(st)))
 #define zState_getCopyToDeviceStream(st) (zStreams_getHostToDevice(zState_getCUDAStreams(st)))
 #define zState_getMemoryGroups(st) ((st)->memoryGroups)
+#define zState_getMemoryGroup(st, ii) (zState_getMemoryGroups(st)[ii])
 #define zState_getFunctionInformationMap(st) ((st)->fInfos)
 #define zState_getMutexes(st) ((st)->mutexs)
 #define zState_getMutex(st, ii) (zState_getMutexes(st)[ii])
 #define zState_getLogger(st) ((st)->logger)
 #define zState_getTimer(st) ((st)->timer)
 #define zState_getError(st) ((st)->err)
+#define zState_getCPUCount(st) ((st)->cpuCount)
 
 #define zState_setNextMemoryGroupId(st, val)                                   \
   (zState_peekNextMemoryGroupId(st) = val)
@@ -72,12 +74,14 @@ struct st_zState_t {
 #define zState_setCUDAStreams(st, val) (zState_getCUDAStreams(st) = val)
 #define zState_setCUDAStream(st, ii, val) (zState_getCUDAStream(st, ii) = val)
 #define zState_setMemoryGroups(st, val) (zState_getMemoryGroups(st) = val)
+#define zState_setMemoryGroup(st, ii, val) (zState_getMemoryGroup(st, ii) = val)
 #define zState_setFunctionInformationMap(st, val)                              \
   (zState_getFunctionInformationMap(st) = val)
 #define zState_setMutexes(st, val) (zState_getMutexes(st) = val)
 #define zState_setMutex(st, ii) (zState_getMutex(st, ii) = val)
 #define zState_setLogger(st, val) (zState_getLogger(st) = val)
 #define zState_setTimer(st, val) (zState_getTimer(st) = val)
+#define zState_setCPUCount(st, val) (zState_getCPUCount(st) = val)
 
 #define zErr zState_geError(st)
 
@@ -91,6 +95,7 @@ void zState_delete(zState_t st);
     { __VA_ARGS__; }                                                           \
   } while (0)
 
+void zState_setError(zState_t st, zError_t err);
 void zState_setError(zState_t st, zErrorCode_t errCode);
 void zState_setError(zState_t st, cudaError cuErr);
 void zState_addMemoryGroup(zState_t st, zMemoryGroup_t mg);
