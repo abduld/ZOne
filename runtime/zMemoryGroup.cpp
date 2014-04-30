@@ -12,7 +12,6 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank,
   mg = zNew(struct st_zMemoryGroup_t);
   mems = zNewArray(zMemory_t, nMems);
 
-  int id = zState_getNextMemoryGroupId(st);
   size_t byteCount = computeByteCount(typ, rank, dims);
   size_t chunkSize = zCeil(byteCount, nMems);
   char *hostMem = zNewArray(char, byteCount);
@@ -28,7 +27,7 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank,
     bytesLeft -= chunkSize;
   }
 
-  zMemoryGroup_setId(mg, id);
+  zMemoryGroup_setId(mg, -1);
   zMemoryGroup_setState(mg, st);
   zMemoryGroup_setByteCount(mg, byteCount);
   zMemoryGroup_setType(mg, typ);

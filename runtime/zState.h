@@ -21,18 +21,23 @@ typedef enum {
   zStateLabel_Count
 } zStateLabel_t;
 
-struct st_zStream_t {
+struct st_zStreams_t {
   cudaStream_t compute;
   cudaStream_t malloc;
   cudaStream_t deviceToHost;
   cudaStream_t hostToDevice;
 };
 
+#define zStreams_getCompute(strm) ((strm).compute)
+#define zStreams_getMalloc(strm) ((strm).malloc)
+#define zStreams_getDeviceToHost(strm) ((strm).deviceToHost)
+#define zStreams_getHostToDevice(strm) ((strm).hostToDevice)
+
 struct st_zState_t {
   int nextMemId;
   zBool_t cuStreamInUse[zCUDAStream_count];
-  zStreamList_t cuStreams;
-  zMemoryGroupList_t memoryGroups;
+  zStreams_t cuStreams;
+  zMemoryGroupMap_t memoryGroups;
   zFunctionInformationMap_t fInfos;
   speculative_spin_mutex mutexs[zStateLabel_Count];
   zLogger_t logger;
@@ -46,7 +51,10 @@ struct st_zState_t {
 #define zState_getCUDAStreamsInUse(st) ((st)->cuStreamInUse)
 #define zState_getCUDAStreamInUse(st, ii) (zState_getCUDAStreamsInUse(st)[ii])
 #define zState_getCUDAStreams(st) ((st)->cuStreams)
-#define zState_getCUDAStream(st, ii) (zState_getCUDAStreams(st)[ii])
+#define zState_getComputeStream(st) (zStreams_getCompute(zState_getCUDAStreams(st)))
+#define zState_getMallocStream(st) (zStreams_getMalloc(zState_getCUDAStreams(st)))
+#define zState_getCopyToHostStream(st) (zStreams_getDeviceToHost(zState_getCUDAStreams(st)))
+#define zState_getCopyToDeviceStream(st) (zStreams_getHostToDevice(zState_getCUDAStreams(st)))
 #define zState_getMemoryGroups(st) ((st)->memoryGroups)
 #define zState_getFunctionInformationMap(st) ((st)->fInfos)
 #define zState_getMutexes(st) ((st)->mutexs)

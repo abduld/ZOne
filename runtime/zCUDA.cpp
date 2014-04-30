@@ -69,7 +69,7 @@ void zCUDA_copyToDevice(zMemory_t mem) {
 
   if (zMemory_hostMemoryAllocatedQ(mem) &&
       zMemory_getHostMemoryStatus(mem) == zMemoryStatus_dirtyHost) {
-    cudaStream_t strm = zState_getCopyToDeviceStream(st, zMemory_getId(mem));
+    cudaStream_t strm = zState_getCopyToDeviceStream(st);
     zAssert(strm != NULL);
     cudaError_t err = cudaMemcpyAsync(
         zMemory_getDeviceMemory(mem), zMemory_getHostMemory(mem),
@@ -99,7 +99,7 @@ void zCUDA_copyToHost(zMemory_t mem) {
   if (zMemory_hostMemoryAllocatedQ(mem) &&
       zMemory_deviceMemoryAllocatedQ(mem) &&
       zMemory_getDeviceMemoryStatus(mem) == zMemoryStatus_dirtyDevice) {
-    cudaStream_t strm = zState_getCopyToHostStream(st, zMemory_getId(mem));
+    cudaStream_t strm = zState_getCopyToHostStream(st);
     zAssert(strm != NULL);
     cudaError_t err = cudaMemcpyAsync(
         zMemory_getHostMemory(mem), zMemory_getDeviceMemory(mem),
@@ -114,5 +114,12 @@ void zCUDA_copyToHost(zMemory_t mem) {
 void zCUDA_free(void *mem) {
   if (mem != NULL) {
     cudaFree(mem);
+  }
+}
+
+void zCUDA_free(zMemory_t mem) {
+  if (mem != NULL && zMemory_deviceMemoryAllocatedQ(mem)) {
+    cudaFree(mem);
+    zMemory_setDeviceMemoryStatus(mem, zMemoryStatus_unallocated);
   }
 }

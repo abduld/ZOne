@@ -11,11 +11,7 @@ zFile_t zFile_new(zState_t st, const char *path, int flags) {
 
   zFile_setPath(file, zString_duplicate(path));
   zFile_setState(file, st);
-  zFile_setFileHandle(file, -1);
   zFile_setFlags(file, flags);
-  zFile_setOpenedQ(file, zFalse);
-
-  zFile_setOffset(file, 0);
 
   return file;
 }
