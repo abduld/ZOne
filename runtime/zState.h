@@ -67,10 +67,10 @@ struct st_zState_t {
   (zState_peekNextMemoryGroupId(st) = val)
 #define zState_setCUDAStreamsInUse(st, val)                                    \
   (zState_getCUDAStreamsInUse(st) = val)
-#define zState_setCUDAStreamInUse(st, ii)                                      \
+#define zState_setCUDAStreamInUse(st, ii, val)                                      \
   (zState_getCUDAStreamInUse(st, ii) = val)
 #define zState_setCUDAStreams(st, val) (zState_getCUDAStreams(st) = val)
-#define zState_setCUDAStream(st, ii) (zState_getCUDAStream(st, ii) = val)
+#define zState_setCUDAStream(st, ii, val) (zState_getCUDAStream(st, ii) = val)
 #define zState_setMemoryGroups(st, val) (zState_getMemoryGroups(st) = val)
 #define zState_setFunctionInformationMap(st, val)                              \
   (zState_getFunctionInformationMap(st) = val)

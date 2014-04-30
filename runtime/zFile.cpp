@@ -26,21 +26,22 @@ void zFile_delete(zFile_t file) {
   return;
 }
 
-void zFile_open(zFile_t file) { zFile_open(file, S_IREAD | S_IWRITE); }
-
 void zFile_readChunk(zFile_t file, void *buffer, size_t sz, size_t offset) {
   zState_t st;
 
   st = zFile_getState(file);
   zAssert(st != NULL);
 
-  fd = open(zFile_getPath(file), zFile_getFlags(file));
+  int fd = open(zFile_getPath(file), zFile_getFlags(file));
   zAssert(fd > 0);
-  fseek(fd, offset, 0);
-  const char *memblock = mmap(NULL, sz, PROT_WRITE, MAP_PRIVATE, fd, 0);
+  lseek(fd, offset, 0);
+  char *memblock = (char *) mmap(NULL, sz, PROT_READ, MAP_PRIVATE, fd, 0);
   zAssert(memblock != MAP_FAILED);
 
-  memcpy(*data, memblock, sz);
+  memcpy(buffer, memblock, sz);
+
+  munmap((void *) memblock, sz);
+
 
   close(fd);
 }
