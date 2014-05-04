@@ -18,7 +18,7 @@ __global__ void Image_convolveGPUShared(float *out, float *in, int width) {
 
 #define P(img, x)  ((x) >= 0 && (x) < width)  ? ((img)[x])) : 0
 
-    sImage[tidY + Mask_radius][tidX] = P(in, ii, jj);
+    sImage[tidX + Mask_radius] = P(in, ii);
 
     if (tidX <= Mask_radius) {
       sImage[tidX + Mask_radius] = P(in, ii - Mask_radius);

@@ -3,7 +3,7 @@
 project(libzrts CXX)
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
-list( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake )
+set( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake ${CMAKE_MODULE_PATH} )
 
 find_package(TBB REQUIRED)
 find_package(CUDA REQUIRED)
@@ -13,14 +13,6 @@ if(NOT CUDA_FOUND)
 endif(NOT CUDA_FOUND)
 
 set (CUDA_VERBOSE_BUILD ON)
-
-if (UNIX)
-    include(CheckLibraryExists)
-    check_library_exists(rt clock_gettime "time.h" HAVE_CLOCK_GETTIME )
-    if(NOT HAVE_CLOCK_GETTIME)
-        message(FATAL_ERROR "clock_gettime not found")
-    endif(NOT HAVE_CLOCK_GETTIME)
-endif(UNIX)
 
 set(CUDA_NVCC_FP_FLAGS
     "-ftz=false;"
@@ -65,12 +57,19 @@ file( GLOB  zsrc *.cpp *.c *.cu)
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CUDA_INCLUDE_DIRS})
 
-set (name "zrt")
-add_library(${name} ${zsrc})
-target_link_libraries(${name} ${TBB_LIBRARIES})
+cuda_include_directories(${CMAKE_SOURCE_DIR})
+cuda_include_directories(${CUDA_INCLUDE_DIRS})
+
+set (zrtLib "zrt")
+add_library(${zrtLib} ${zsrc})
+target_link_libraries(${zrtLib} ${TBB_LIBRARIES})
 
 if(UNIX)
-    target_link_libraries(${name} ${LIBRT_LIBRARIES})
+    target_link_libraries(${zrtLib} ${LIBRT_LIBRARIES})
 endif(UNIX)
+
+
+cuda_add_executable(conv1D examples/convolution1D.cu OPTIONS -arch sm_20)
+target_link_libraries(conv1D ${zrtLib} ${TBB_LIBRARIES})
 
 
