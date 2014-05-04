@@ -3,7 +3,7 @@
 #define __ZUTILS_H__
 
 #include <assert.h>
-#include <cmath>
+#include <math.h>
 #include <zCUDA.h>
 #include "tbb/tbb.h"
 #include "tbb/parallel_for.h"

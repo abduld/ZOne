@@ -1058,6 +1058,12 @@ macro(CUDA_WRAP_SRCS cuda_target format generated_files)
     set(CUDA_WRAP_OPTION_NVCC_FLAGS_${config_upper})
   endforeach()
 
+if(CMAKE_COMPILER_IS_GNUCC)
+  string(REPLACE "-std=c++11" "" CUDA_HOST_FLAGS "${CUDA_HOST_FLAGS}")
+  string(REPLACE "-std=c++0x" "" CUDA_HOST_FLAGS "${CUDA_HOST_FLAGS}")
+endif()
+
+
   CUDA_GET_SOURCES_AND_OPTIONS(_cuda_wrap_sources _cuda_wrap_cmake_options _cuda_wrap_options ${ARGN})
   CUDA_PARSE_NVCC_OPTIONS(CUDA_WRAP_OPTION_NVCC_FLAGS ${_cuda_wrap_options})
 
