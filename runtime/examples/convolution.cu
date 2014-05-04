@@ -39,7 +39,7 @@ __global__ void Image_convolveGPU(float *out, float *in, float *mask, int width,
 __global__ void Image_convolveGPUShared(float *out, float *in, float *mask,
                                         int width, int height) {
 
-  __shared__ float sMask[BLOCK_DIM_Y][BLOCK_DIM_X];
+  __shared__ float sMask[Mask_width][Mask_width];
   __shared__ float sImage[BLOCK_DIM_Y + Mask_width][BLOCK_DIM_X + Mask_width];
 
   int x, y;
@@ -55,7 +55,7 @@ __global__ void Image_convolveGPUShared(float *out, float *in, float *mask,
       ? ((img)[(x) * width + (y)])                                             \
       : 0
 
-        sImage[tidY + Mask_radius][tidX + Mask_radius)] = P(in, ii, jj);
+        sImage[tidY + Mask_radius][tidX + Mask_radius] = P(in, ii, jj);
 
         if (tidX <= Mask_radius) {
           sImage[tidY + Mask_radius][tidX] = P(in, ii, jj - Mask_radius);
