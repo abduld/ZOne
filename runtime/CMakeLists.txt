@@ -36,8 +36,8 @@ include_directories( ${TBB_INCLUDE_DIRS} )
 
 if (UNIX)
     set(CUDA_NVCC_FLAGS
-        ${CUDA_NVCC_FLAGS_RELEASE}
-        "--compiler-options -std=c++11"
+        ${CUDA_NVCC_FLAGS}
+        #  "--compiler-options -std=c++11"
     )
 else (UNIX)
     set(CUDA_NVCC_FLAGS

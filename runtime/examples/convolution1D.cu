@@ -14,9 +14,9 @@ __global__ void Image_convolveGPUShared(float *out, float *in, int width) {
 
   int tidX = threadIdx.x;
 
-  int ii = tidX + blockIdx.X * BLOCK_DIM_X;
+  int ii = tidX + blockIdx.x * BLOCK_DIM_X;
 
-#define P(img, x)  ((x) >= 0 && (x) < width)  ? ((img)[x])) : 0
+#define P(img, x)  (((x) >= 0 && (x) < width)  ? ((img)[x]) : 0)
 
     sImage[tidX + Mask_radius] = P(in, ii);
 
@@ -28,7 +28,7 @@ __global__ void Image_convolveGPUShared(float *out, float *in, int width) {
 #undef P
 
   if (tidX < Mask_width) {
-    sMask[tidX] = mask[tidX];
+    sMask[tidX] = 1;//mask[tidX];
   }
 
   __syncthreads();

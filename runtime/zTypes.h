@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <vector>
 #include <string>
-#include <unordered_map>
+#include <map>
 
 using namespace std;
 
@@ -63,9 +63,9 @@ typedef struct st_zError_t *zError_t;
 typedef struct st_zFile_t *zFile_t;
 typedef struct st_zStringBuffer_t *zStringBuffer_t;
 
-typedef unordered_map<int, zMemoryGroup_t> zMemoryGroupMap_t;
-typedef unordered_map<int, zStreams_t> zStreamsMap_t;
-typedef unordered_map<string, zFunctionInformation_t> zFunctionInformationMap_t;
+typedef map<int, zMemoryGroup_t> zMemoryGroupMap_t;
+typedef map<int, zStreams_t> zStreamsMap_t;
+typedef map<string, zFunctionInformation_t> zFunctionInformationMap_t;
 
 typedef enum en_zMemoryStatus_t {
   zMemoryStatus_unallocated = 0,
