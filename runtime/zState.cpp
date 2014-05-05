@@ -7,7 +7,7 @@ zState_t zState_new() {
   zState_setNextMemoryGroupId(st, 0);
 
   zState_setMemoryGroups(st, {});
-  zState_setFunctionInformationMap(st, {});
+  zState_setFunctionMap(st, {});
   zState_setLogger(st, zLogger_new());
   zState_setError(st, zError_new());
   zState_setTimer(st, zTimer_new());

@@ -70,6 +70,6 @@ static inline zBool_t zFile_existsQ(const char *path) {
 zFile_t zFile_new(zState_t st, const char *path, int flags);
 void zFile_readChunk(zFile_t file, void *buffer, size_t sz, size_t offset);
 void zFile_delete(zFile_t file);
-void zFile_write(zFile_t file, const char *text);
+void zFile_write(zFile_t file, const void * data, size_t byteCount);
 
 #endif /* __ZFILE_H__ */

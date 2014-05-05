@@ -37,7 +37,7 @@ struct st_zState_t {
   int nextMemId;
   zStreamsMap_t cuStreams;
   zMemoryGroupMap_t memoryGroups;
-  zFunctionInformationMap_t fInfos;
+  zFunctionMap_t fInfos;
   speculative_spin_mutex mutexs[zStateLabel_Count];
   zLogger_t logger;
   zTimer_t timer;
@@ -59,7 +59,7 @@ struct st_zState_t {
   (zStreams_getHostToDevice(zState_getCUDAStreams(st, ii)))
 #define zState_getMemoryGroups(st) ((st)->memoryGroups)
 #define zState_getMemoryGroup(st, ii) (zState_getMemoryGroups(st)[ii])
-#define zState_getFunctionInformationMap(st) ((st)->fInfos)
+#define zState_getFunctionMap(st) ((st)->fInfos)
 #define zState_getMutexes(st) ((st)->mutexs)
 #define zState_getMutex(st, ii) (zState_getMutexes(st)[ii])
 #define zState_getLogger(st) ((st)->logger)
@@ -72,8 +72,8 @@ struct st_zState_t {
 #define zState_setCUDAStreams(st, ii, val) (zState_getCUDAStreams(st, ii) = val)
 #define zState_setMemoryGroups(st, val) (zState_getMemoryGroups(st) = val)
 #define zState_setMemoryGroup(st, ii, val) (zState_getMemoryGroup(st, ii) = val)
-#define zState_setFunctionInformationMap(st, val)                              \
-  (zState_getFunctionInformationMap(st) = val)
+#define zState_setFunctionMap(st, val)                              \
+  (zState_getFunctionMap(st) = val)
 #define zState_setMutexes(st, val) (zState_getMutexes(st) = val)
 #define zState_setMutex(st, ii) (zState_getMutex(st, ii) = val)
 #define zState_setLogger(st, val) (zState_getLogger(st) = val)

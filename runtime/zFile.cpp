@@ -45,7 +45,7 @@ void zFile_readChunk(zFile_t file, void *buffer, size_t sz, size_t offset) {
   close(fd);
 }
 
-void zFile_write(zFile_t file, const char *text) {
+void zFile_write(zFile_t file, const void * data, size_t byteCount) {
 
   // TODO
 

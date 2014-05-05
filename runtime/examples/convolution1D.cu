@@ -51,8 +51,8 @@ int main(int argc, char *argv[]) {
   zState_t st = zState_new();
   zMemoryGroup_t in = zReadBit8Array(st, "inputVector.dat", 1, &dim);
   zMemoryGroup_t out = zMemoryGroup_new(st, zMemoryType_bit8, 1, &dim);
-  mapFun = zFunction_new("imageConvolve", Image_convolveGPUShared);
-  zMap(st, out, mapFun, in);
-  zWriteBit8Array("outputVector.dat", out);
+  zFunction_t mapFun = zFunction_new("imageConvolve", Image_convolveGPUShared);
+  zMap(st, mapFun, out, in);
+  zWriteBit8Array(st, "outputVector.dat", out);
   return 0;
 }

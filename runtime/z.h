@@ -25,11 +25,12 @@
 #include "zStringBuffer.h"
 #include "zMemoryGroup.h"
 #include "zMemory.h"
-#include "zFunction.h"
 #include "zFile.h"
 #include "zRead.h"
+#include "zWrite.h"
 #include "zCUDA.h"
 #include "zLog.h"
 #include "zMap.h"
+#include "zFunction.h"
 
 #endif /* __Z_H__ */

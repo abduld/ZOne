@@ -53,7 +53,7 @@ static size_t computeByteCount(zMemoryType_t typ, int rank, size_t *dims) {
 typedef struct st_zMemory_t *zMemory_t;
 typedef struct st_zMemoryGroup_t *zMemoryGroup_t;
 typedef struct st_zState_t *zState_t;
-typedef struct st_zFunctionInformation_t *zFunctionInformation_t;
+typedef struct st_zFunction_t *zFunction_t;
 typedef struct st_zLogEntry_t *zLogEntry_t;
 typedef struct st_zLogger_t *zLogger_t;
 typedef struct st_zStreams_t *zStreams_t;
@@ -65,7 +65,8 @@ typedef struct st_zStringBuffer_t *zStringBuffer_t;
 
 typedef map<int, zMemoryGroup_t> zMemoryGroupMap_t;
 typedef map<int, zStreams_t> zStreamsMap_t;
-typedef map<string, zFunctionInformation_t> zFunctionInformationMap_t;
+typedef map<string, zFunction_t> zFunctionMap_t;
+
 
 typedef enum en_zMemoryStatus_t {
   zMemoryStatus_unallocated = 0,

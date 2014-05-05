@@ -2,21 +2,26 @@
 #ifndef __ZFUNCTION_H__
 #define __ZFUNCTION_H__
 
-struct st_zFunctionInformation_t {
+struct st_zFunction_t {
   string name;
   size_t nInstructions;
   size_t nCycles;
+  zMapFunction_t mf;
+  zMapGroupFunction_t mgf;
 };
 
-#define zFunctionInformation_getName(fun) ((fun)->name)
-#define zFunctionInformation_getNunInstructions(fun) ((fun)->nInstructions)
-#define zFunctionInformation_getNumCycles(fun) ((fun)->nCycles)
+#define zFunction_getName(fun) ((fun)->name)
+#define zFunction_getNunInstructions(fun) ((fun)->nInstructions)
+#define zFunction_getNumCycles(fun) ((fun)->nCycles)
 
-#define zFunctionInformation_setName(fun, val)                                 \
-  (zFunctionInformation_getName(fun) = val)
-#define zFunctionInformation_setNunInstructions(fun, val)                      \
-  (zFunctionInformation_getNunInstructions(fun) = val)
-#define zFunctionInformation_setNumCycles(fun, val)                            \
-  (zFunctionInformation_getNumCycles(fun) = val)
+#define zFunction_setName(fun, val)                                 \
+  (zFunction_getName(fun) = val)
+#define zFunction_setNunInstructions(fun, val)                      \
+  (zFunction_getNunInstructions(fun) = val)
+#define zFunction_setNumCycles(fun, val)                            \
+  (zFunction_getNumCycles(fun) = val)
+
+
+zFunction_t zFunction_new(const char * name, zMapFunction_t mf, zMapGroupFunction_t mgf);
 
 #endif /* __ZFUNCTION_H__ */

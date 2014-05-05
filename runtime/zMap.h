@@ -12,8 +12,7 @@ typedef struct st_zMapGroupFunction_t {
   typedef zMemoryGroup_t (*f)(dim3 blockDim, dim3 gridDim, zMemoryGroup_t);
 } zMapGroupFunction_t;
 
-void zMap(zState_t st, zMemory_t out, zMapFunction_t f, zMemory_t in);
-void zMap(zState_t st, zMemoryGroup_t out, zMapGroupFunction_t f,
-          zMemoryGroup_t in);
+void zMap(zState_t st, zMapFunction_t f, zMemory_t out, zMemory_t in);
+void zMap(zState_t st, zMapGroupFunction_t f, zMemoryGroup_t out, zMemoryGroup_t in);
 
 #endif /* __ZMAP_H__ */
