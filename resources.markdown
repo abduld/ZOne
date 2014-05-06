@@ -1,4 +1,8 @@
 
+http://liboil.freedesktop.org/wiki/
+
+http://code.entropywave.com/orc/
+
 
 ## Work stealing
 
