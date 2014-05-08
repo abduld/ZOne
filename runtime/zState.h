@@ -33,7 +33,6 @@ typedef struct st_zStreams_t {
 #define zStreams_getDeviceToHost(strm) ((strm).deviceToHost)
 #define zStreams_getHostToDevice(strm) ((strm).hostToDevice)
 
-
 typedef map<int, zStreams_t> zStreamsMap_t;
 
 struct st_zState_t {
@@ -76,8 +75,7 @@ struct st_zState_t {
 #define zState_setCUDAStreams(st, ii, val) (zState_getCUDAStreams(st, ii) = val)
 #define zState_setMemoryGroups(st, val) (zState_getMemoryGroups(st) = val)
 #define zState_setMemoryGroup(st, ii, val) (zState_getMemoryGroup(st, ii) = val)
-#define zState_setFunctionMap(st, val)                              \
-  (zState_getFunctionMap(st) = val)
+#define zState_setFunctionMap(st, val) (zState_getFunctionMap(st) = val)
 #define zState_setMutexes(st, val) (zState_getMutexes(st) = val)
 #define zState_setMutex(st, ii) (zState_getMutex(st, ii) = val)
 #define zState_setLogger(st, val) (zState_getLogger(st) = val)

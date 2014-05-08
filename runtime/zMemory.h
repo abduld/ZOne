@@ -55,5 +55,4 @@ static inline int zMemory_getId(zMemory_t mem) {
 }
 size_t zMemory_getFlattenedLength(zMemory_t mem);
 
-
 #endif /* __ZMEMORY_H__ */

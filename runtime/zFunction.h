@@ -14,14 +14,12 @@ struct st_zFunction_t {
 #define zFunction_getNunInstructions(fun) ((fun)->nInstructions)
 #define zFunction_getNumCycles(fun) ((fun)->nCycles)
 
-#define zFunction_setName(fun, val)                                 \
-  (zFunction_getName(fun) = val)
-#define zFunction_setNunInstructions(fun, val)                      \
+#define zFunction_setName(fun, val) (zFunction_getName(fun) = val)
+#define zFunction_setNunInstructions(fun, val)                                 \
   (zFunction_getNunInstructions(fun) = val)
-#define zFunction_setNumCycles(fun, val)                            \
-  (zFunction_getNumCycles(fun) = val)
+#define zFunction_setNumCycles(fun, val) (zFunction_getNumCycles(fun) = val)
 
-
-zFunction_t zFunction_new(const char * name, zMapFunction_t mf, zMapGroupFunction_t mgf);
+zFunction_t zFunction_new(const char *name, zMapFunction_t mf,
+                          zMapGroupFunction_t mgf);
 
 #endif /* __ZFUNCTION_H__ */

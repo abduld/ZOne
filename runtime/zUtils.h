@@ -74,8 +74,6 @@ template <typename T> static T zMax(const T &m, const T &n) {
   return m > n ? m : n;
 }
 
-static inline tick_count zTNow() {
-  return tick_count::now();
-}
+static inline tick_count zTNow() { return tick_count::now(); }
 
 #endif /* __ZUTILS_H__ */

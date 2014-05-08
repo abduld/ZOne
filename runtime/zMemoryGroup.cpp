@@ -134,7 +134,7 @@ void zMemoryGroup_setHostMemoryStatus(zMemoryGroup_t mg, zMemoryStatus_t st) {
   }
 }
 
-
 size_t zMemoryGroup_getFlattenedLength(zMemoryGroup_t mem) {
-  return computeFlattenedLength(zMemoryGroup_getRank(mem), zMemoryGroup_getDimensions(mem));
+  return computeFlattenedLength(zMemoryGroup_getRank(mem),
+                                zMemoryGroup_getDimensions(mem));
 }

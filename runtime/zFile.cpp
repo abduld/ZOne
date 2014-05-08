@@ -40,15 +40,15 @@ void zFile_readChunk(zFile_t file, void *buffer, size_t sz, size_t offset) {
 
   memcpy(buffer, memblock, sz);
 
-  //munmap((void *)memblock, sz);
+  // munmap((void *)memblock, sz);
 
   close(fd);
 }
 
-void zFile_write(zFile_t file, const void * data, size_t byteCount) {
-  const char * pth = zFile_getPath(file);
-  FILE * fd = fopen(pth, "w");
+void zFile_write(zFile_t file, const void *data, size_t byteCount) {
+  const char *pth = zFile_getPath(file);
+  FILE *fd = fopen(pth, "w");
   zAssert(fd != NULL);
   fwrite(data, sizeof(char), byteCount, fd);
-  return ;
+  return;
 }

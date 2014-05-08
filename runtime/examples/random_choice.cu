@@ -2,19 +2,17 @@
 
 #include "curand_kernel.h"
 
-__global __ void randChoice(float * out, int \
-outLength, float * values, int * inx, float * q, int aliasLength, \
-int * seeds) {
-	curandState rngState;
-	int index = threadIdx.x + blockDim.x * blockIdx.x;
-	curand_init(seeds[index], index, 0, &rngState);
-	if (index < outLength) {
-		float u = curand_uniform(&rngState);
-		int j = curand(&rngState) % aliasLength;
-		out[index] = u < q[j] ? values[j] : values[inx[j]];
-	}
+__global __ void randChoice(float *out, int outLength, float *values, int *inx,
+                            float *q, int aliasLength, int *seeds) {
+  curandState rngState;
+  int index = threadIdx.x + blockDim.x * blockIdx.x;
+  curand_init(seeds[index], index, 0, &rngState);
+  if (index < outLength) {
+    float u = curand_uniform(&rngState);
+    int j = curand(&rngState) % aliasLength;
+    out[index] = u < q[j] ? values[j] : values[inx[j]];
+  }
 }
-
 
 #if 0
 initializeAlias[dist_, n_] :=

@@ -44,8 +44,6 @@ void zState_addMemoryGroup(zState_t st, zMemoryGroup_t mg) {
     cudaStreamCreate(&zState_getCopyToDeviceStream(st, id));
     cudaStreamCreate(&zState_getCopyToHostStream(st, id));
 
-
-
     zMemoryGroup_setId(mg, id);
   }
   return;

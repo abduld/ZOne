@@ -6,14 +6,14 @@
 #include <cuda_runtime.h>
 #include "zTypes.h"
 
-#define zCUDA_check(stmt)                                                      \
-	_zCUDA_check(zFile, zFunction, zLine, stmt)
+#define zCUDA_check(stmt) _zCUDA_check(zFile, zFunction, zLine, stmt)
 
-#define _zCUDA_check(file, fun, line, stmt)                                                     \
+#define _zCUDA_check(file, fun, line, stmt)                                    \
   do {                                                                         \
-    cudaError_t p_err = stmt;                                                    \
-    if (p_err != cudaSuccess) {                                                  \
-      printf("%s::%s(%d)::%s : %s -- %d\n", file, fun, line, #stmt, cudaGetErrorString(p_err), p_err);					   \
+    cudaError_t p_err = stmt;                                                  \
+    if (p_err != cudaSuccess) {                                                \
+      printf("%s::%s(%d)::%s : %s -- %d\n", file, fun, line, #stmt,            \
+             cudaGetErrorString(p_err), p_err);                                \
     }                                                                          \
   } while (0)
 

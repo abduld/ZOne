@@ -16,19 +16,19 @@ __global__ void dImage_convolve(char *out, char *in, int width) {
 
   int ii = tidX + blockIdx.x * blockDim.x;
 
-#define P(img, x)  (((x) >= 0 && (x) < width)  ? ((img)[x]) : 0)
+#define P(img, x) (((x) >= 0 && (x) < width) ? ((img)[x]) : 0)
 
-    sImage[tidX + Mask_radius] = P(in, ii);
+  sImage[tidX + Mask_radius] = P(in, ii);
 
-    if (tidX <= Mask_radius) {
-      sImage[tidX + Mask_radius] = P(in, ii - Mask_radius);
-      sImage[tidX + BLOCK_DIM_X + Mask_radius] = P(in, ii + BLOCK_DIM_X);
-    }
+  if (tidX <= Mask_radius) {
+    sImage[tidX + Mask_radius] = P(in, ii - Mask_radius);
+    sImage[tidX + BLOCK_DIM_X + Mask_radius] = P(in, ii + BLOCK_DIM_X);
+  }
 
 #undef P
 
   if (tidX < Mask_width) {
-    sMask[tidX] = pow(-1.0f, tidX % Mask_radius);//mask[tidX];
+    sMask[tidX] = pow(-1.0f, tidX % Mask_radius); // mask[tidX];
   }
 
   __syncthreads();
@@ -52,73 +52,72 @@ void Image_convolve(zMemory_t out, zMemory_t in) {
   dim3 gridDim(zCeil(len, blockDim.x));
   zState_t st = zMemory_getState(out);
   cudaStream_t strm = zState_getComputeStream(st, zMemory_getId(out));
-  dImage_convolve<<<gridDim,blockDim, 0, strm>>>(
-    (char*)zMemory_getDeviceMemory(out),
-    (char*)zMemory_getDeviceMemory(in),
-    len
-  );
-  return ;
+  dImage_convolve << <gridDim, blockDim, 0, strm>>>
+      ((char *)zMemory_getDeviceMemory(out),
+       (char *)zMemory_getDeviceMemory(in), len);
+  return;
 }
 
 int main(int argc, char *argv[]) {
-size_t inputLength = 1 << atoi(argv[1]);
-const char * inputFile = "data/S.dat";
-const char * outputFile = "data/outputVector.dat";
+  size_t inputLength = 1 << atoi(argv[1]);
+  const char *inputFile = "data/S.dat";
+  const char *outputFile = "data/outputVector.dat";
 
   {
 
-  size_t dim = inputLength;
-  tick_count tic = zTNow();
-  zState_t st = zState_new();
-  zMemoryGroup_t in = zReadBit8Array(st, inputFile, 1, &dim);
-  zMemoryGroup_t out = zMemoryGroup_new(st, zMemoryType_bit8, 1, &dim);
-  zMapGroupFunction_t mapFun = zMapGroupFunction_new(st, "imageConvolve", Image_convolve);
-  zMap(st, mapFun, out, in);
-  zWriteBit8Array(st, outputFile, out);
-  tick_count toc = zTNow();
-  printf("took %g seconds for optimized\n", (toc-tic).seconds());
+    size_t dim = inputLength;
+    tick_count tic = zTNow();
+    zState_t st = zState_new();
+    zMemoryGroup_t in = zReadBit8Array(st, inputFile, 1, &dim);
+    zMemoryGroup_t out = zMemoryGroup_new(st, zMemoryType_bit8, 1, &dim);
+    zMapGroupFunction_t mapFun =
+        zMapGroupFunction_new(st, "imageConvolve", Image_convolve);
+    zMap(st, mapFun, out, in);
+    zWriteBit8Array(st, outputFile, out);
+    tick_count toc = zTNow();
+    printf("took %g seconds for optimized\n", (toc - tic).seconds());
   }
 
+  {
 
+    tick_count tic = zTNow();
 
-{
-  
-  tick_count tic = zTNow();
-  
-  FILE * fdInput = fopen(inputFile, "r+");
-  zAssert(fdInput != NULL);
-  
-  char * hInputMem = zNewArray(char, inputLength);
-  char * hOutputMem = zNewArray(char, inputLength);
-  fread(hInputMem, sizeof(char), inputLength, fdInput);
-  fclose(fdInput);
+    FILE *fdInput = fopen(inputFile, "r+");
+    zAssert(fdInput != NULL);
 
-  char * dInputMem, * dOutputMem;
-  cudaMalloc(&dInputMem, sizeof(char)*inputLength);
-  cudaMalloc(&dOutputMem, sizeof(char)*inputLength);
+    char *hInputMem = zNewArray(char, inputLength);
+    char *hOutputMem = zNewArray(char, inputLength);
+    fread(hInputMem, sizeof(char), inputLength, fdInput);
+    fclose(fdInput);
 
-  zCUDA_check(cudaMemcpy(dInputMem, hInputMem, sizeof(char)*inputLength, cudaMemcpyHostToDevice));
+    char *dInputMem, *dOutputMem;
+    cudaMalloc(&dInputMem, sizeof(char) * inputLength);
+    cudaMalloc(&dOutputMem, sizeof(char) * inputLength);
 
-  dim3 blockDim(BLOCK_DIM_X);
-  dim3 gridDim(zCeil(inputLength, blockDim.x));
-  dImage_convolve<<<gridDim,blockDim>>>(dOutputMem, dInputMem, inputLength);
+    zCUDA_check(cudaMemcpy(dInputMem, hInputMem, sizeof(char) * inputLength,
+                           cudaMemcpyHostToDevice));
 
-  cudaMemcpy(hOutputMem, dOutputMem, sizeof(char)*inputLength, cudaMemcpyDeviceToHost);
+    dim3 blockDim(BLOCK_DIM_X);
+    dim3 gridDim(zCeil(inputLength, blockDim.x));
+    dImage_convolve << <gridDim, blockDim>>>
+        (dOutputMem, dInputMem, inputLength);
 
-  FILE * fdOutput = fopen(outputFile, "w");
-  zAssert(fdOutput != NULL);
-  fwrite(hOutputMem, sizeof(char), inputLength, fdOutput);
-  fclose(fdOutput);
-  
-  cudaFree(dInputMem);
-  cudaFree(dOutputMem);
-  zFree(hInputMem);
-  zFree(hOutputMem);
+    cudaMemcpy(hOutputMem, dOutputMem, sizeof(char) * inputLength,
+               cudaMemcpyDeviceToHost);
 
-  tick_count toc = zTNow();
-  printf("took %g seconds for unoptimized\n", (toc-tic).seconds());
-}
+    FILE *fdOutput = fopen(outputFile, "w");
+    zAssert(fdOutput != NULL);
+    fwrite(hOutputMem, sizeof(char), inputLength, fdOutput);
+    fclose(fdOutput);
+
+    cudaFree(dInputMem);
+    cudaFree(dOutputMem);
+    zFree(hInputMem);
+    zFree(hOutputMem);
+
+    tick_count toc = zTNow();
+    printf("took %g seconds for unoptimized\n", (toc - tic).seconds());
+  }
 
   return 0;
-  
 }

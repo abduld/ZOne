@@ -61,12 +61,11 @@ typedef struct st_zTimerNode_t *zTimerNode_t;
 typedef struct st_zError_t *zError_t;
 typedef struct st_zFile_t *zFile_t;
 typedef struct st_zStringBuffer_t *zStringBuffer_t;
-typedef struct st_zMapFunction_t * zMapFunction_t;
-typedef struct st_zMapGroupFunction_t * zMapGroupFunction_t;
+typedef struct st_zMapFunction_t *zMapFunction_t;
+typedef struct st_zMapGroupFunction_t *zMapGroupFunction_t;
 
 typedef map<int, zMemoryGroup_t> zMemoryGroupMap_t;
 typedef map<string, zFunction_t> zFunctionMap_t;
-
 
 typedef enum en_zMemoryStatus_t {
   zMemoryStatus_unallocated = 0,

@@ -4,9 +4,10 @@
 
 enum { zMalloc_fieldSize = 0, zMalloc_fieldCount };
 
-#define zMalloc_padding 0//*(zMalloc_fieldCount * sizeof(size_t))
+#define zMalloc_padding 0 //*(zMalloc_fieldCount * sizeof(size_t))
 #define zMalloc_address(mem) (((char *)mem) - zMalloc_padding)
-#define zMalloc_getSize(mem) //                                                  \
+#define zMalloc_getSize(                                                       \
+    mem)                         //                                                  \
   //(((size_t *)zMalloc_address(mem))[zMalloc_fieldSize])
 #define zMalloc_setSize(mem, sz) //(zMalloc_getSize(mem) = sz)
 
@@ -47,7 +48,7 @@ static inline void *xRealloc(void *mem, size_t sz) {
       zMalloc_setSize(res, sz);
     }
 #else
-    void * res = realloc(mem, sz);
+    void *res = realloc(mem, sz);
     if (res != NULL) {
       cudaHostRegister(res, sz, cudaHostRegisterPortable);
     }
@@ -96,7 +97,7 @@ static inline void *xcuRealloc(void *mem, size_t sz) {
       zMalloc_setSize(res, sz);
     }
 #else
-    void * res = realloc(mem, sz);
+    void *res = realloc(mem, sz);
     if (res != NULL) {
       cudaHostRegister(res, sz, cudaHostRegisterPortable);
     }
@@ -115,7 +116,7 @@ static inline void *xcuRealloc(void *mem, size_t sz) {
 #define zDelete(var) zFree(var)
 #define nFree(var)                                                             \
   do {                                                                         \
-    xFree(var);                                                              \
+    xFree(var);                                                                \
     var = NULL;                                                                \
   } while (0)
 #define zFree(var)                                                             \
