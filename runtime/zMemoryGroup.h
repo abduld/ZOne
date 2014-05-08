@@ -20,7 +20,7 @@ struct st_zMemoryGroup_t {
   zMemory_t *mems;
   zMemoryStatus_t hostMemoryStatus;
   zMemoryStatus_t deviceMemoryStatus;
-  spin_mutex mutex;
+  speculative_spin_mutex mutex;
 };
 
 #define zMemoryGroup_hostMemoryAllocatedQ(mem)                                 \
