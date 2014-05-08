@@ -20,7 +20,7 @@ struct st_zMemoryGroup_t {
   zMemory_t *mems;
   zMemoryStatus_t hostMemoryStatus;
   zMemoryStatus_t deviceMemoryStatus;
-  speculative_spin_mutex mutex;
+  spin_mutex mutex;
 };
 
 #define zMemoryGroup_hostMemoryAllocatedQ(mem)                                 \
@@ -54,7 +54,7 @@ struct st_zMemoryGroup_t {
 #define zMemoryGroup_setHostMemory(mem, val)                                   \
   (zMemoryGroup_getHostMemory(mem) = val)
 #define zMemoryGroup__setHostMemoryStatus(mem, val)                            \
-  (zMemoryGroup_getDeviceMemoryStatus(mem) = val)
+  (zMemoryGroup_getHostMemoryStatus(mem) = val)
 #define zMemoryGroup_setDeviceMemory(mem, val)                                 \
   (zMemoryGroup_getDeviceMemory(mem) = val)
 #define zMemoryGroup__setDeviceMemoryStatus(mem, val)                          \
@@ -74,6 +74,8 @@ void zMemoryGroup_delete(zMemoryGroup_t mem);
 
 void zMemoryGroup_freeHostMemory(zMemoryGroup_t mem);
 void zMemoryGroup_freeDeviceMemory(zMemoryGroup_t mem);
+
+size_t zMemoryGroup_getFlattenedLength(zMemoryGroup_t mem);
 
 void zMemoryGroup_copyToDevice(zMemoryGroup_t mem);
 void zMemoryGroup_copyToHost(zMemoryGroup_t mem);

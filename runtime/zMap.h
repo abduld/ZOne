@@ -3,12 +3,12 @@
 #define __ZMAP_H__
 
 struct st_zMapFunction_t {
-  string name;
+  char * name;
   void (*f)(zMemory_t, zMemory_t);
 };
 
 struct st_zMapGroupFunction_t {
-  string name;
+  char * name;
   void (*f)(zMemoryGroup_t, zMemoryGroup_t);
 };
 

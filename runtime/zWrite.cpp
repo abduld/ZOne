@@ -2,6 +2,7 @@
 #include "z.h"
 
 static void zWriteArray(zState_t st, const char * fileName, zMemoryGroup_t mg) {
+	zFile_t file = zFile_new(st, fileName, O_CREAT | O_RDWR | O_TRUNC);
 	for (int ii = 0; ii < zMemoryGroup_getMemoryCount(mg); ii++) {
 		zMemory_t mem = zMemoryGroup_getMemory(mg, ii);
 
@@ -10,10 +11,9 @@ static void zWriteArray(zState_t st, const char * fileName, zMemoryGroup_t mg) {
 	    if (zMemory_getDeviceMemoryStatus(mem) == zMemoryStatus_dirtyDevice) {
 	    	cudaStreamSynchronize(strm);
 	    }
-	    zFile_t file = zFile_new(st, fileName, O_WRONLY);
-	    zFile_write(file, zMemory_getHostMemory(mem), zMemory_getByteCount(mem));
-	    zFile_delete(file);
 	}
+	zFile_write(file, zMemoryGroup_getHostMemory(mg), zMemoryGroup_getByteCount(mg));
+	zFile_delete(file);
 }
 
 void zWriteBit8Array(zState_t st, const char * fileName, zMemoryGroup_t mg) {

@@ -1,6 +1,8 @@
 
 #include "z.h"
 
+#define ENABLE_ASYNC_MALLOC 1
+
 class cudaMallocTask : public task {
 public:
   task *dummy;
@@ -12,8 +14,8 @@ public:
     zState_t st = zMemoryGroup_getState(mg);
     void *deviceMem = zMemoryGroup_getDeviceMemory(mg);
     size_t byteCount = zMemoryGroup_getByteCount(mg);
-    speculative_spin_mutex mutex = zMemoryGroup_getMutex(mg);
-    //mutex::scoped_lock();
+    spin_mutex mutex = zMemoryGroup_getMutex(mg);
+    spin_mutex::scoped_lock myLock(mutex);
     cudaError_t err = cudaMalloc(&deviceMem, byteCount);
     zState_setError(st, err);
     if (zSuccessQ(err)) {
@@ -24,7 +26,9 @@ public:
       }
       zMemoryGroup_setDeviceMemoryStatus(mg, zMemoryStatus_allocatedDevice);
     }
+#if ENABLE_ASYNC_MALLOC
     dummy->destroy(*dummy);
+#endif
     return NULL;
   }
 };
@@ -32,10 +36,14 @@ public:
 void zCUDA_malloc(zMemoryGroup_t mg) {
   // http://www.threadingbuildingblocks.org/docs/help/reference/task_scheduler/catalog_of_recommended_task_patterns.htm
   task *dummy = new (task::allocate_root()) empty_task;
-  dummy->set_ref_count(1);
+#if ENABLE_ASYNC_MALLOC
+  dummy->set_ref_count(2);
   task &tk = *new (dummy->allocate_child()) cudaMallocTask(dummy, mg);
   dummy->spawn(tk);
-
+#else
+  auto task = new cudaMallocTask(dummy, mg);
+  task->execute();
+#endif
   return;
 }
 

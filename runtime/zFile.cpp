@@ -46,8 +46,9 @@ void zFile_readChunk(zFile_t file, void *buffer, size_t sz, size_t offset) {
 }
 
 void zFile_write(zFile_t file, const void * data, size_t byteCount) {
-
-  // TODO
-
-  return;
+  const char * pth = zFile_getPath(file);
+  FILE * fd = fopen(pth, "w");
+  zAssert(fd != NULL);
+  fwrite(data, sizeof(char), byteCount, fd);
+  return ;
 }

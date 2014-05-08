@@ -7,7 +7,7 @@
 
 #define BLOCK_DIM_X 64
 
-__global__ void Image_convolveGPUShared(float *out, float *in, int width) {
+__global__ void dImage_convolve(float *out, float *in, int width) {
 
   __shared__ float sMask[Mask_width];
   __shared__ float sImage[BLOCK_DIM_X + Mask_width];
@@ -28,7 +28,7 @@ __global__ void Image_convolveGPUShared(float *out, float *in, int width) {
 #undef P
 
   if (tidX < Mask_width) {
-    sMask[tidX] = 1;//mask[tidX];
+    sMask[tidX] = pow(-1.0f, tidX % Mask_radius);//mask[tidX];
   }
 
   __syncthreads();
@@ -47,6 +47,14 @@ __global__ void Image_convolveGPUShared(float *out, float *in, int width) {
 }
 
 void Image_convolve(zMemoryGroup_t out, zMemoryGroup_t in) {
+  size_t len = zMemoryGroup_getFlattenedLength(in);
+  dim3 blockDim(32);
+  dim3 gridDim(zCeil(len, blockDim.x));
+  dImage_convolve<<<gridDim,blockDim>>>(
+    (float*)zMemoryGroup_getDeviceMemory(out),
+    (float*)zMemoryGroup_getDeviceMemory(in),
+    len
+  );
   return ;
 }
 
