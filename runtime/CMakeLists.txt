@@ -73,7 +73,7 @@ if(UNIX)
 endif(UNIX)
 
 
-cuda_add_executable(conv1D examples/convolution1D.cu OPTIONS -arch sm_20)
-target_link_libraries(conv1D ${zrtLib} ${TBB_LIBRARIES})
+cuda_add_executable(convolution examples/convolution.cu OPTIONS -arch sm_20)
+target_link_libraries(convolution ${zrtLib} ${TBB_LIBRARIES})
 
 
