@@ -9,17 +9,12 @@
 
 __global__ void dImage_convolve(char *out, char *in, int width) {
 
-  //__shared__ char sMask[Mask_width];
-  //__shared__ char sImage[BLOCK_DIM_X + Mask_width];
+  __shared__ char sMask[Mask_width];
+  __shared__ char sImage[BLOCK_DIM_X + Mask_width];
 
   int tidX = threadIdx.x;
 
   int ii = tidX + blockIdx.x * blockDim.x;
-
-  if (ii < width) {
-    out[ii] = 22;
-  }
-#if 0
 
 #define P(img, x)  (((x) >= 0 && (x) < width)  ? ((img)[x]) : 0)
 
@@ -39,17 +34,16 @@ __global__ void dImage_convolve(char *out, char *in, int width) {
   __syncthreads();
 
   if (ii < width) {
-    float accum = 0;
+    int accum = 0;
     for (int x = -Mask_radius; x <= Mask_radius; x++) {
-      float pixelValue;
-      float maskValue;
+      int pixelValue;
+      int maskValue;
       pixelValue = sImage[tidX + Mask_radius + x];
       maskValue = sMask[x + Mask_radius];
       accum += pixelValue * maskValue;
     }
-    out[ii] = 22;
+    out[ii] = accum > 255 ? 255 : accum < 0 ? 0 : accum;
   }
-#endif
 }
 
 void Image_convolve(zMemoryGroup_t out, zMemoryGroup_t in) {
@@ -63,7 +57,7 @@ void Image_convolve(zMemoryGroup_t out, zMemoryGroup_t in) {
     (char*)zMemoryGroup_getDeviceMemory(in),
     len
   );
-  zCUDA_check(cudaStreamSynchronize(strm));
+  //zCUDA_check(cudaStreamSynchronize(strm));
   return ;
 }
 

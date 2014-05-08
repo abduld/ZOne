@@ -34,9 +34,9 @@ void zMap(zState_t st, zMapGroupFunction_t mapFun, zMemoryGroup_t out, zMemoryGr
 	while(zMemoryGroup_getDeviceMemoryStatus(in) < zMemoryStatus_cleanDevice) {
 		continue ;
 	}
-	//zCUDA_check(cudaDeviceSynchronize());
+
 	zMemoryGroup_setDeviceMemoryStatus(out, zMemoryStatus_dirtyDevice);
 	zMapFunction_getFunction(mapFun)(out, in);
-	//zCUDA_check(cudaDeviceSynchronize());
+	
 	return ;
 }
