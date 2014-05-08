@@ -57,7 +57,6 @@ void Image_convolve(zMemoryGroup_t out, zMemoryGroup_t in) {
     (char*)zMemoryGroup_getDeviceMemory(in),
     len
   );
-  //zCUDA_check(cudaStreamSynchronize(strm));
   return ;
 }
 

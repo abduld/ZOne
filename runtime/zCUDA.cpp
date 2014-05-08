@@ -120,7 +120,6 @@ void zCUDA_copyToDevice(zMemory_t mem) {
     cudaStream_t strm =
         zState_getCopyToDeviceStream(st, zMemoryGroup_getId(mg));
     zAssert(strm != NULL);
-    //cudaStreamSynchronize(strm);
     cudaError_t err = cudaMemcpyAsync(
         zMemory_getDeviceMemory(mem), zMemory_getHostMemory(mem),
         zMemory_getByteCount(mem), cudaMemcpyHostToDevice, strm);
@@ -219,7 +218,7 @@ void zCUDA_copyToHost(zMemoryGroup_t mem) {
       zMemoryGroup_getDeviceMemoryStatus(mem) == zMemoryStatus_dirtyDevice) {
     cudaStream_t strm = zState_getCopyToHostStream(st, zMemoryGroup_getId(mem));
     zAssert(strm != NULL);
-    
+
     cudaError_t err = cudaMemcpyAsync(
         zMemoryGroup_getHostMemory(mem), zMemoryGroup_getDeviceMemory(mem),
         zMemoryGroup_getByteCount(mem), cudaMemcpyDeviceToHost, strm);
