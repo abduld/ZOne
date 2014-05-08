@@ -14,8 +14,7 @@ public:
     zState_t st = zMemoryGroup_getState(mg);
     void *deviceMem = zMemoryGroup_getDeviceMemory(mg);
     size_t byteCount = zMemoryGroup_getByteCount(mg);
-    speculative_spin_mutex mutex = zMemoryGroup_getMutex(mg);
-    mutex::scoped_lock();
+    speculative_spin_mutex::scoped_lock(zMemoryGroup_getMutex(mg));
     cudaError_t err = cudaMalloc(&deviceMem, byteCount);
     zState_setError(st, err);
     if (zSuccessQ(err)) {
