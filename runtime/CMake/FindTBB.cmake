@@ -49,8 +49,8 @@
 #
 #-----------------------
 
-set(_TBB_LIB_NAME "tbb")
-set(_TBB_LIB_MALLOC_NAME "${_TBB_LIB_NAME}malloc")
+set(_TBB_LIB_NAME "tbb_debug")
+set(_TBB_LIB_MALLOC_NAME "tbbmalloc_debug")
 
 
 if( MSVC )
@@ -61,9 +61,10 @@ if( MSVC )
     endif( )
 endif( )
 
-if ( NOT TBB_ROOT )
-    set(TBB_ROOT / )
-endif( )
+if ( GCC )
+    set(TBB_COMPILER "gcc4.4")
+endif()
+
 message ("TBB_ROOT:" ${TBB_ROOT} )
 if ( NOT TBB_ROOT )
     message( "TBB install not found in the system.")
@@ -71,11 +72,7 @@ else ( )
     # Search for 64bit libs if FIND_LIBRARY_USE_LIB64_PATHS is set to true in the global environment, 32bit libs else
     get_property( LIB64 GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS )
 
-    if( LIB64 )
-        set(TBB_ARCH_PLATFORM intel64)
-    else( )
-        set(TBB_ARCH_PLATFORM ia32)
-    endif( )    
+    set(TBB_ARCH_PLATFORM intel64)
     
 
     #Find TBB header files
@@ -94,6 +91,7 @@ else ( )
     find_library(TBB_MALLOC_LIBRARY ${_TBB_LIB_MALLOC_NAME} HINTS ${_TBB_LIBRARY_DIR}/${TBB_COMPILER}
                 PATHS ENV LIBRARY_PATH ENV LD_LIBRARY_PATH)
 
+    message ("TBB_LIBRARY_PATH:" ${TBB_ROOT}/lib/${TBB_ARCH_PLATFORM})
     message ("TBB_LIBRARY:" ${TBB_LIBRARY})
     message ("TBB_MALLOC_LIBRARY:" ${TBB_MALLOC_LIBRARY})
 

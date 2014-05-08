@@ -7,6 +7,7 @@
 
 #define Z_CONFIG_DEBUG True
 #define Z_CONFIG_EAGER_COPY True
+#define Z_CONFIG_DEFAULT_CPU_COUNT 4
 //#define Z_CONFIG_MAX_CHUNKS 4
 #define Z_CONFIG_SYNC_CUDA_TIME 0
 

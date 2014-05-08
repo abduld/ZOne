@@ -40,7 +40,7 @@ void zFile_readChunk(zFile_t file, void *buffer, size_t sz, size_t offset) {
 
   memcpy(buffer, memblock, sz);
 
-  munmap((void *)memblock, sz);
+  //munmap((void *)memblock, sz);
 
   close(fd);
 }
