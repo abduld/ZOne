@@ -3,7 +3,7 @@
 #include "z.h"
 
 zState_t zState_new() {
-  zState_t st = zNew(struct st_zState_t);
+  zState_t st = nNew(struct st_zState_t);
   zState_setNextMemoryGroupId(st, 0);
 
   zState_setMemoryGroups(st, {});
@@ -35,7 +35,7 @@ void zState_setError(zState_t st, cudaError cuErr) {
 void zState_addMemoryGroup(zState_t st, zMemoryGroup_t mg) {
   if (mg != NULL) {
     int id = zState_getNextMemoryGroupId(st);
-    zStreams_t strms = zNew(struct st_zStreams_t);
+    zStreams_t strms = nNew(struct st_zStreams_t);
     zState_setMemoryGroup(st, id, mg);
     zState_setCUDAStreams(st, id, strms);
     cudaStreamCreate(&zState_getComputeStream(st, id));

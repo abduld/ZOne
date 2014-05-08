@@ -26,11 +26,11 @@ struct st_zStringBuffer_t {
 zStringBuffer_t zStringBuffer_new(void) {
 	char * buf;
 	size_t size = zStringBuffer_initialLength;
-	zStringBuffer_t sb = zNew(struct st_zStringBuffer_t);
+	zStringBuffer_t sb = nNew(struct st_zStringBuffer_t);
 	zStringBuffer_setId(sb, -1);
 	zStringBuffer_setCurrentLength(sb, 0);
 	zStringBuffer_setMaxLength(sb, size);
-	buf = zNewArray(char, zStringBuffer_initialLength);
+	buf = nNewArray(char, zStringBuffer_initialLength);
 	assert(buf != NULL);
 	zStringBuffer_setBuffer(sb, buf);
 	memset(buf, '\0', size);
@@ -38,7 +38,7 @@ zStringBuffer_t zStringBuffer_new(void) {
 }
 
 zStringBuffer_t zStringBuffer_initialize(size_t sz) {
-	zStringBuffer_t sb = zNew(struct st_zStringBuffer_t);
+	zStringBuffer_t sb = nNew(struct st_zStringBuffer_t);
 	zStringBuffer_setId(sb, -1);
 	zStringBuffer_setCurrentLength(sb, 0);
 	zStringBuffer_setMaxLength(sb, sz);
@@ -48,7 +48,7 @@ zStringBuffer_t zStringBuffer_initialize(size_t sz) {
 
 void zStringBuffer_deleteStructure(zStringBuffer_t sb) {
   if (sb) {
-    zDelete(sb);
+    nDelete(sb);
   }
   return ;
 }
@@ -56,9 +56,9 @@ void zStringBuffer_deleteStructure(zStringBuffer_t sb) {
 void zStringBuffer_delete(zStringBuffer_t sb) {
 	if (sb) {
 		if (zStringBuffer_getBuffer(sb)) {
-			zDelete(zStringBuffer_getBuffer(sb));
+			nDelete(zStringBuffer_getBuffer(sb));
 		}
-		zDelete(sb);
+		nDelete(sb);
 	}
 	return ;
 }

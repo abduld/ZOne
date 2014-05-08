@@ -47,7 +47,7 @@ static inline char *zString_duplicate(const char *str) {
   } else {
     char *newstr;
     size_t len = strlen(str);
-    newstr = zNewArray(char, len + 1);
+    newstr = nNewArray(char, len + 1);
     memcpy(newstr, str, len * sizeof(char));
     newstr[len] = '\0';
     return newstr;

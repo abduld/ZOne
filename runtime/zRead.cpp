@@ -9,7 +9,11 @@ static zMemoryGroup_t zReadArray(zState_t st, const char *fileName,
   size_t memBytecount = zMemoryGroup_getByteCount(mg);
   int nMems = zMemoryGroup_getMemoryCount(mg);
 
+#if 0
   tbb::parallel_for(0, nMems, [=](int ii) {
+#else
+  for (int ii = 0; ii < nMems; ii++) {
+#endif
     size_t offset = ii * (memBytecount / nMems);
     size_t end = zMin((ii + 1) * (memBytecount / nMems), memBytecount);
     size_t bufferSize = end - offset;
@@ -18,14 +22,20 @@ static zMemoryGroup_t zReadArray(zState_t st, const char *fileName,
     zFile_readChunk(file, zMemory_getHostMemory(mem), bufferSize, offset);
     zMemory_copyToDevice(mem);
     zFile_delete(file);
-  });
+  };
 
   return mg;
 }
 
 zMemoryGroup_t zReadBit8Array(zState_t st, const char *fileName, int rank,
                               size_t *dims) {
-  return zReadArray(st, fileName, zMemoryType_bit8, rank, dims);
+  zMemoryGroup_t mg = zReadArray(st, fileName, zMemoryType_bit8, rank, dims);
+
+  const char * data = (const char *) zMemoryGroup_getHostMemory(mg);
+  for (int ii = 0; ii < 10; ii++) {
+    printf("input (%d) = %d\n", ii, data[ii]);
+  }
+  return mg;
 }
 
 zMemoryGroup_t zReadInt32Array(zState_t st, const char *fileName, int rank,

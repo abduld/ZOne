@@ -9,15 +9,16 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank,
 
   nMems = zState_getCPUCount(st);
 
-  mg = zNew(struct st_zMemoryGroup_t);
-  mems = zNewArray(zMemory_t, nMems);
+  mg = nNew(struct st_zMemoryGroup_t);
+  mems = nNewArray(zMemory_t, nMems);
 
   size_t byteCount = computeByteCount(typ, rank, dims);
   size_t chunkSize = zCeil(byteCount, nMems);
   char *hostMem = zNewArray(char, byteCount);
+  zMemoryGroup_setHostMemory(mg, hostMem);
   zMemoryGroup_setHostMemoryStatus(mg, zMemoryStatus_allocatedHost);
 
-  size_t *dimsCopy = zNewArray(size_t, rank);
+  size_t *dimsCopy = nNewArray(size_t, rank);
   memcpy(dimsCopy, dims, rank * sizeof(size_t));
 
   size_t bytesLeft = byteCount;
@@ -34,7 +35,6 @@ zMemoryGroup_t zMemoryGroup_new(zState_t st, zMemoryType_t typ, int rank,
   zMemoryGroup_setType(mg, typ);
   zMemoryGroup_setRank(mg, rank);
   zMemoryGroup_setDimensions(mg, dimsCopy);
-  zMemoryGroup_setHostMemory(mg, hostMem);
   zMemoryGroup_setDeviceMemory(mg, NULL);
 
   zMemoryGroup_setMemoryCount(mg, nMems);
@@ -78,6 +78,7 @@ void zMemoryGroup_copyToDevice(zMemoryGroup_t mg) {
 
   int nMems = zMemoryGroup_getMemoryCount(mg);
 
+printf("XXXXXXXX>>>HERE\n");
   tbb::parallel_for(0, nMems,
                     [=](int ii) { zMemoryGroup_copyToDevice(mg, ii); });
 }
@@ -93,6 +94,7 @@ void zMemoryGroup_copyToHost(zMemoryGroup_t mg) {
 
   int nMems = zMemoryGroup_getMemoryCount(mg);
 
+printf("---->>>HERE\n");
   tbb::parallel_for(0, nMems, [=](int ii) { zMemoryGroup_copyToHost(mg, ii); });
 }
 

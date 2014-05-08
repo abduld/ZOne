@@ -8,19 +8,19 @@
 */
 
 struct st_zMemoryGroup_t {
-  int id;
-  zState_t st;
-  size_t byteCount;
-  int rank;
-  size_t *dims;
-  void *deviceMemory;
-  void *hostMemory;
-  zMemoryType_t typ;
-  int nmems;
-  zMemory_t *mems;
-  zMemoryStatus_t hostMemoryStatus;
-  zMemoryStatus_t deviceMemoryStatus;
-  speculative_spin_mutex mutex;
+  int mgid;
+  zState_t mgst;
+  size_t mgbyteCount;
+  int mgrank;
+  size_t *mgdims;
+  void *mgdeviceMemory;
+  void *mghostMemory;
+  zMemoryType_t mgtyp;
+  int mgnmems;
+  zMemory_t *mgmems;
+  zMemoryStatus_t mghostMemoryStatus;
+  zMemoryStatus_t mgdeviceMemoryStatus;
+  speculative_spin_mutex mgmutex;
 };
 
 #define zMemoryGroup_hostMemoryAllocatedQ(mem)                                 \
@@ -28,20 +28,20 @@ struct st_zMemoryGroup_t {
 #define zMemoryGroup_deviceMemoryAllocatedQ(mem)                               \
   (zMemoryGroup_getDeviceMemoryStatus(mem) >= zMemoryStatus_allocatedDevice)
 
-#define zMemoryGroup_getId(mem) ((mem)->id)
-#define zMemoryGroup_getState(mem) ((mem)->st)
-#define zMemoryGroup_getByteCount(mem) ((mem)->byteCount)
-#define zMemoryGroup_getRank(mem) ((mem)->rank)
-#define zMemoryGroup_getDimensions(mem) ((mem)->dims)
-#define zMemoryGroup_getType(mem) ((mem)->typ)
-#define zMemoryGroup_getHostMemory(mem) ((mem)->hostMemory)
-#define zMemoryGroup_getHostMemoryStatus(mem) ((mem)->hostMemoryStatus)
-#define zMemoryGroup_getDeviceMemory(mem) ((mem)->deviceMemory)
-#define zMemoryGroup_getDeviceMemoryStatus(mem) ((mem)->deviceMemoryStatus)
-#define zMemoryGroup_getMemories(mem) ((mem)->mems)
+#define zMemoryGroup_getId(mem) ((mem)->mgid)
+#define zMemoryGroup_getState(mem) ((mem)->mgst)
+#define zMemoryGroup_getByteCount(mem) ((mem)->mgbyteCount)
+#define zMemoryGroup_getRank(mem) ((mem)->mgrank)
+#define zMemoryGroup_getDimensions(mem) ((mem)->mgdims)
+#define zMemoryGroup_getType(mem) ((mem)->mgtyp)
+#define zMemoryGroup_getHostMemory(mem) ((mem)->mghostMemory)
+#define zMemoryGroup_getHostMemoryStatus(mem) ((mem)->mghostMemoryStatus)
+#define zMemoryGroup_getDeviceMemory(mem) ((mem)->mgdeviceMemory)
+#define zMemoryGroup_getDeviceMemoryStatus(mem) ((mem)->mgdeviceMemoryStatus)
+#define zMemoryGroup_getMemories(mem) ((mem)->mgmems)
 #define zMemoryGroup_getMemory(mem, ii) (zMemoryGroup_getMemories(mem)[ii])
-#define zMemoryGroup_getMemoryCount(mem) ((mem)->nmems)
-#define zMemoryGroup_getMutex(mem) ((mem)->mutex)
+#define zMemoryGroup_getMemoryCount(mem) ((mem)->mgnmems)
+#define zMemoryGroup_getMutex(mem) ((mem)->mgmutex)
 
 #define zMemoryGroup_setId(mem, val) (zMemoryGroup_getId(mem) = val)
 #define zMemoryGroup_setState(mem, val) (zMemoryGroup_getState(mem) = val)

@@ -4,11 +4,11 @@
 
 enum { zMalloc_fieldSize = 0, zMalloc_fieldCount };
 
-#define zMalloc_padding (zMalloc_fieldCount * sizeof(size_t))
+#define zMalloc_padding 0*(zMalloc_fieldCount * sizeof(size_t))
 #define zMalloc_address(mem) (((char *)mem) - zMalloc_padding)
-#define zMalloc_getSize(mem)                                                   \
-  (((size_t *)zMalloc_address(mem))[zMalloc_fieldSize])
-#define zMalloc_setSize(mem, sz) (zMalloc_getSize(mem) = sz)
+#define zMalloc_getSize(mem) //                                                  \
+  //(((size_t *)zMalloc_address(mem))[zMalloc_fieldSize])
+#define zMalloc_setSize(mem, sz) //(zMalloc_getSize(mem) = sz)
 
 static inline void *xMalloc(size_t sz) {
   void *mem = NULL;
@@ -38,6 +38,7 @@ static inline void *xRealloc(void *mem, size_t sz) {
     xFree(mem);
     return NULL;
   } else {
+#if 0
     void *tm = zMalloc_address(mem);
     void *res = realloc(tm, sz);
     if (res != NULL) {
@@ -45,18 +46,27 @@ static inline void *xRealloc(void *mem, size_t sz) {
       zAssert(res != NULL);
       zMalloc_setSize(res, sz);
     }
+#else
+    void * res = realloc(mem, sz);
+    if (res != NULL) {
+      cudaHostRegister(res, sz, cudaHostRegisterPortable);
+    }
+#endif
     return res;
   }
 }
 
-static inline void *xcuMalloc(size_t sz) {
+static inline void *xcuMalloc(size_t sz0) {
   void *mem = NULL;
+  size_t sz = sz0 + zMalloc_padding;
   if (sz != 0) {
-    cudaError_t err = cudaMallocHost((void **)&mem, sz + zMalloc_padding);
+    cudaError_t err = cudaMallocHost((void **)&mem, sz);
     if (err == cudaSuccess) {
       mem = ((char *)mem) + zMalloc_padding;
       zMalloc_setSize(mem, sz);
       return mem;
+    } else {
+      printf("ERRROR::: Failed to allocate %s\n", cudaGetErrorString(err));
     }
   }
   return NULL;
@@ -77,28 +87,45 @@ static inline void *xcuRealloc(void *mem, size_t sz) {
     xFree(mem);
     return NULL;
   } else {
-    void *res = xcuMalloc(sz);
-    zAssert(res != NULL);
+#if 0
+    void *tm = zMalloc_address(mem);
+    void *res = realloc(tm, sz);
     if (res != NULL) {
-      cudaError_t err =
-          cudaMemcpy(res, mem, zMalloc_getSize(mem), cudaMemcpyHostToHost);
-      zAssert(err == cudaSuccess);
+      res = ((char *)res) + zMalloc_padding;
+      zAssert(res != NULL);
+      zMalloc_setSize(res, sz);
     }
-    xcuFree(mem);
+#else
+    void * res = realloc(mem, sz);
+    if (res != NULL) {
+      cudaHostRegister(res, sz, cudaHostRegisterPortable);
+    }
+#endif
     return res;
   }
 }
 
+#define nNew(typ) ((typ *)nMalloc(sizeof(typ)))
 #define zNew(typ) ((typ *)zMalloc(sizeof(typ)))
 #define zNewArray(typ, len) ((typ *)zMalloc((len) * sizeof(typ)))
+#define nNewArray(typ, len) ((typ *)nMalloc((len) * sizeof(typ)))
+#define nMalloc(sz) xMalloc(sz)
 #define zMalloc(sz) xcuMalloc(sz)
+#define nDelete(var) xFree(var)
 #define zDelete(var) zFree(var)
+#define nFree(var)                                                             \
+  do {                                                                         \
+    xFree(var);                                                              \
+    var = NULL;                                                                \
+  } while (0)
 #define zFree(var)                                                             \
   do {                                                                         \
     xcuFree(var);                                                              \
     var = NULL;                                                                \
   } while (0)
 #define zRealloc(var, newSize) xcuRealloc(var, newSize)
+#define nRealloc(var, newSize) xRealloc(var, newSize)
 #define zReallocArray(t, m, n) ((t *)xcuRealloc(m, n * sizeof(t)))
+#define nReallocArray(t, m, n) ((t *)xRealloc(m, n * sizeof(t)))
 
 #endif /* __ZMALLOC_H__ */

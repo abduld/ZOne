@@ -7,14 +7,19 @@
 
 #define BLOCK_DIM_X 64
 
-__global__ void dImage_convolve(float *out, float *in, int width) {
+__global__ void dImage_convolve(char *out, char *in, int width) {
 
-  __shared__ float sMask[Mask_width];
-  __shared__ float sImage[BLOCK_DIM_X + Mask_width];
+  //__shared__ char sMask[Mask_width];
+  //__shared__ char sImage[BLOCK_DIM_X + Mask_width];
 
   int tidX = threadIdx.x;
 
-  int ii = tidX + blockIdx.x * BLOCK_DIM_X;
+  int ii = tidX + blockIdx.x * blockDim.x;
+
+  if (ii < width) {
+    out[ii] = 22;
+  }
+#if 0
 
 #define P(img, x)  (((x) >= 0 && (x) < width)  ? ((img)[x]) : 0)
 
@@ -42,29 +47,40 @@ __global__ void dImage_convolve(float *out, float *in, int width) {
       maskValue = sMask[x + Mask_radius];
       accum += pixelValue * maskValue;
     }
-    out[ii] = accum;
+    out[ii] = 22;
   }
+#endif
 }
 
 void Image_convolve(zMemoryGroup_t out, zMemoryGroup_t in) {
   size_t len = zMemoryGroup_getFlattenedLength(in);
-  dim3 blockDim(32);
+  dim3 blockDim(BLOCK_DIM_X);
   dim3 gridDim(zCeil(len, blockDim.x));
-  dImage_convolve<<<gridDim,blockDim>>>(
-    (float*)zMemoryGroup_getDeviceMemory(out),
-    (float*)zMemoryGroup_getDeviceMemory(in),
+  zState_t st = zMemoryGroup_getState(out);
+  cudaStream_t strm = zState_getComputeStream(st, zMemoryGroup_getId(out));
+  dImage_convolve<<<gridDim,blockDim, 0, strm>>>(
+    (char*)zMemoryGroup_getDeviceMemory(out),
+    (char*)zMemoryGroup_getDeviceMemory(in),
     len
   );
+  zCUDA_check(cudaStreamSynchronize(strm));
   return ;
 }
 
 int main(int argc, char *argv[]) {
+  int deviceCount;
   size_t dim = 1024;
   zState_t st = zState_new();
+  cudaGetDeviceCount(&deviceCount);
+  printf("Devices = %d\n", deviceCount);
+  zLog(TRACE, "Allocating Input...");
   zMemoryGroup_t in = zReadBit8Array(st, "inputVector.dat", 1, &dim);
+  zLog(TRACE, "Allocating Output...");
   zMemoryGroup_t out = zMemoryGroup_new(st, zMemoryType_bit8, 1, &dim);
+  zLog(TRACE, "Launching Map...");
   zMapGroupFunction_t mapFun = zMapGroupFunction_new(st, "imageConvolve", Image_convolve);
   zMap(st, mapFun, out, in);
+  zLog(TRACE, "Writing data...");
   zWriteBit8Array(st, "outputVector.dat", out);
   return 0;
 }

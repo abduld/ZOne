@@ -56,7 +56,7 @@ static inline uint64_t getTime(void) {
 
 static inline zTimerNode_t zTimerNode_new(int id, string kind, const char *file,
                                           const char *fun, int startLine) {
-  zTimerNode_t node = zNew(struct st_zTimerNode_t);
+  zTimerNode_t node = nNew(struct st_zTimerNode_t);
   zTimerNode_setId(node, id);
   zTimerNode_setLevel(node, 0);
   zTimerNode_setStoppedQ(node, zFalse);
@@ -80,9 +80,9 @@ static inline zTimerNode_t zTimerNode_new(int id, string kind, const char *file,
 static inline void zTimerNode_delete(zTimerNode_t node) {
   if (node != NULL) {
     if (zTimerNode_getMessage(node)) {
-      zDelete(zTimerNode_getMessage(node));
+      nDelete(zTimerNode_getMessage(node));
     }
-    zDelete(node);
+    nDelete(node);
   }
 }
 
@@ -158,7 +158,7 @@ void zTimer_delete(zTimer_t timer) {
       iter = tmp;
     }
 
-    zDelete(timer);
+    nDelete(timer);
   }
 }
 
@@ -206,7 +206,7 @@ static string zTimer_toCString(zTimer_t timer) {
 }
 
 zTimer_t zTimer_new(void) {
-  zTimer_t timer = zNew(struct st_zTimer_t);
+  zTimer_t timer = nNew(struct st_zTimer_t);
   zTimer_setLength(timer, 0);
   zTimer_setHead(timer, NULL);
   zTimer_setTail(timer, NULL);

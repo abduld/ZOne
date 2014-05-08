@@ -7,7 +7,7 @@ zFile_t zFile_new(zState_t st, const char *path, int flags) {
     return NULL;
   }
 
-  file = zNew(struct st_zFile_t);
+  file = nNew(struct st_zFile_t);
 
   zFile_setPath(file, zString_duplicate(path));
   zFile_setState(file, st);
@@ -19,9 +19,9 @@ zFile_t zFile_new(zState_t st, const char *path, int flags) {
 void zFile_delete(zFile_t file) {
   if (file != NULL) {
     if (zFile_getPath(file)) {
-      zDelete(zFile_getPath(file));
+      nDelete(zFile_getPath(file));
     }
-    zDelete(file);
+    nDelete(file);
   }
   return;
 }

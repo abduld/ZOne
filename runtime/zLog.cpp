@@ -1,8 +1,6 @@
 
 #include <z.h>
 
-zLogger_t _logger = NULL;
-
 static inline zBool_t zLogEntry_hasNext(zLogEntry_t elem) {
   return zLogEntry_getNext(elem) != NULL;
 }
@@ -10,7 +8,8 @@ static inline zBool_t zLogEntry_hasNext(zLogEntry_t elem) {
 static inline zLogEntry_t zLogEntry_new() {
   zLogEntry_t elem;
 
-  elem = zNew(struct st_zLogEntry_t);
+  elem = nNew(struct st_zLogEntry_t);
+  zAssert(elem != NULL);
 
   zLogEntry_setMessage(elem, NULL);
   zLogEntry_setTime(elem, zNow());
@@ -49,9 +48,9 @@ static inline zLogEntry_t zLogEntry_initialize(zLogLevel_t level, string msg,
 static inline void zLogEntry_delete(zLogEntry_t elem) {
   if (elem != NULL) {
     if (zLogEntry_getMessage(elem) != NULL) {
-      zFree(zLogEntry_getMessage(elem));
+      nFree(zLogEntry_getMessage(elem));
     }
-    zDelete(elem);
+    nDelete(elem);
   }
   return;
 }
@@ -81,7 +80,7 @@ static inline const char *getLevelName(zLogLevel_t level) {
 zLogger_t zLogger_new() {
   zLogger_t logger;
 
-  logger = zNew(struct st_zLogger_t);
+  logger = nNew(struct st_zLogger_t);
 
   zLogger_setLength(logger, 0);
   zLogger_setHead(logger, NULL);
@@ -114,7 +113,7 @@ void zLogger_clear(zLogger_t logger) {
 void zLogger_delete(zLogger_t logger) {
   if (logger != NULL) {
     zLogger_clear(logger);
-    zDelete(logger);
+    nDelete(logger);
   }
   return;
 }

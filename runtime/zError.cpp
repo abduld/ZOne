@@ -10,7 +10,7 @@ static const char *zErrorMessages[] = {
 zError_t zError_new() {
   zError_t err;
 
-  err = zNew(struct st_zError_t);
+  err = nNew(struct st_zError_t);
   zError_setState(err, NULL);
   zError_setCode(err, zSuccess);
   zError_setMessage(err, zErrorMessages[zSuccess]);
@@ -23,7 +23,7 @@ zError_t zError_new() {
 
 void zError_delete(zError_t err) {
   if (err != NULL) {
-    zDelete(err);
+    nDelete(err);
   }
   return;
 }
