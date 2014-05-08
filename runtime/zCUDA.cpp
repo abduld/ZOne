@@ -126,7 +126,7 @@ void zCUDA_copyToDevice(zMemory_t mem) {
     zState_setError(st, err);
     cudaStreamAddCallback(strm, onCopyMemoryToDeviceStreamFinish, (void *)mem, 0);
   } else {
-    zLog(TRACE, "Skipping recopy of data.");
+    //zLog(TRACE, "Skipping recopy of data.");
   }
 }
 

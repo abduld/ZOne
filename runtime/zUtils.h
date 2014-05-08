@@ -11,6 +11,7 @@
 #include "tbb/parallel_for.h"
 #include "tbb/blocked_range.h"
 #include "tbb/task.h"
+#include "tbb/tick_count.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -71,6 +72,10 @@ template <typename T> static T zMin(const T &m, const T &n) {
 
 template <typename T> static T zMax(const T &m, const T &n) {
   return m > n ? m : n;
+}
+
+static inline tick_count zTNow() {
+  return tick_count::now();
 }
 
 #endif /* __ZUTILS_H__ */

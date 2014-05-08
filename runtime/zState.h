@@ -21,17 +21,20 @@ typedef enum {
   zStateLabel_Count
 } zStateLabel_t;
 
-struct st_zStreams_t {
+typedef struct st_zStreams_t {
   cudaStream_t compute;
   cudaStream_t malloc;
   cudaStream_t deviceToHost;
   cudaStream_t hostToDevice;
-};
+} zStreams_t;
 
-#define zStreams_getCompute(strm) ((strm)->compute)
-#define zStreams_getMalloc(strm) ((strm)->malloc)
-#define zStreams_getDeviceToHost(strm) ((strm)->deviceToHost)
-#define zStreams_getHostToDevice(strm) ((strm)->hostToDevice)
+#define zStreams_getCompute(strm) ((strm).compute)
+#define zStreams_getMalloc(strm) ((strm).malloc)
+#define zStreams_getDeviceToHost(strm) ((strm).deviceToHost)
+#define zStreams_getHostToDevice(strm) ((strm).hostToDevice)
+
+
+typedef map<int, zStreams_t> zStreamsMap_t;
 
 struct st_zState_t {
   int nextMemId;

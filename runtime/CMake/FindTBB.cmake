@@ -49,8 +49,9 @@
 #
 #-----------------------
 
-set(_TBB_LIB_NAME "tbb_debug")
-set(_TBB_LIB_MALLOC_NAME "tbbmalloc_debug")
+
+set(_TBB_LIB_NAME "tbb")
+set(_TBB_LIB_MALLOC_NAME "tbbmalloc")
 
 
 if( MSVC )

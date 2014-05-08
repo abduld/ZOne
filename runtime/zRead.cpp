@@ -26,11 +26,11 @@ static zMemoryGroup_t zReadArray(zState_t st, const char *fileName,
 zMemoryGroup_t zReadBit8Array(zState_t st, const char *fileName, int rank,
                               size_t *dims) {
   zMemoryGroup_t mg = zReadArray(st, fileName, zMemoryType_bit8, rank, dims);
-
+  /*
   const char * data = (const char *) zMemoryGroup_getHostMemory(mg);
   for (int ii = 0; ii < 10; ii++) {
     printf("input (%d) = %d\n", ii, data[ii]);
-  }
+  }*/
   return mg;
 }
 

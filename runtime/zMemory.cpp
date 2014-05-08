@@ -14,8 +14,16 @@ zMemory_t zMemory_new(zState_t st, void *data, size_t sz) {
 	return mem;
 }
 
-void zMemory_delete(zMemory_t mem);
 
-void zMemory_copyToDevice(zMemory_t mem) {}
+size_t zMemory_getFlattenedLength(zMemory_t mem) {
+  return zMemory_getByteCount(mem) / zMemoryType_size(zMemory_getType(mem));
+}
 
-void zMemory_copyToHost(zMemory_t mem) {}
+
+void zMemory_copyToDevice(zMemory_t mem) {
+	zCUDA_copyToDevice(mem);
+}
+
+void zMemory_copyToHost(zMemory_t mem) {
+	zCUDA_copyToHost(mem);
+}

@@ -56,7 +56,6 @@ typedef struct st_zState_t *zState_t;
 typedef struct st_zFunction_t *zFunction_t;
 typedef struct st_zLogEntry_t *zLogEntry_t;
 typedef struct st_zLogger_t *zLogger_t;
-typedef struct st_zStreams_t *zStreams_t;
 typedef struct st_zTimer_t *zTimer_t;
 typedef struct st_zTimerNode_t *zTimerNode_t;
 typedef struct st_zError_t *zError_t;
@@ -66,7 +65,6 @@ typedef struct st_zMapFunction_t * zMapFunction_t;
 typedef struct st_zMapGroupFunction_t * zMapGroupFunction_t;
 
 typedef map<int, zMemoryGroup_t> zMemoryGroupMap_t;
-typedef map<int, zStreams_t> zStreamsMap_t;
 typedef map<string, zFunction_t> zFunctionMap_t;
 
 

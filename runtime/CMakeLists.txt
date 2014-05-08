@@ -38,18 +38,16 @@ include_directories( ${TBB_INCLUDE_DIRS} )
 if (UNIX)
     set(CUDA_NVCC_FLAGS
         ${CUDA_NVCC_FLAGS}
-        -DTBB_USE_DEBUG=1
         #  "--compiler-options -std=c++11"
     )
 else (UNIX)
     set(CUDA_NVCC_FLAGS
         ${CUDA_NVCC_FLAGS}
-        "-DTBB_USE_DEBUG=1;" 
         "-Xcompiler;-bigobj;"
     )
 endif (UNIX)
 list( APPEND CMAKE_CXX_FLAGS
-    "${CMAKE_CXX_FLAGS} -g -O0 -DTBB_USE_DEBUG=1 -ftest-coverage -fprofile-arcs"
+    "${CMAKE_CXX_FLAGS} -g -O0 -ftest-coverage -fprofile-arcs"
 )
 
 file( GLOB  zhdr *.hpp *.h )
@@ -74,6 +72,10 @@ endif(UNIX)
 
 
 cuda_add_executable(convolution examples/convolution.cu OPTIONS -arch sm_20)
+cuda_add_executable(blackscholes examples/blackscholes.cu OPTIONS -arch sm_20)
+#cuda_add_executable(european examples/european.cu OPTIONS -arch sm_20)
 target_link_libraries(convolution ${zrtLib} ${TBB_LIBRARIES})
+target_link_libraries(blackscholes ${zrtLib} ${TBB_LIBRARIES})
+#target_link_libraries(european ${zrtLib} ${TBB_LIBRARIES})
 
 

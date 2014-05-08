@@ -4,7 +4,7 @@
 
 enum { zMalloc_fieldSize = 0, zMalloc_fieldCount };
 
-#define zMalloc_padding 0*(zMalloc_fieldCount * sizeof(size_t))
+#define zMalloc_padding 0//*(zMalloc_fieldCount * sizeof(size_t))
 #define zMalloc_address(mem) (((char *)mem) - zMalloc_padding)
 #define zMalloc_getSize(mem) //                                                  \
   //(((size_t *)zMalloc_address(mem))[zMalloc_fieldSize])

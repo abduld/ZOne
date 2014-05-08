@@ -46,34 +46,79 @@ __global__ void dImage_convolve(char *out, char *in, int width) {
   }
 }
 
-void Image_convolve(zMemoryGroup_t out, zMemoryGroup_t in) {
-  size_t len = zMemoryGroup_getFlattenedLength(in);
+void Image_convolve(zMemory_t out, zMemory_t in) {
+  size_t len = zMemory_getFlattenedLength(in);
   dim3 blockDim(BLOCK_DIM_X);
   dim3 gridDim(zCeil(len, blockDim.x));
-  zState_t st = zMemoryGroup_getState(out);
-  cudaStream_t strm = zState_getComputeStream(st, zMemoryGroup_getId(out));
+  zState_t st = zMemory_getState(out);
+  cudaStream_t strm = zState_getComputeStream(st, zMemory_getId(out));
   dImage_convolve<<<gridDim,blockDim, 0, strm>>>(
-    (char*)zMemoryGroup_getDeviceMemory(out),
-    (char*)zMemoryGroup_getDeviceMemory(in),
+    (char*)zMemory_getDeviceMemory(out),
+    (char*)zMemory_getDeviceMemory(in),
     len
   );
   return ;
 }
 
 int main(int argc, char *argv[]) {
-  int deviceCount;
-  size_t dim = 1024;
+size_t inputLength = 1 << atoi(argv[1]);
+const char * inputFile = "data/S.dat";
+const char * outputFile = "data/outputVector.dat";
+
+  {
+
+  size_t dim = inputLength;
+  tick_count tic = zTNow();
   zState_t st = zState_new();
-  cudaGetDeviceCount(&deviceCount);
-  printf("Devices = %d\n", deviceCount);
-  zLog(TRACE, "Allocating Input...");
-  zMemoryGroup_t in = zReadBit8Array(st, "inputVector.dat", 1, &dim);
-  zLog(TRACE, "Allocating Output...");
+  zMemoryGroup_t in = zReadBit8Array(st, inputFile, 1, &dim);
   zMemoryGroup_t out = zMemoryGroup_new(st, zMemoryType_bit8, 1, &dim);
-  zLog(TRACE, "Launching Map...");
   zMapGroupFunction_t mapFun = zMapGroupFunction_new(st, "imageConvolve", Image_convolve);
   zMap(st, mapFun, out, in);
-  zLog(TRACE, "Writing data...");
-  zWriteBit8Array(st, "outputVector.dat", out);
+  zWriteBit8Array(st, outputFile, out);
+  tick_count toc = zTNow();
+  printf("took %g seconds for optimized\n", (toc-tic).seconds());
+  }
+
+
+
+{
+  
+  tick_count tic = zTNow();
+  
+  FILE * fdInput = fopen(inputFile, "r+");
+  zAssert(fdInput != NULL);
+  
+  char * hInputMem = zNewArray(char, inputLength);
+  char * hOutputMem = zNewArray(char, inputLength);
+  fread(hInputMem, sizeof(char), inputLength, fdInput);
+  fclose(fdInput);
+
+  char * dInputMem, * dOutputMem;
+  cudaMalloc(&dInputMem, sizeof(char)*inputLength);
+  cudaMalloc(&dOutputMem, sizeof(char)*inputLength);
+
+  zCUDA_check(cudaMemcpy(dInputMem, hInputMem, sizeof(char)*inputLength, cudaMemcpyHostToDevice));
+
+  dim3 blockDim(BLOCK_DIM_X);
+  dim3 gridDim(zCeil(inputLength, blockDim.x));
+  dImage_convolve<<<gridDim,blockDim>>>(dOutputMem, dInputMem, inputLength);
+
+  cudaMemcpy(hOutputMem, dOutputMem, sizeof(char)*inputLength, cudaMemcpyDeviceToHost);
+
+  FILE * fdOutput = fopen(outputFile, "w");
+  zAssert(fdOutput != NULL);
+  fwrite(hOutputMem, sizeof(char), inputLength, fdOutput);
+  fclose(fdOutput);
+  
+  cudaFree(dInputMem);
+  cudaFree(dOutputMem);
+  zFree(hInputMem);
+  zFree(hOutputMem);
+
+  tick_count toc = zTNow();
+  printf("took %g seconds for unoptimized\n", (toc-tic).seconds());
+}
+
   return 0;
+  
 }

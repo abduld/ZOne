@@ -78,7 +78,6 @@ void zMemoryGroup_copyToDevice(zMemoryGroup_t mg) {
 
   int nMems = zMemoryGroup_getMemoryCount(mg);
 
-printf("XXXXXXXX>>>HERE\n");
   tbb::parallel_for(0, nMems,
                     [=](int ii) { zMemoryGroup_copyToDevice(mg, ii); });
 }
@@ -94,7 +93,6 @@ void zMemoryGroup_copyToHost(zMemoryGroup_t mg) {
 
   int nMems = zMemoryGroup_getMemoryCount(mg);
 
-printf("---->>>HERE\n");
   tbb::parallel_for(0, nMems, [=](int ii) { zMemoryGroup_copyToHost(mg, ii); });
 }
 

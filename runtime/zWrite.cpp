@@ -28,10 +28,11 @@ static void zWriteArray(zState_t st, const char * fileName, zMemoryGroup_t mg) {
 
 void zWriteBit8Array(zState_t st, const char * fileName, zMemoryGroup_t mg) {
 	zWriteArray(st, fileName, mg);
+	/*
 	const char * data = (const char *) zMemoryGroup_getHostMemory(mg);
 	for (int ii = 0; ii < 10; ii++) {
 		printf("output (%d) = %d\n", ii, data[ii]);
-	}
+	}*/
 	return ;
 }
 
@@ -49,6 +50,11 @@ void zWriteInt64Array(zState_t st, const char * fileName, zMemoryGroup_t mg) {
 
 void zWriteFloatArray(zState_t st, const char * fileName, zMemoryGroup_t mg) {
 	zWriteArray(st, fileName, mg);
+	/*
+	const float * data = (const float *) zMemoryGroup_getHostMemory(mg);
+	for (int ii = 0; ii < 10; ii++) {
+		printf("output (%d) = %f\n", ii, data[ii]);
+	}*/
 	return ;
 
 }
